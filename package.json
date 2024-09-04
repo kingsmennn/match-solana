@@ -1,0 +1,35 @@
+{
+  "name": "nuxt-app",
+  "private": true,
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "devDependencies": {
+    "@nuxt/devtools": "latest",
+    "@nuxtjs/tailwindcss": "^6.8.0",
+    "@pinia-plugin-persistedstate/nuxt": "^1.2.1",
+    "@types/node": "^18.17.1",
+    "@vueuse/nuxt": "^11.0.0",
+    "nuxt": "^3.6.5"
+  },
+  "dependencies": {
+    "@hashgraph/sdk": "2.41.0",
+    "@invictus.codes/nuxt-vuetify": "^0.3.0",
+    "@lighthouse-web3/sdk": "^0.3.7",
+    "@pinia/nuxt": "^0.5.1",
+    "@vueuse/core": "^11.0.0",
+    "@vueuse/integrations": "^11.0.0",
+    "ethers": "^6.13.2",
+    "hashconnect": "3.0.13",
+    "moment": "^2.29.4",
+    "nuxt-vuefire": "^0.2.13",
+    "random-word-slugs": "^0.1.7",
+    "universal-cookie": "^7",
+    "vue-sonner": "^1.1.4",
+    "vuefire": "^3.1.13"
+  }
+}
