@@ -135,10 +135,14 @@ const env = useRuntimeConfig().public;
 const router = useRouter();
 const route = useRoute();
 const userStore = useUserStore();
-
-watch(()=>wallet, (val)=>{
-  console.log({walletState: val})
-}, { immediate: true})
+console.log({ publicKey });
+watch(
+  () => publicKey.value,
+  (val) => {
+    console.log({ walletState: val });
+  },
+  { immediate: true }
+);
 
 const userCookie = useCookie<User>(STORE_KEY_MIDDLEWARE, { watch: true });
 const storeCookie = useCookie(STORE_KEY);
