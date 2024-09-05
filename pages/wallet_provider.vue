@@ -7,12 +7,12 @@ import {
   useAnchorWallet,
   useConnection,
   useWallet,
-} from "@solana/wallet-adapter-react";
+} from "@solana/wallet-adapter-vue";
 import {
   WalletModalProvider,
   WalletDisconnectButton,
   WalletMultiButton,
-} from "@solana/wallet-adapter-react-ui";
+} from "@solana/wallet-adapter-vue-ui";
 
 import {
   // GlowWalletAdapter,
@@ -72,7 +72,7 @@ const program = computed(() => {
 <template>
   <ConnectionProvider :endpoint="endpoint">
     <Toaster />
-    <WalletProvider :wallets="wallets" autoConnect>
+    <WalletProvider :wallets="wallets" :autoConnect="true">
       <WalletModalProvider> </WalletModalProvider>
     </WalletProvider>
   </ConnectionProvider>
