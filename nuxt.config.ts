@@ -11,6 +11,7 @@ export default defineNuxtConfig({
   build: {
     transpile: ["vue-sonner"],
   },
+  css: ['~/assets/css/solana.css'],
   vite: {
     esbuild: {
       target: "esnext",

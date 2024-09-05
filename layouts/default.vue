@@ -19,11 +19,8 @@
         </div>
 
         <div class="tw-space-x-2">
-          {{ walletState.publicKey }}
-          hheelelelele
-          <SolanaConnectButton />
-          <!-- <wallet-multi-button></wallet-multi-button> -->
-          <button
+          <wallet-multi-button></wallet-multi-button>
+          <!-- <button
             id="account-type"
             class="tw-inline-flex tw-items-center tw-p-1 tw-px-3 tw-rounded-full tw-bg-white tw-select-none tw-text-black hover:tw-bg-white/80 tw-relative tw-transition-all tw-duration-300"
             :disabled="connecting"
@@ -47,7 +44,7 @@
               class="tw-h-1.5 tw-w-1.5 tw-absolute tw-bottom-full tw-left-0 tw-bg-white tw-rounded-full tw-animate-ping"
             >
             </span>
-          </button>
+          </button> -->
 
           <v-menu
             v-if="userStore.isConnected"
@@ -132,13 +129,16 @@ import { useUserStore } from "@/pinia/user";
 import { toast, Toaster } from "vue-sonner";
 import { ellipsify } from "@/utils/ellipsify";
 import { useWallet, WalletMultiButton } from "solana-wallets-vue";
-import SolanaConnectButton from "@/components/SolanaConnectButton.vue";
 
+const { publicKey, wallet, disconnect: solDisconnect } = useWallet();
 const env = useRuntimeConfig().public;
 const router = useRouter();
 const route = useRoute();
 const userStore = useUserStore();
-const walletState = useWallet();
+
+watch(()=>wallet, (val)=>{
+  console.log({walletState: val})
+}, { immediate: true})
 
 const userCookie = useCookie<User>(STORE_KEY_MIDDLEWARE, { watch: true });
 const storeCookie = useCookie(STORE_KEY);
