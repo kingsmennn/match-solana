@@ -44,3 +44,9 @@ export const appMetaData = {
 };
 
 export const TIME_TILL_LOCK = 1 * 60 * 1000; // ms
+
+export const USER_TAG = "USER_STATE";
+
+export const ADMIN_TAG = "ADMIN_TAG";
+
+export const STORE_TAG = "STORE_STATE";
