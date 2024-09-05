@@ -1,988 +1,281 @@
-export const marketAbi = [
-  {
-    inputs: [],
-    name: "Marketplace_InvalidUser",
-    type: "error",
-  },
-  {
-    inputs: [],
-    name: "Marketplace__IndexOutOfBounds",
-    type: "error",
-  },
-  {
-    inputs: [],
-    name: "Marketplace__InvalidAccountType",
-    type: "error",
-  },
-  {
-    inputs: [],
-    name: "Marketplace__OfferAlreadyAccepted",
-    type: "error",
-  },
-  {
-    inputs: [],
-    name: "Marketplace__OfferAlreadyExists",
-    type: "error",
-  },
-  {
-    inputs: [],
-    name: "Marketplace__OfferNotRemovable",
-    type: "error",
-  },
-  {
-    inputs: [],
-    name: "Marketplace__OnlyBuyersAllowed",
-    type: "error",
-  },
-  {
-    inputs: [],
-    name: "Marketplace__OnlySellersAllowed",
-    type: "error",
-  },
-  {
-    inputs: [],
-    name: "Marketplace__RequestLocked",
-    type: "error",
-  },
-  {
-    inputs: [],
-    name: "Marketplace__UnauthorizedBuyer",
-    type: "error",
-  },
-  {
-    inputs: [],
-    name: "Marketplace__UnauthorizedRemoval",
-    type: "error",
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: "uint256",
-        name: "offerId",
-        type: "uint256",
-      },
-      {
-        indexed: true,
-        internalType: "address",
-        name: "buyerAddress",
-        type: "address",
-      },
-      {
-        indexed: false,
-        internalType: "bool",
-        name: "isAccepted",
-        type: "bool",
-      },
-    ],
-    name: "OfferAccepted",
-    type: "event",
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: "uint256",
-        name: "offerId",
-        type: "uint256",
-      },
-      {
-        indexed: true,
-        internalType: "address",
-        name: "sellerAddress",
-        type: "address",
-      },
-      {
-        indexed: false,
-        internalType: "string",
-        name: "storeName",
-        type: "string",
-      },
-      {
-        indexed: false,
-        internalType: "int256",
-        name: "price",
-        type: "int256",
-      },
-      {
-        indexed: false,
-        internalType: "uint256",
-        name: "requestId",
-        type: "uint256",
-      },
-      {
-        indexed: false,
-        internalType: "string[]",
-        name: "images",
-        type: "string[]",
-      },
-      {
-        indexed: false,
-        internalType: "uint256",
-        name: "sellerId",
-        type: "uint256",
-      },
-      {
-        indexed: false,
-        internalType: "uint256[]",
-        name: "sellerIds",
-        type: "uint256[]",
-      },
-    ],
-    name: "OfferCreated",
-    type: "event",
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: "uint256",
-        name: "offerId",
-        type: "uint256",
-      },
-      {
-        indexed: true,
-        internalType: "address",
-        name: "sellerAddress",
-        type: "address",
-      },
-    ],
-    name: "OfferRemoved",
-    type: "event",
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: "uint256",
-        name: "requestId",
-        type: "uint256",
-      },
-      {
-        indexed: true,
-        internalType: "uint256",
-        name: "offerId",
-        type: "uint256",
-      },
-      {
-        indexed: true,
-        internalType: "uint256",
-        name: "sellerId",
-        type: "uint256",
-      },
-      {
-        indexed: false,
-        internalType: "uint256",
-        name: "updatedAt",
-        type: "uint256",
-      },
-      {
-        indexed: false,
-        internalType: "int256",
-        name: "sellersPriceQuote",
-        type: "int256",
-      },
-    ],
-    name: "RequestAccepted",
-    type: "event",
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: "uint256",
-        name: "requestId",
-        type: "uint256",
-      },
-      {
-        indexed: true,
-        internalType: "address",
-        name: "buyerAddress",
-        type: "address",
-      },
-      {
-        indexed: false,
-        internalType: "string",
-        name: "requestName",
-        type: "string",
-      },
-      {
-        indexed: false,
-        internalType: "int256",
-        name: "latitude",
-        type: "int256",
-      },
-      {
-        indexed: false,
-        internalType: "int256",
-        name: "longitude",
-        type: "int256",
-      },
-      {
-        indexed: false,
-        internalType: "string[]",
-        name: "images",
-        type: "string[]",
-      },
-      {
-        indexed: false,
-        internalType: "uint8",
-        name: "lifecycle",
-        type: "uint8",
-      },
-      {
-        indexed: false,
-        internalType: "string",
-        name: "description",
-        type: "string",
-      },
-      {
-        indexed: false,
-        internalType: "uint256",
-        name: "buyerId",
-        type: "uint256",
-      },
-      {
-        indexed: false,
-        internalType: "uint256[]",
-        name: "sellerIds",
-        type: "uint256[]",
-      },
-      {
-        indexed: false,
-        internalType: "int256",
-        name: "sellersPriceQuote",
-        type: "int256",
-      },
-      {
-        indexed: false,
-        internalType: "uint256",
-        name: "lockedSellerId",
-        type: "uint256",
-      },
-      {
-        indexed: false,
-        internalType: "uint256",
-        name: "createdAt",
-        type: "uint256",
-      },
-      {
-        indexed: false,
-        internalType: "uint256",
-        name: "updatedAt",
-        type: "uint256",
-      },
-    ],
-    name: "RequestCreated",
-    type: "event",
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: "address",
-        name: "sellerAddress",
-        type: "address",
-      },
-      {
-        indexed: false,
-        internalType: "uint256",
-        name: "storeId",
-        type: "uint256",
-      },
-      {
-        indexed: false,
-        internalType: "string",
-        name: "storeName",
-        type: "string",
-      },
-      {
-        indexed: false,
-        internalType: "int256",
-        name: "latitude",
-        type: "int256",
-      },
-      {
-        indexed: false,
-        internalType: "int256",
-        name: "longitude",
-        type: "int256",
-      },
-    ],
-    name: "StoreCreated",
-    type: "event",
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: "address",
-        name: "userAddress",
-        type: "address",
-      },
-      {
-        indexed: false,
-        internalType: "uint256",
-        name: "userId",
-        type: "uint256",
-      },
-      {
-        indexed: false,
-        internalType: "string",
-        name: "username",
-        type: "string",
-      },
-      {
-        indexed: false,
-        internalType: "uint8",
-        name: "accountType",
-        type: "uint8",
-      },
-    ],
-    name: "UserCreated",
-    type: "event",
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: "address",
-        name: "userAddress",
-        type: "address",
-      },
-      {
-        indexed: false,
-        internalType: "uint256",
-        name: "userId",
-        type: "uint256",
-      },
-      {
-        indexed: false,
-        internalType: "string",
-        name: "username",
-        type: "string",
-      },
-      {
-        indexed: false,
-        internalType: "uint8",
-        name: "accountType",
-        type: "uint8",
-      },
-    ],
-    name: "UserUpdated",
-    type: "event",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "_offerId",
-        type: "uint256",
-      },
-    ],
-    name: "acceptOffer",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "int256",
-        name: "_price",
-        type: "int256",
-      },
-      {
-        internalType: "string[]",
-        name: "_images",
-        type: "string[]",
-      },
-      {
-        internalType: "uint256",
-        name: "_requestId",
-        type: "uint256",
-      },
-      {
-        internalType: "string",
-        name: "_storeName",
-        type: "string",
-      },
-    ],
-    name: "createOffer",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "string",
-        name: "_name",
-        type: "string",
-      },
-      {
-        internalType: "string",
-        name: "_description",
-        type: "string",
-      },
-      {
-        internalType: "string[]",
-        name: "_images",
-        type: "string[]",
-      },
-      {
-        internalType: "int256",
-        name: "_latitude",
-        type: "int256",
-      },
-      {
-        internalType: "int256",
-        name: "_longitude",
-        type: "int256",
-      },
-    ],
-    name: "createRequest",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "string",
-        name: "_name",
-        type: "string",
-      },
-      {
-        internalType: "string",
-        name: "_description",
-        type: "string",
-      },
-      {
-        internalType: "string",
-        name: "_phone",
-        type: "string",
-      },
-      {
-        internalType: "int256",
-        name: "_latitude",
-        type: "int256",
-      },
-      {
-        internalType: "int256",
-        name: "_longitude",
-        type: "int256",
-      },
-    ],
-    name: "createStore",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "string",
-        name: "_username",
-        type: "string",
-      },
-      {
-        internalType: "string",
-        name: "_phone",
-        type: "string",
-      },
-      {
-        internalType: "int256",
-        name: "_latitude",
-        type: "int256",
-      },
-      {
-        internalType: "int256",
-        name: "_longitude",
-        type: "int256",
-      },
-      {
-        internalType: "enum Marketplace.AccountType",
-        name: "_accountType",
-        type: "uint8",
-      },
-    ],
-    name: "createUser",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "offerId",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
-        name: "index",
-        type: "uint256",
-      },
-    ],
-    name: "getOfferImageByIndex",
-    outputs: [
-      {
-        internalType: "string",
-        name: "",
-        type: "string",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "offerId",
-        type: "uint256",
-      },
-    ],
-    name: "getOfferImagesLength",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "requestId",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
-        name: "index",
-        type: "uint256",
-      },
-    ],
-    name: "getRequestImageByIndex",
-    outputs: [
-      {
-        internalType: "string",
-        name: "",
-        type: "string",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "requestId",
-        type: "uint256",
-      },
-    ],
-    name: "getRequestImagesLength",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "requestId",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
-        name: "index",
-        type: "uint256",
-      },
-    ],
-    name: "getRequestSellerIdByIndex",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "requestId",
-        type: "uint256",
-      },
-    ],
-    name: "getRequestSellerIdsLength",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    name: "offers",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "id",
-        type: "uint256",
-      },
-      {
-        internalType: "int256",
-        name: "price",
-        type: "int256",
-      },
-      {
-        internalType: "uint256",
-        name: "requestId",
-        type: "uint256",
-      },
-      {
-        internalType: "string",
-        name: "storeName",
-        type: "string",
-      },
-      {
-        internalType: "uint256",
-        name: "sellerId",
-        type: "uint256",
-      },
-      {
-        internalType: "bool",
-        name: "isAccepted",
-        type: "bool",
-      },
-      {
-        internalType: "uint256",
-        name: "createdAt",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
-        name: "updatedAt",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "_offerId",
-        type: "uint256",
-      },
-    ],
-    name: "removeOffer",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    name: "requests",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "id",
-        type: "uint256",
-      },
-      {
-        internalType: "string",
-        name: "name",
-        type: "string",
-      },
-      {
-        internalType: "uint256",
-        name: "buyerId",
-        type: "uint256",
-      },
-      {
-        internalType: "int256",
-        name: "sellersPriceQuote",
-        type: "int256",
-      },
-      {
-        internalType: "uint256",
-        name: "lockedSellerId",
-        type: "uint256",
-      },
-      {
-        internalType: "string",
-        name: "description",
-        type: "string",
-      },
-      {
-        internalType: "uint256",
-        name: "createdAt",
-        type: "uint256",
-      },
-      {
-        internalType: "enum Marketplace.RequestLifecycle",
-        name: "lifecycle",
-        type: "uint8",
-      },
-      {
-        components: [
-          {
-            internalType: "int256",
-            name: "latitude",
-            type: "int256",
-          },
-          {
-            internalType: "int256",
-            name: "longitude",
-            type: "int256",
-          },
+export const marketAbi = {
+  version: "0.1.0",
+  name: "marketplace",
+  constants: [
+    {
+      name: "USER_TAG",
+      type: "bytes",
+      value: "[85, 83, 69, 82, 95, 83, 84, 65, 84, 69]",
+    },
+    {
+      name: "ADMIN_TAG",
+      type: "bytes",
+      value: "[65, 68, 77, 73, 78, 95, 84, 65, 71]",
+    },
+    { name: "TIME_TO_LOCK", type: "u64", value: "900" },
+  ],
+  instructions: [
+    {
+      name: "createUser",
+      accounts: [
+        { name: "user", isMut: true, isSigner: true },
+        { name: "userSigner", isMut: true, isSigner: true },
+        { name: "userCounter", isMut: true, isSigner: false },
+        { name: "systemProgram", isMut: false, isSigner: false },
+      ],
+      args: [
+        { name: "username", type: "string" },
+        { name: "phone", type: "string" },
+        { name: "latitude", type: "i64" },
+        { name: "longitude", type: "i64" },
+        { name: "accountType", type: { defined: "AccountType" } },
+      ],
+    },
+    {
+      name: "updateUser",
+      accounts: [
+        { name: "user", isMut: true, isSigner: false },
+        { name: "signer", isMut: true, isSigner: true },
+      ],
+      args: [
+        { name: "username", type: "string" },
+        { name: "phone", type: "string" },
+        { name: "latitude", type: "i64" },
+        { name: "longitude", type: "i64" },
+        { name: "accountType", type: { defined: "AccountType" } },
+      ],
+    },
+    {
+      name: "createStore",
+      accounts: [
+        { name: "user", isMut: true, isSigner: false },
+        { name: "store", isMut: true, isSigner: true },
+        { name: "storeCounter", isMut: true, isSigner: false },
+        { name: "systemProgram", isMut: false, isSigner: false },
+      ],
+      args: [
+        { name: "name", type: "string" },
+        { name: "description", type: "string" },
+        { name: "phone", type: "string" },
+        { name: "latitude", type: "i64" },
+        { name: "longitude", type: "i64" },
+      ],
+    },
+    {
+      name: "createRequest",
+      accounts: [
+        { name: "user", isMut: true, isSigner: false },
+        { name: "request", isMut: true, isSigner: true },
+        { name: "requestCounter", isMut: true, isSigner: false },
+        { name: "systemProgram", isMut: false, isSigner: false },
+      ],
+      args: [
+        { name: "name", type: "string" },
+        { name: "description", type: "string" },
+        { name: "images", type: { vec: "string" } },
+        { name: "latitude", type: "i64" },
+        { name: "longitude", type: "i64" },
+      ],
+    },
+    {
+      name: "createOffer",
+      accounts: [
+        { name: "user", isMut: true, isSigner: false },
+        { name: "request", isMut: true, isSigner: false },
+        { name: "offer", isMut: true, isSigner: true },
+        { name: "offerCounter", isMut: true, isSigner: false },
+        { name: "systemProgram", isMut: false, isSigner: false },
+      ],
+      args: [
+        { name: "price", type: "i64" },
+        { name: "images", type: { vec: "string" } },
+        { name: "storeName", type: "string" },
+      ],
+    },
+    {
+      name: "acceptOffer",
+      accounts: [
+        { name: "user", isMut: true, isSigner: false },
+        { name: "offer", isMut: true, isSigner: false },
+        { name: "request", isMut: true, isSigner: false },
+        { name: "systemProgram", isMut: false, isSigner: false },
+      ],
+      args: [{ name: "offerId", type: "u64" }],
+    },
+  ],
+  accounts: [
+    {
+      name: "User",
+      type: {
+        kind: "struct",
+        fields: [
+          { name: "id", type: "u64" },
+          { name: "username", type: "string" },
+          { name: "phone", type: "string" },
+          { name: "location", type: { defined: "Location" } },
+          { name: "createdAt", type: "i64" },
+          { name: "updatedAt", type: "i64" },
+          { name: "accountType", type: { defined: "AccountType" } },
         ],
-        internalType: "struct Marketplace.Location",
-        name: "location",
-        type: "tuple",
       },
-      {
-        internalType: "uint256",
-        name: "updatedAt",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "string",
-        name: "_username",
-        type: "string",
-      },
-      {
-        internalType: "string",
-        name: "_phone",
-        type: "string",
-      },
-      {
-        internalType: "int256",
-        name: "_latitude",
-        type: "int256",
-      },
-      {
-        internalType: "int256",
-        name: "_longitude",
-        type: "int256",
-      },
-      {
-        internalType: "enum Marketplace.AccountType",
-        name: "_accountType",
-        type: "uint8",
-      },
-    ],
-    name: "updateUser",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "user",
-        type: "address",
-      },
-    ],
-    name: "userStoreCount",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    name: "userStoreIds",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    name: "userStores",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "id",
-        type: "uint256",
-      },
-      {
-        internalType: "string",
-        name: "name",
-        type: "string",
-      },
-      {
-        internalType: "string",
-        name: "description",
-        type: "string",
-      },
-      {
-        internalType: "string",
-        name: "phone",
-        type: "string",
-      },
-      {
-        components: [
-          {
-            internalType: "int256",
-            name: "latitude",
-            type: "int256",
-          },
-          {
-            internalType: "int256",
-            name: "longitude",
-            type: "int256",
-          },
+    },
+    {
+      name: "Store",
+      type: {
+        kind: "struct",
+        fields: [
+          { name: "id", type: "u64" },
+          { name: "name", type: "string" },
+          { name: "description", type: "string" },
+          { name: "phone", type: "string" },
+          { name: "location", type: { defined: "Location" } },
         ],
-        internalType: "struct Marketplace.Location",
-        name: "location",
-        type: "tuple",
       },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "",
-        type: "address",
-      },
-    ],
-    name: "users",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "id",
-        type: "uint256",
-      },
-      {
-        internalType: "string",
-        name: "username",
-        type: "string",
-      },
-      {
-        internalType: "string",
-        name: "phone",
-        type: "string",
-      },
-      {
-        components: [
-          {
-            internalType: "int256",
-            name: "latitude",
-            type: "int256",
-          },
-          {
-            internalType: "int256",
-            name: "longitude",
-            type: "int256",
-          },
+    },
+    {
+      name: "Request",
+      type: {
+        kind: "struct",
+        fields: [
+          { name: "id", type: "u64" },
+          { name: "name", type: "string" },
+          { name: "buyerId", type: "u64" },
+          { name: "description", type: "string" },
+          { name: "images", type: { vec: "string" } },
+          { name: "sellersPriceQuote", type: "i64" },
+          { name: "sellerIds", type: { vec: "u64" } },
+          { name: "offerIds", type: { vec: "u64" } },
+          { name: "lockedSellerId", type: "u64" },
+          { name: "location", type: { defined: "Location" } },
+          { name: "createdAt", type: "u64" },
+          { name: "updatedAt", type: "u64" },
+          { name: "lifecycle", type: { defined: "RequestLifecycle" } },
         ],
-        internalType: "struct Marketplace.Location",
-        name: "location",
-        type: "tuple",
       },
-      {
-        internalType: "uint256",
-        name: "createdAt",
-        type: "uint256",
+    },
+    {
+      name: "Offer",
+      type: {
+        kind: "struct",
+        fields: [
+          { name: "id", type: "u64" },
+          { name: "requestId", type: "u64" },
+          { name: "price", type: "i64" },
+          { name: "images", type: { vec: "string" } },
+          { name: "storeName", type: "string" },
+          { name: "sellerId", type: "u64" },
+          { name: "isAccepted", type: "bool" },
+          { name: "createdAt", type: "u64" },
+          { name: "updatedAt", type: "u64" },
+        ],
       },
-      {
-        internalType: "uint256",
-        name: "updatedAt",
-        type: "uint256",
+    },
+    {
+      name: "Counter",
+      type: { kind: "struct", fields: [{ name: "current", type: "u64" }] },
+    },
+  ],
+  types: [
+    {
+      name: "Location",
+      type: {
+        kind: "struct",
+        fields: [
+          { name: "latitude", type: "i64" },
+          { name: "longitude", type: "i64" },
+        ],
       },
-      {
-        internalType: "enum Marketplace.AccountType",
-        name: "accountType",
-        type: "uint8",
+    },
+    {
+      name: "AccountType",
+      type: { kind: "enum", variants: [{ name: "Buyer" }, { name: "Seller" }] },
+    },
+    {
+      name: "RequestLifecycle",
+      type: {
+        kind: "enum",
+        variants: [
+          { name: "Pending" },
+          { name: "AcceptedByBuyer" },
+          { name: "Completed" },
+        ],
       },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-];
+    },
+  ],
+  events: [
+    {
+      name: "StoreCreated",
+      fields: [
+        { name: "sellerAddress", type: "publicKey", index: false },
+        { name: "storeId", type: "u64", index: false },
+        { name: "storeName", type: "string", index: false },
+        { name: "latitude", type: "i64", index: false },
+        { name: "longitude", type: "i64", index: false },
+      ],
+    },
+    {
+      name: "RequestCreated",
+      fields: [
+        { name: "requestId", type: "u64", index: false },
+        { name: "buyerAddress", type: "publicKey", index: false },
+        { name: "requestName", type: "string", index: false },
+        { name: "latitude", type: "i64", index: false },
+        { name: "longitude", type: "i64", index: false },
+        { name: "images", type: { vec: "string" }, index: false },
+        { name: "lifecycle", type: "u8", index: false },
+        { name: "description", type: "string", index: false },
+        { name: "buyerId", type: "u64", index: false },
+        { name: "sellerIds", type: { vec: "u64" }, index: false },
+        { name: "sellersPriceQuote", type: "i64", index: false },
+        { name: "lockedSellerId", type: "u64", index: false },
+        { name: "createdAt", type: "u64", index: false },
+        { name: "updatedAt", type: "u64", index: false },
+      ],
+    },
+    {
+      name: "OfferCreated",
+      fields: [
+        { name: "offerId", type: "u64", index: false },
+        { name: "sellerAddress", type: "publicKey", index: false },
+        { name: "storeName", type: "string", index: false },
+        { name: "price", type: "i64", index: false },
+        { name: "requestId", type: "u64", index: false },
+        { name: "images", type: { vec: "string" }, index: false },
+        { name: "sellerId", type: "u64", index: false },
+        { name: "sellerIds", type: { vec: "u64" }, index: false },
+      ],
+    },
+    {
+      name: "RequestAccepted",
+      fields: [
+        { name: "requestId", type: "u64", index: false },
+        { name: "offerId", type: "u64", index: false },
+        { name: "sellerId", type: "u64", index: false },
+        { name: "updatedAt", type: "u64", index: false },
+        { name: "sellersPriceQuote", type: "i64", index: false },
+      ],
+    },
+    {
+      name: "OfferAccepted",
+      fields: [
+        { name: "offerId", type: "u64", index: false },
+        { name: "buyerAddress", type: "publicKey", index: false },
+        { name: "isAccepted", type: "bool", index: false },
+      ],
+    },
+  ],
+  errors: [
+    { code: 6000, name: "UserAlreadyExists", msg: "User already exists." },
+    { code: 6001, name: "InvalidAccountType", msg: "Invalid account type." },
+    { code: 6002, name: "InvalidUser", msg: "Invalid user." },
+    { code: 6003, name: "OnlySellersAllowed", msg: "Only sellers allowed." },
+    { code: 6004, name: "OnlyBuyersAllowed", msg: "Only buyers allowed." },
+    { code: 6005, name: "UnauthorizedBuyer", msg: "Unauthorized buyer." },
+    {
+      code: 6006,
+      name: "OfferAlreadyAccepted",
+      msg: "Offer already accepted.",
+    },
+    { code: 6007, name: "RequestLocked", msg: "Request locked." },
+  ],
+};

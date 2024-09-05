@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ref, computed, onMounted } from "vue";
 import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
 import {
   ConnectionProvider,
@@ -37,8 +38,42 @@ import { utf8 } from "@project-serum/anchor/dist/cjs/utils/bytes";
 import { findProgramAddressSync } from "@project-serum/anchor/dist/cjs/utils/pubkey";
 
 import { BN } from "@project-serum/anchor";
+const env = useRuntimeConfig().public;
+const network = ref(WalletAdapterNetwork.Devnet);
+const endpoint = computed(() => clusterApiUrl(network.value));
 
-interface WalletConnectProviderProps {
-  children: any;
-}
+const wallets = ref([
+  new PhantomWalletAdapter(),
+  new LedgerWalletAdapter(),
+  new TorusWalletAdapter(),
+  new TrustWalletAdapter(),
+]);
+
+const wallet = useWallet();
+const { connection } = useConnection();
+const anchorWallet = useAnchorWallet();
+
+const program = computed(() => {
+  if (anchorWallet) {
+    const provider = new anchor.AnchorProvider(
+      connection,
+      anchorWallet,
+      anchor.AnchorProvider.defaultOptions()
+    );
+    return new anchor.Program(
+      marketAbi as anchor.Idl,
+      env.contractId,
+      provider
+    );
+  }
+});
+// , [connection, anchorWallet] -> dependency array
 </script>
+<template>
+  <ConnectionProvider :endpoint="endpoint">
+    <Toaster />
+    <WalletProvider :wallets="wallets" autoConnect>
+      <WalletModalProvider> </WalletModalProvider>
+    </WalletProvider>
+  </ConnectionProvider>
+</template>
