@@ -136,8 +136,7 @@ const router = useRouter();
 const route = useRoute();
 const userStore = useUserStore();
 console.log({ publicKey });
-watch(
-  () => publicKey.value,
+watch(publicKey,
   (val) => {
     console.log({ walletState: val });
   },
