@@ -128,7 +128,7 @@ export const useUserStore = defineStore(STORE_KEY, {
         throw error;
       }
 
-      return new ethers.Contract(env.contractId, marketAbi, signer);
+      return new ethers.Contract(env.contractId, [], signer);
     },
     async fetchUser(account_id: string): Promise<BlockchainUser> {
       const contract = await this.getContract();
@@ -140,12 +140,9 @@ export const useUserStore = defineStore(STORE_KEY, {
     async fetchUserById(userId: number) {
       const env = useRuntimeConfig().public;
       try {
-        const res = await $fetch<User>(
-          `${env.matchApiUrl}/user/${userId}`,
-          {
-            method: "GET",
-          }
-        );
+        const res = await $fetch<User>(`${env.matchApiUrl}/user/${userId}`, {
+          method: "GET",
+        });
         return res;
       } catch (error) {
         console.log({ error });
@@ -193,8 +190,8 @@ export const useUserStore = defineStore(STORE_KEY, {
           user,
           details,
           storeDetails: this.userDetails,
-          cookieDetails: userCookie.value
-        })
+          cookieDetails: userCookie.value,
+        });
       } else if (!hasId && this.accountId) {
         this.blockchainError.userNotFound = true;
       }
@@ -250,8 +247,8 @@ export const useUserStore = defineStore(STORE_KEY, {
           (long || this.userDetails?.[3][0]!).toString(),
           LOCATION_DECIMALS
         ),
-        account_type: account_type === AccountType.BUYER ? 0 : 1
-      }
+        account_type: account_type === AccountType.BUYER ? 0 : 1,
+      };
       try {
         const contract = await this.getContract();
         const tx = await contract.updateUser(
@@ -274,29 +271,32 @@ export const useUserStore = defineStore(STORE_KEY, {
         console.error("Error updating user:", error);
       }
     },
-    async getUserLocation(){
-      const env = useRuntimeConfig().public
+    async getUserLocation() {
+      const env = useRuntimeConfig().public;
 
       const requestBody = {
         considerIp: true, // Uses the IP address if no other data is available
         // Optionally, you can provide information about WiFi access points and cell towers
       };
-    
-      const response = await $fetch(`https://www.googleapis.com/geolocation/v1/geolocate?key=${env.googleMapsApiKey}`, {
-        method: 'POST',
-        body: JSON.stringify(requestBody),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+
+      const response = await $fetch(
+        `https://www.googleapis.com/geolocation/v1/geolocate?key=${env.googleMapsApiKey}`,
+        {
+          method: "POST",
+          body: JSON.stringify(requestBody),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
       return response as {
         location: {
-          lat: number
-          lng: number
-        }
-        accuracy: number
-      }
-    }
+          lat: number;
+          lng: number;
+        };
+        accuracy: number;
+      };
+    },
   },
   persist: {
     paths: [

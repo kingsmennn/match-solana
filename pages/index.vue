@@ -179,12 +179,14 @@
         class="tw-flex tw-flex-col sm:tw-flex-row tw-gap-10 tw-justify-between"
       >
         <button
-          @click="()=> {
-            handleWalletConnect();
-            router.push({
-              query: {user_type: AccountType.BUYER }
-            })
-          }"
+          @click="
+            () => {
+              handleWalletConnect();
+              router.push({
+                query: { user_type: AccountType.BUYER },
+              });
+            }
+          "
           class="tw-inline-flex tw-justify-between tw-text-4xl tw-font-bold tw-gap-2 tw-flex-grow sm:tw-max-w-[50%] tw-border-b tw-border-solid tw-border-black"
         >
           <span>Register as buyer</span>
@@ -192,12 +194,14 @@
         </button>
 
         <button
-          @click="()=> {
-          handleWalletConnect();
-          router.push({
-            query: {user_type: AccountType.SELLER }
-          })
-      }"
+          @click="
+            () => {
+              handleWalletConnect();
+              router.push({
+                query: { user_type: AccountType.SELLER },
+              });
+            }
+          "
           class="tw-inline-flex tw-justify-between tw-text-4xl tw-font-bold tw-gap-2 tw-flex-grow sm:tw-max-w-[50%] tw-border-b tw-border-solid tw-border-black"
         >
           <span>Register as seller</span>

@@ -7,6 +7,14 @@ interface Ethereum {
   // Add more types as needed
 }
 
+interface Solana {
+  isPhantom?: boolean;
+  connect: () => Promise<any>;
+  disconnect: () => any;
+  publicKey: string;
+}
+
 interface Window {
   ethereum?: Ethereum;
+  solana?: Solana;
 }
