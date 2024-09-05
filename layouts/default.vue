@@ -46,7 +46,7 @@
             </span>
           </button> -->
 
-          <v-menu
+          <!-- <v-menu
             v-if="userStore.isConnected"
             activator="#account-type"
             transition="slide-y-transition"
@@ -78,7 +78,7 @@
                   Disconnect
                 </button>
               </div>
-              <!-- complete onboarding notice -->
+
               <span
                 v-if="userStore.isNotOnboarded"
                 class="tw-text-xs tw-text-gray-500 tw-px-3 tw-pb-3 tw-pt-2 tw-border-t"
@@ -86,7 +86,7 @@
                 Complete onboarding to start using the platform
               </span>
             </div>
-          </v-menu>
+          </v-menu> -->
         </div>
       </div>
     </header>
@@ -135,7 +135,7 @@ const env = useRuntimeConfig().public;
 const router = useRouter();
 const route = useRoute();
 const userStore = useUserStore();
-console.log({ publicKey });
+
 watch(publicKey,
   (val) => {
     console.log({ walletState: val });
