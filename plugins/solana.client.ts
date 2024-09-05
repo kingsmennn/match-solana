@@ -15,7 +15,7 @@ const walletOptions = {
     new TrustWalletAdapter(),
     new MathWalletAdapter(),
     new BitgetWalletAdapter(),
-    new SolflareWalletAdapter({ network: WalletAdapterNetwork.Devnet }),
+    // new SolflareWalletAdapter({ network: WalletAdapterNetwork.Devnet }),
   ],
   autoConnect: true,
 };
