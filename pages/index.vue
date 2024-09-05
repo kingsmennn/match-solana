@@ -301,7 +301,7 @@ const userStore = useUserStore();
 const handleWalletConnect = async () => {
   connecting.value = true;
   try {
-    await userStore.connectToMetaMask();
+    await userStore.connectToSolana();
     // once connected the subscription function will update the user store
   } catch (e) {
     // haldle errors

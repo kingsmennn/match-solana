@@ -136,9 +136,12 @@ const router = useRouter();
 const route = useRoute();
 const userStore = useUserStore();
 console.log({ publicKey });
-watch(publicKey,
-  (val) => {
-    console.log({ walletState: val });
+watch(
+  publicKey,
+  async (val) => {
+    if (!!val) {
+      await userStore.connectToSolana();
+    }
   },
   { immediate: true }
 );
@@ -153,7 +156,7 @@ const connecting = ref(false);
 const handleWalletConnect = async () => {
   connecting.value = true;
   try {
-    await userStore.connectToMetaMask();
+    await userStore.connectToSolana();
     // once connected the subscription function will update the user store
   } catch (e) {
     // haldle errors

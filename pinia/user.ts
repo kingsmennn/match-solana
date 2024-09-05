@@ -17,9 +17,14 @@ import {
   DEBUG,
   LOCATION_DECIMALS,
   PROJECT_ID,
+  USER_TAG,
 } from "@/utils/constants";
 import { getEvmAddress } from "@/utils/contract-utils";
 import { useStoreStore } from "./store";
+import { findProgramAddressSync } from "@project-serum/anchor/dist/cjs/utils/pubkey";
+import { utf8 } from "@project-serum/anchor/dist/cjs/utils/bytes";
+import { useWallet } from "solana-wallets-vue";
+import { PublicKey } from "@solana/web3.js";
 
 type UserStore = {
   accountId: string | null;
@@ -64,21 +69,13 @@ export const useUserStore = defineStore(STORE_KEY, {
     accountType: (state) => state.userDetails?.[6],
   },
   actions: {
-    async connectToMetaMask() {
+    async connectToSolana() {
+      const { publicKey, wallet, disconnect: solDisconnect } = useWallet();
       try {
-        if (!window.ethereum) {
-          throw new Error("MetaMask is not installed");
-        }
-
-        // Request account access if needed
-        const accounts = await window.ethereum.request({
-          method: "eth_requestAccounts",
-        });
-
         // Set the account ID (address)
-        this.accountId = accounts[0];
+        this.accountId = publicKey!.value!.toString();
 
-        const blockchainUser = await this.fetchUser(this.accountId!);
+        const blockchainUser = await this.fetchUser(publicKey!.value!);
         this.storeUserDetails(blockchainUser);
 
         // If the user is a seller, fetch their store details
@@ -130,12 +127,21 @@ export const useUserStore = defineStore(STORE_KEY, {
 
       return new ethers.Contract(env.contractId, [], signer);
     },
-    async fetchUser(account_id: string): Promise<BlockchainUser> {
-      const contract = await this.getContract();
-      const userAddress = await getEvmAddress(account_id);
+    async fetchUser(account_id: PublicKey): Promise<any> {
+      const programID = new PublicKey(marketAbi.metadata.address);
 
-      const user = await contract.users(userAddress);
-      return user;
+      const [profilePda, profileBump] = findProgramAddressSync(
+        [utf8.encode(USER_TAG), account_id.toBuffer()],
+        programID
+      );
+
+      console.log(profilePda.toString());
+      console.log({ profilePda, profileBump });
+      // const contract = await this.getContract();
+      // const userAddress = await getEvmAddress(account_id);
+
+      // const user = await contract.users(userAddress);
+      // return user;
     },
     async fetchUserById(userId: number) {
       const env = useRuntimeConfig().public;
@@ -310,7 +316,7 @@ export const useUserStore = defineStore(STORE_KEY, {
     async afterRestore(context) {
       // Reconnect to MetaMask if the user is already connected
       if (context.store.accountId) {
-        await context.store.connectToMetaMask();
+        await context.store.connectToSolana();
         await context.store.setUpEVMConnectEvents();
       }
     },
