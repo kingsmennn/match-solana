@@ -53,7 +53,7 @@ export const useStoreStore = defineStore(STORE_STORE_KEY, {
             publicKey.value!.toBuffer(),
             new BN(storeCounter.current.toString()).toArrayLike(
               Buffer,
-              "be",
+              "le",
               2
             ),
           ],
