@@ -318,7 +318,11 @@ export const useRequestsStore = defineStore("requests", {
           },
         ]);
 
+
+
         const request = requestMade[0];
+
+        
 
         const [offerPda] = findProgramAddressSync(
           [
@@ -329,8 +333,9 @@ export const useRequestsStore = defineStore("requests", {
           programID
         );
 
+
         const receipt = await contract.methods
-          .createOffer(price, images, requestId, storeName)
+          .createOffer(new BN(Math.trunc(price).toString()), [...images], storeName)
           .accounts({
             user: profilePda,
             systemProgram: SystemProgram.programId,
