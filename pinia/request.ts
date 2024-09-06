@@ -71,14 +71,6 @@ export const useRequestsStore = defineStore("requests", {
           programID
         );
 
-        console.log({
-          name,
-          description,
-          images: [...images],
-          lat: new BN(Math.trunc(latitude).toString()),
-          long: new BN(Math.trunc(longitude).toString()),
-        });
-
         const receipt = await contract.methods
           .createRequest(
             name,
