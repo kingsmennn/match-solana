@@ -135,7 +135,6 @@ const env = useRuntimeConfig().public;
 const router = useRouter();
 const route = useRoute();
 const userStore = useUserStore();
-console.log({ publicKey });
 watch(
   publicKey,
   async (val) => {
