@@ -105,6 +105,58 @@ export const useRequestsStore = defineStore("requests", {
             },
           },
         ]);
+
+        // gotten response [{"publicKey":"ChdxNXu7C9r5dmDxoogrnwhGQCkHSc9khDToVk5rFyuW","account":{"authority":"CikEi4TuJUYgYQAcV4pryWw2sU6qbFGSv6msSM3dH4cr","id":"01","name":"chicken","buyerId":"01","description":"I want to eat chicken","images":["https://gateway.lighthouse.storage/ipfs/bafkreiaqltpambnvuo2ntgjfkv7w7qzcxa6vt6pjgq6ihtrylpcsbtm4wy","https://gateway.lighthouse.storage/ipfs/bafkreic4btny2mcdhcjfv6mxetxn5zgubtmalygzp6u5slewtdx76z75j4"],"sellersPriceQuote":"00","sellerIds":[],"offerIds":[],"lockedSellerId":"00","location":{"latitude":"5cdaff63d53fc300","longitude":"2d09c3aefe304498"},"createdAt":"66db68a3","updatedAt":"66db68a3","lifecycle":{"pending":{}}}}]
+
+        // actual resposne export type RequestResponse = {
+        //   _id?: string
+        //   transactionHash?: string
+        //   address?: string
+        //   buyerAddress?: string
+        //   images: string[]
+        //   lifecycle: RequestLifecycleIndex
+        //   requestId: number
+        //   signature?: string
+        //   createdAt: number
+        //   updatedAt: number
+        //   buyerId: number
+        //   description: string
+        //   requestName: string
+        //   sellerIds?: number[]
+        //   lockedSellerId?: number
+        //   longitude: number
+        //   latitude: number
+        //   sellersPriceQuote?: number
+        // }
+
+        // convert gotten response to actual response
+        const res = userRequests.map((request) => {
+          return {
+            _id: request.account.id,
+            transactionHash: request.account.id,
+            address: request.account.authority.toString(),
+            buyerAddress: request.account.buyerId.toString(),
+            images: request.account.images,
+            lifecycle: 0,
+            requestId: 0,
+            signature: "",
+            createdAt: request.account.createdAt.toString(),
+            updatedAt: request.account.updatedAt.toString(),
+            buyerId: 0,
+            description: request.account.description,
+            requestName: "",
+            sellerIds: request.account.sellerIds,
+            lockedSellerId: 0,
+            longitude: 0,
+            latitude: 0,
+            sellersPriceQuote: +request.account.sellersPriceQuote,
+          };
+        });
+
+        console.log(res);
+
+        // this.list;
+        // console.log(userRequests);
         return userRequests;
       } catch (error) {
         console.log({ error });
