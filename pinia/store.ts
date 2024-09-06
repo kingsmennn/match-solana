@@ -51,11 +51,7 @@ export const useStoreStore = defineStore(STORE_STORE_KEY, {
           [
             utf8.encode(STORE_COUNTER),
             publicKey.value!.toBuffer(),
-            new BN(storeCounter.current.toString()).toArrayLike(
-              Buffer,
-              "le",
-              2
-            ),
+            Buffer.from(storeCounter.current.toArray("le", 8)),
           ],
           programID
         );

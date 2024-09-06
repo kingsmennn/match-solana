@@ -74,10 +74,12 @@ export const useRequestsStore = defineStore("requests", {
           [
             utf8.encode(REQUEST_TAG),
             publicKey.value!.toBuffer(),
-            Buffer.from(new BN(requestCounter.current).toArray("le", 8)),
+            Buffer.from(requestCounter.current.toArray("le", 8)),
           ],
           programID
         );
+
+        console.log(requestPda.toBase58());
 
         const receipt = await contract.methods
           .createRequest(
@@ -250,11 +252,7 @@ export const useRequestsStore = defineStore("requests", {
           [
             utf8.encode(OFFER_TAG),
             publicKey.value!.toBuffer(),
-            new BN(offerCounter.current.toString()).toArrayLike(
-              Buffer,
-              "le",
-              2
-            ),
+            Buffer.from(offerCounter.current.toArray("le", 8)),
           ],
           programID
         );
