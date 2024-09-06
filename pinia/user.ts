@@ -1,5 +1,3 @@
-import { ethers } from "ethers";
-import { marketAbi } from "@/blockchain/abi";
 import { defineStore } from "pinia";
 import {
   AccountType,
@@ -16,19 +14,24 @@ import {
   chainInfo,
   DEBUG,
   LOCATION_DECIMALS,
-  PROJECT_ID,
+  USER_COUNTER_PUBKEY,
   USER_TAG,
 } from "@/utils/constants";
-import { getEvmAddress } from "@/utils/contract-utils";
 import { useStoreStore } from "./store";
 import { findProgramAddressSync } from "@project-serum/anchor/dist/cjs/utils/pubkey";
 import { utf8 } from "@project-serum/anchor/dist/cjs/utils/bytes";
-import { useWallet } from "solana-wallets-vue";
-import { PublicKey, SystemProgram } from "@solana/web3.js";
+import { useAnchorWallet, useWallet } from "solana-wallets-vue";
+import {
+  clusterApiUrl,
+  Connection,
+  PublicKey,
+  SystemProgram,
+} from "@solana/web3.js";
+import { AnchorProvider, Idl, Program } from "@project-serum/anchor";
+import { marketAbi } from "blockchain/abi";
 
 type UserStore = {
   accountId: string | null;
-
   userDetails?: BlockchainUser;
   storeDetails?: Store[];
   blockchainError: {
@@ -37,16 +40,27 @@ type UserStore = {
   };
 };
 
-const getProvider = () => {
-  const provider = new ethers.BrowserProvider(window.ethereum!);
-  return provider;
-};
 const env = useRuntimeConfig().public;
-const programID = new PublicKey(env.contractId);
+const wallet = useAnchorWallet();
+export const programID = new PublicKey(env.contractId);
+const preflightCommitment = "processed";
+const connection = new Connection(clusterApiUrl("devnet"), preflightCommitment);
+const provider = computed(() => {
+  if (!wallet.value) return;
+  return new AnchorProvider(
+    connection,
+    wallet.value,
+    AnchorProvider.defaultOptions()
+  );
+});
+const program = computed(() => {
+  if (!provider.value) return;
+  return new Program(marketAbi as Idl, programID, provider.value);
+});
+
 export const useUserStore = defineStore(STORE_KEY, {
   state: (): UserStore => ({
     accountId: null,
-
     userDetails: undefined,
     storeDetails: undefined,
     blockchainError: {
@@ -59,10 +73,8 @@ export const useUserStore = defineStore(STORE_KEY, {
       !!state.accountId && state.blockchainError.userNotFound,
     passedSecondaryCheck: (state) => {
       return state.userDetails?.[6] === AccountType.BUYER
-        ? // buyers only need to give access to their location
-          !!state.userDetails?.[3][0]
-        : // sellers need to set up their store
-          !!state?.storeDetails?.[0]?.name;
+        ? !!state.userDetails?.[3][0] // buyers only need to give access to their location
+        : !!state?.storeDetails?.[0]?.name; // sellers need to set up their store
     },
     username: (state) => state.userDetails?.[1],
     phone: (state) => state.userDetails?.[2],
@@ -71,7 +83,7 @@ export const useUserStore = defineStore(STORE_KEY, {
   },
   actions: {
     async connectToSolana() {
-      const { publicKey, wallet, disconnect: solDisconnect } = useWallet();
+      const { publicKey } = useWallet();
       try {
         // Set the account ID (address)
         this.accountId = publicKey!.value!.toString();
@@ -86,71 +98,33 @@ export const useUserStore = defineStore(STORE_KEY, {
           this.storeDetails = res || [];
         }
       } catch (error) {
-        console.error("Failed to connect to MetaMask:", error);
+        console.error("Failed to connect to Solana Wallet:", error);
       }
     },
-
-    async setUpEVMConnectEvents() {
-      window.ethereum!.on("accountsChanged", (accounts) => {
-        if (!accounts.length) {
-          this.disconnect();
-        }
-        this.accountId = accounts[0];
-      });
-
-      window.ethereum!.on("chainChanged", (chainId) => {
-        if (chainInfo.chainId !== parseInt(chainId)) {
-          this.blockchainError.message = `Please connect to ${chainInfo.name}`;
-        }
-      });
+    async getContract() {
+      if (!program.value) {
+        throw new Error("Program not initialized");
+      }
+      return program.value;
     },
+
     async disconnect() {
       this.accountId = null;
       this.userDetails = undefined;
       this.blockchainError.userNotFound = false;
     },
 
-    async getContract() {
-      const provider = getProvider();
-
-      const signer = await provider.getSigner();
-
-      const network = await provider.getNetwork();
-      const chainId = network.chainId;
-
-      if (chainInfo.chainId !== Number(chainId)) {
-        const error = `Please connect to ${chainInfo.name}`;
-        this.blockchainError.message = error;
-        throw error;
-      }
-
-      return new ethers.Contract(env.contractId, [], signer);
-    },
     async fetchUser(account_id: PublicKey): Promise<any> {
-      const [profilePda, profileBump] = findProgramAddressSync(
+      const contract = await this.getContract();
+      const [profilePda, _] = findProgramAddressSync(
         [utf8.encode(USER_TAG), account_id.toBuffer()],
         programID
       );
 
-      console.log(profilePda.toString());
-      console.log({ profilePda, profileBump });
-      // const contract = await this.getContract();
-      // const userAddress = await getEvmAddress(account_id);
+      const userData = await contract.account.user.fetch(profilePda);
+      return userData;
+    },
 
-      // const user = await contract.users(userAddress);
-      // return user;
-    },
-    async fetchUserById(userId: number) {
-      const env = useRuntimeConfig().public;
-      try {
-        const res = await $fetch<User>(`${env.matchApiUrl}/user/${userId}`, {
-          method: "GET",
-        });
-        return res;
-      } catch (error) {
-        console.log({ error });
-      }
-    },
     async storeUserDetails(user: BlockchainUser) {
       const userCookie = useCookie<User>(STORE_KEY_MIDDLEWARE);
 
@@ -189,12 +163,6 @@ export const useUserStore = defineStore(STORE_KEY, {
           updatedAt: new Date(details.updatedAt),
           accountType: details.accountType,
         };
-        console.log({
-          user,
-          details,
-          storeDetails: this.userDetails,
-          cookieDetails: userCookie.value,
-        });
       } else if (!hasId && this.accountId) {
         this.blockchainError.userNotFound = true;
       }
@@ -206,36 +174,37 @@ export const useUserStore = defineStore(STORE_KEY, {
       lat,
       long,
       account_type,
-    }: CreateUserDTO): Promise<ethers.ContractTransaction | undefined> {
+    }: CreateUserDTO): Promise<string | undefined> {
       try {
-        const contract = await this.getContract();
-
         const [profilePda, _] = findProgramAddressSync(
-          [utf8.encode(USER_TAG), account_id.toBuffer()],
+          [utf8.encode(USER_TAG), wallet!.value!.publicKey!.toBuffer()],
           programID
         );
 
-        const tx = await program.methods
+        const contract = await this.getContract();
+
+        const tx = await contract.methods
           .create_user(username, phone, lat, long, account_type)
           .accounts({
             user: profilePda,
             systemProgram: SystemProgram.programId,
-            userCounter: publicKey,
-            pool: new PublicKey("9BzsJTjC7N2y1qCYAhtYFy1FdNxAUYyfbTiz8XevTVBE"),
+            userCounter: USER_COUNTER_PUBKEY,
+            authority: wallet!.value!.publicKey!,
           })
           .rpc();
 
         await new Promise((resolve) => setTimeout(resolve, 2000));
 
-        const blockchainUser = await this.fetchUser(this.accountId!);
+        const blockchainUser = await this.fetchUser(wallet!.value!.publicKey!);
         this.storeUserDetails(blockchainUser);
 
         this.blockchainError.userNotFound = false;
-        return receipt;
+        return tx;
       } catch (error) {
         console.error("Error creating user:", error);
       }
     },
+
     async updateUser({
       username,
       phone,
@@ -243,68 +212,31 @@ export const useUserStore = defineStore(STORE_KEY, {
       long,
       account_type,
     }: Partial<CreateUserDTO>): Promise<
-      { receipt: ethers.ContractTransaction; location: Location } | undefined
+      { tx: string; location: Location } | undefined
     > {
-      const payload = {
-        username: username || this.userDetails?.[1],
-        phone: phone || this.userDetails?.[2],
-        lat: ethers.parseUnits(
-          (lat || this.userDetails?.[3][1]!).toString(),
-          LOCATION_DECIMALS
-        ),
-        lng: ethers.parseUnits(
-          (long || this.userDetails?.[3][0]!).toString(),
-          LOCATION_DECIMALS
-        ),
-        account_type: account_type === AccountType.BUYER ? 0 : 1,
-      };
       try {
-        const contract = await this.getContract();
-        const tx = await contract.updateUser(
-          payload.username,
-          payload.phone,
-          payload.lat,
-          payload.lng,
-          payload.account_type
+        const [profilePda] = findProgramAddressSync(
+          [utf8.encode(USER_TAG), wallet!.value!.publicKey!.toBuffer()],
+          programID
         );
 
-        const receipt = await tx.wait();
+        const contract = await this.getContract();
+
+        const tx = await contract.methods
+          .update_user(username, phone, lat, long, account_type)
+          .accounts({
+            user: profilePda,
+            authority: wallet!.value!.publicKey!,
+          })
+          .rpc();
+
         return {
-          receipt,
-          location: [
-            Number(payload.lng) || this.userDetails?.[3][0]!,
-            Number(payload.lat) || this.userDetails?.[3][1]!,
-          ],
+          tx,
+          location: [0, 0],
         };
       } catch (error) {
         console.error("Error updating user:", error);
       }
-    },
-    async getUserLocation() {
-      const env = useRuntimeConfig().public;
-
-      const requestBody = {
-        considerIp: true, // Uses the IP address if no other data is available
-        // Optionally, you can provide information about WiFi access points and cell towers
-      };
-
-      const response = await $fetch(
-        `https://www.googleapis.com/geolocation/v1/geolocate?key=${env.googleMapsApiKey}`,
-        {
-          method: "POST",
-          body: JSON.stringify(requestBody),
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      return response as {
-        location: {
-          lat: number;
-          lng: number;
-        };
-        accuracy: number;
-      };
     },
   },
   persist: {
@@ -317,10 +249,8 @@ export const useUserStore = defineStore(STORE_KEY, {
       "storeDetails.location",
     ],
     async afterRestore(context) {
-      // Reconnect to MetaMask if the user is already connected
       if (context.store.accountId) {
         await context.store.connectToSolana();
-        await context.store.setUpEVMConnectEvents();
       }
     },
   },

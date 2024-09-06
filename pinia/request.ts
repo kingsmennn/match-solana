@@ -6,7 +6,21 @@ import {
   RequestResponse,
 } from "@/types";
 
-import { useUserStore } from "./user";
+import { programID, useUserStore } from "./user";
+import {
+  OFFER_COUNTER_PUBKEY,
+  OFFER_TAG,
+  REQUEST_COUNTER_PUBKEY,
+  REQUEST_TAG,
+  USER_TAG,
+} from "utils/constants";
+import { request } from "http";
+import { findProgramAddressSync } from "@project-serum/anchor/dist/cjs/utils/pubkey";
+import { utf8 } from "@project-serum/anchor/dist/cjs/utils/bytes";
+import { useWallet } from "solana-wallets-vue";
+import { PublicKey, SystemProgram } from "@solana/web3.js";
+import { BN } from "@project-serum/anchor";
+import { off } from "process";
 
 type RequestsStoreType = {
   list: RequestResponse[];
@@ -17,14 +31,13 @@ export const useRequestsStore = defineStore("requests", {
   }),
   getters: {
     hasLocked() {
-      return ({updatedAt, period}:{updatedAt: Date, period: number}) => {
-        const updatedAtTime = updatedAt.getTime()
+      return ({ updatedAt, period }: { updatedAt: Date; period: number }) => {
+        const updatedAtTime = updatedAt.getTime();
         const currentTime = Date.now();
-        
-        // Check if the duration plus updatedAt has passed the current time
+
         return currentTime >= updatedAtTime + period;
-      }
-    }
+      };
+    },
   },
   actions: {
     async createRequest({
@@ -35,45 +48,64 @@ export const useRequestsStore = defineStore("requests", {
       longitude,
     }: CreateRequestDTO): Promise<any | undefined> {
       const userStore = useUserStore();
-
-      const env = useRuntimeConfig().public;
+      const { publicKey } = useWallet();
 
       try {
         const contract = await userStore.getContract();
 
-        // console.log({
-        //   name: name,
-        //   description: description,
-        //   images: images,
-        //   latitude: latitude.toString(),
-        //   longitude: longitude.toString()
-        // })
-
-        const receipt = await contract.createRequest(
-          name,
-          description,
-          images,
-          latitude.toString(),
-          longitude.toString()
+        const [profilePda, _] = findProgramAddressSync(
+          [utf8.encode(USER_TAG), publicKey.value!.toBuffer()],
+          programID
         );
+
+        const requestCounter = await contract.account.counter.fetch(
+          REQUEST_COUNTER_PUBKEY
+        );
+
+        const [requestPda] = findProgramAddressSync(
+          [
+            utf8.encode(REQUEST_TAG),
+            publicKey.value!.toBuffer(),
+            new BN(requestCounter.current).toArrayLike(Buffer, "be", "2"),
+          ],
+          programID
+        );
+
+        const receipt = await contract.methods
+          .createRequest(
+            name,
+            description,
+            images,
+            latitude.toString(),
+            longitude.toString()
+          )
+          .accounts({
+            user: profilePda,
+            systemProgram: SystemProgram.programId,
+            requestCounter: REQUEST_COUNTER_PUBKEY,
+            authority: publicKey.value!,
+            request: requestPda,
+          })
+          .rpc();
         return receipt;
       } catch (error) {
         console.error(error);
       }
     },
     async fetchAllUserRequests(accountId: string) {
-      const env = useRuntimeConfig().public;
-      const userAddress = await getEvmAddress(accountId);
-
       try {
-        const res = await $fetch<RequestResponse[]>(
-          `${env.matchApiUrl}/requests/${userAddress}`,
+        const userStore = useUserStore();
+        const contract = await userStore.getContract();
+
+        const userRequests = await contract.account.request.all([
           {
-            method: "GET",
-          }
-        );
-        this.list = res;
-        return res;
+            memcmp: {
+              offset: 8 + 0,
+              bytes: accountId,
+            },
+          },
+        ]);
+        return userRequests;
       } catch (error) {
         console.log({ error });
       }
@@ -100,22 +132,32 @@ export const useRequestsStore = defineStore("requests", {
 
       try {
         const contract = await userStore.getContract();
-        const res = await contract.requests(requestId);
+
+        const requests = await contract.account.request.all([
+          {
+            memcmp: {
+              offset: 8 + 32,
+              bytes: requestId.toString(),
+            },
+          },
+        ]);
 
         const request: RequestResponse = {
-          requestId: Number(res[0]),
-          requestName: res[1],
-          buyerId: Number(res[2]),
-          sellersPriceQuote: Number(res[3]),
-          lockedSellerId: Number(res[4]),
-          description: res[5],
-          lifecycle: Number(res[7]),
-          longitude: Number(res[8][0]),
-          latitude: Number(res[8][1]),
-          createdAt: Number(res[6]),
-          updatedAt: Number(res[9]),
+          requestId: 0,
+          requestName: "",
+          buyerId: 0,
+
+          sellersPriceQuote: 0,
+          lockedSellerId: 0,
+          description: "",
+          lifecycle: 0,
+          longitude: 0,
+          latitude: 0,
+          createdAt: 0,
+          updatedAt: 0,
           images: [],
         };
+
         const images = await this.getRequestImages(request.requestId);
         request.images = images || [];
         return request;
@@ -127,14 +169,14 @@ export const useRequestsStore = defineStore("requests", {
       const userStore = useUserStore();
 
       const contract = await userStore.getContract();
-      const length = await contract.getRequestImagesLength(request_id);
+      // const length = await contract.getRequestImagesLength(request_id);
 
-      const images = [];
-      for (let i = 0; i < length; i++) {
-        const image = await contract.getRequestImageByIndex(request_id, i);
-        images.push(image);
-      }
-      return images;
+      // const images = [];
+      // for (let i = 0; i < length; i++) {
+      //   const image = await contract.getRequestImageByIndex(request_id, i);
+      //   images.push(image);
+      // }
+      return [];
     },
 
     // SELLERS
@@ -172,18 +214,51 @@ export const useRequestsStore = defineStore("requests", {
       storeName,
     }: CreateOfferDTO): Promise<any | undefined> {
       const userStore = useUserStore();
-
+      const { publicKey } = useWallet();
       const env = useRuntimeConfig().public;
 
       try {
         const contract = await userStore.getContract();
-
-        const receipt = await contract.createOffer(
-          price,
-          images,
-          requestId,
-          storeName
+        const [profilePda, _] = findProgramAddressSync(
+          [utf8.encode(USER_TAG), publicKey.value!.toBuffer()],
+          programID
         );
+
+        const offerCounter = await contract.account.counter.fetch(
+          OFFER_COUNTER_PUBKEY
+        );
+
+        const requestMade = await contract.account.request.all([
+          {
+            memcmp: {
+              offset: 8 + 32,
+              bytes: requestId.toString(),
+            },
+          },
+        ]);
+
+        const request = requestMade[0];
+
+        const [offerPda] = findProgramAddressSync(
+          [
+            utf8.encode(OFFER_TAG),
+            publicKey.value!.toBuffer(),
+            new BN(offerCounter.current).toArrayLike(Buffer, "be", "2"),
+          ],
+          programID
+        );
+
+        const receipt = await contract.methods
+          .createOffer(price, images, requestId, storeName)
+          .accounts({
+            user: profilePda,
+            systemProgram: SystemProgram.programId,
+            offerCounter: OFFER_COUNTER_PUBKEY,
+            authority: publicKey.value!,
+            request: request.publicKey,
+            offer: offerPda,
+          })
+          .rpc();
 
         return receipt;
       } catch (error) {
@@ -192,14 +267,46 @@ export const useRequestsStore = defineStore("requests", {
     },
     async acceptOffer(offerId: number): Promise<any | undefined> {
       const userStore = useUserStore();
-
-      // const env = useRuntimeConfig().public;
-      console.log({ offerId });
-
+      const { publicKey } = useWallet();
       try {
+        const [profilePda, _] = findProgramAddressSync(
+          [utf8.encode(USER_TAG), publicKey.value!.toBuffer()],
+          programID
+        );
         const contract = await userStore.getContract();
 
-        const receipt = await contract.acceptOffer(offerId);
+        const offerMade = await contract.account.offer.all([
+          {
+            memcmp: {
+              offset: 8 + 32,
+              bytes: offerId.toString(),
+            },
+          },
+        ]);
+
+        const offer = offerMade[0];
+
+        const requestMade = await contract.account.request.all([
+          {
+            memcmp: {
+              offset: 8 + 32,
+              bytes: (offer as any).requestId.toString(),
+            },
+          },
+        ]);
+
+        const request = requestMade[0];
+
+        const receipt = await contract.methods
+          .acceptOffer()
+          .accounts({
+            user: profilePda,
+            systemProgram: SystemProgram.programId,
+            authority: publicKey.value!,
+            offer: offer.publicKey,
+            request: request.publicKey,
+          })
+          .rpc();
         return receipt;
       } catch (error) {
         console.error(error);

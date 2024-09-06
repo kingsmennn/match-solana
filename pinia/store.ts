@@ -1,8 +1,18 @@
 import { defineStore } from "pinia";
 import { CreateStoreDTO, Store, STORE_STORE_KEY } from "@/types";
-import { useUserStore } from "./user";
-import { LOCATION_DECIMALS } from "@/utils/constants";
+import { programID, useUserStore } from "./user";
+import {
+  LOCATION_DECIMALS,
+  STORE_COUNTER,
+  STORE_COUNTER_PUBKEY,
+  USER_TAG,
+} from "@/utils/constants";
 import { getEvmAddress } from "@/utils/contract-utils";
+import { SystemProgram } from "@solana/web3.js";
+import { useWallet } from "solana-wallets-vue";
+import { findProgramAddressSync } from "@project-serum/anchor/dist/cjs/utils/pubkey";
+import { utf8 } from "@project-serum/anchor/dist/cjs/utils/bytes";
+import { BN } from "@project-serum/anchor";
 
 export const useStoreStore = defineStore(STORE_STORE_KEY, {
   state: () => ({}),
@@ -16,7 +26,7 @@ export const useStoreStore = defineStore(STORE_STORE_KEY, {
       longitude,
     }: CreateStoreDTO): Promise<any | undefined> {
       const userStore = useUserStore();
-
+      const { publicKey } = useWallet();
       try {
         const payload = {
           name,
@@ -28,15 +38,41 @@ export const useStoreStore = defineStore(STORE_STORE_KEY, {
 
         const contract = await userStore.getContract();
 
-        const receipt = await contract.createStore(
-          payload.name,
-          payload.description,
-          payload.phone,
-          payload.lat.toString(),
-          payload.long.toString()
+        const [profilePda, _] = findProgramAddressSync(
+          [utf8.encode(USER_TAG), publicKey.value!.toBuffer()],
+          programID
         );
 
-        // save to store
+        const storeCounter = await contract.account.counter.fetch(
+          STORE_COUNTER_PUBKEY
+        );
+
+        const [storePda] = findProgramAddressSync(
+          [
+            utf8.encode(STORE_COUNTER),
+            publicKey.value!.toBuffer(),
+            new BN(storeCounter.current).toArrayLike(Buffer, "be", "2"),
+          ],
+          programID
+        );
+
+        const receipt = await contract.methods
+          .createStore(
+            payload.name,
+            payload.description,
+            payload.phone,
+            payload.lat.toString(),
+            payload.long.toString()
+          )
+          .accounts({
+            user: profilePda,
+            systemProgram: SystemProgram.programId,
+            storeCounter: STORE_COUNTER_PUBKEY,
+            authority: publicKey!.value!,
+            store: storePda,
+          })
+          .rpc();
+
         userStore.storeDetails = [
           {
             name: payload.name,
@@ -50,41 +86,22 @@ export const useStoreStore = defineStore(STORE_STORE_KEY, {
         console.error(error);
       }
     },
-    async getUserStores(accountId: string): Promise<Store[] | undefined> {
+    async getUserStores(accountId: string): Promise<any[] | undefined> {
       const userStore = useUserStore();
-
+      const contract = await userStore.getContract();
       try {
-        const userAddress = await getEvmAddress(accountId);
-        const contract = await userStore.getContract();
-        const storeCount = await contract.userStoreCount(userAddress);
-        const stores = [];
-        for (let i = 0; i < storeCount; i++) {
-          const storeId = await contract.userStoreIds(userAddress, i);
-          const store = await contract.userStores(userAddress, storeId);
-          stores.push(store);
-        }
-        // save to store
-        userStore.storeDetails = stores
+        const stores = await contract.account.store.all([
+          {
+            memcmp: {
+              offset: 8 + 0,
+              bytes: accountId,
+            },
+          },
+        ]);
         return stores;
       } catch (error) {
         console.error(error);
       }
-    },
-    async getUserStoreIds(accountId: string, index: number) {
-      const userStore = useUserStore();
-
-      const userAddress = await getEvmAddress(accountId);
-      const contract = await userStore.getContract();
-      const storeIds = await contract.userStoreIds(userAddress, index);
-      return storeIds;
-    },
-    async getUserStore(accountId: string, storeId: number) {
-      const userStore = useUserStore();
-
-      const userAddress = await getEvmAddress(accountId);
-      const contract = await userStore.getContract();
-      const store = await contract.userStores(userAddress, storeId);
-      return store;
     },
   },
 });
