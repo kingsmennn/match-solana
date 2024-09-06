@@ -287,6 +287,44 @@ export const useUserStore = defineStore(STORE_KEY, {
         console.error("Error updating user:", error);
       }
     },
+    async fetchUserById(userId: number) {
+      const env = useRuntimeConfig().public;
+      try {
+        const res = await $fetch<User>(`${env.matchApiUrl}/user/${userId}`, {
+          method: "GET",
+        });
+        return res;
+      } catch (error) {
+        console.log({ error });
+      }
+    },
+
+    async getUserLocation() {
+      const env = useRuntimeConfig().public;
+
+      const requestBody = {
+        considerIp: true, // Uses the IP address if no other data is available
+        // Optionally, you can provide information about WiFi access points and cell towers
+      };
+
+      const response = await $fetch(
+        `https://www.googleapis.com/geolocation/v1/geolocate?key=${env.googleMapsApiKey}`,
+        {
+          method: "POST",
+          body: JSON.stringify(requestBody),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      return response as {
+        location: {
+          lat: number;
+          lng: number;
+        };
+        accuracy: number;
+      };
+    },
   },
   persist: {
     paths: [
