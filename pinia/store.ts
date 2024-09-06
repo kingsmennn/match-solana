@@ -13,6 +13,7 @@ import { useWallet } from "solana-wallets-vue";
 import { findProgramAddressSync } from "@project-serum/anchor/dist/cjs/utils/pubkey";
 import { utf8 } from "@project-serum/anchor/dist/cjs/utils/bytes";
 import { BN } from "@project-serum/anchor";
+import { ntobs58 } from "utils/nb58";
 
 export const useStoreStore = defineStore(STORE_STORE_KEY, {
   state: () => ({}),
@@ -94,7 +95,7 @@ export const useStoreStore = defineStore(STORE_STORE_KEY, {
           {
             memcmp: {
               offset: 8 + 0,
-              bytes: accountId,
+              bytes: ntobs58(accountId),
             },
           },
         ]);

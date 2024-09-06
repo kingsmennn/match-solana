@@ -21,8 +21,12 @@ import { findProgramAddressSync } from "@project-serum/anchor/dist/cjs/utils/pub
 import { utf8 } from "@project-serum/anchor/dist/cjs/utils/bytes";
 import { useWallet } from "solana-wallets-vue";
 import { PublicKey, SystemProgram } from "@solana/web3.js";
-import { BN } from "@project-serum/anchor";
+import { BN, utils } from "@project-serum/anchor";
 import { off } from "process";
+import { ntobs58 } from "@/utils/nb58";
+
+
+
 
 type RequestsStoreType = {
   list: RequestResponse[];
@@ -103,7 +107,7 @@ export const useRequestsStore = defineStore("requests", {
           {
             memcmp: {
               offset: 8 + 0,
-              bytes: accountId,
+              bytes: ntobs58(accountId),
             },
           },
         ]);
@@ -167,6 +171,8 @@ export const useRequestsStore = defineStore("requests", {
       }
     },
     async getRequest(requestId: number) {
+
+      console.log({requestId})
       const userStore = useUserStore();
 
       try {
@@ -176,10 +182,12 @@ export const useRequestsStore = defineStore("requests", {
           {
             memcmp: {
               offset: 8 + 32,
-              bytes: requestId.toString(),
+              bytes: ntobs58(requestId),
             },
           },
         ]);
+
+        
 
         const request_ = requests[0];
 
@@ -285,7 +293,7 @@ export const useRequestsStore = defineStore("requests", {
           {
             memcmp: {
               offset: 8 + 32,
-              bytes: requestId.toString(),
+              bytes: ntobs58(requestId),
             },
           },
         ]);
@@ -332,7 +340,7 @@ export const useRequestsStore = defineStore("requests", {
           {
             memcmp: {
               offset: 8 + 32,
-              bytes: offerId.toString(),
+              bytes:ntobs58(offerId),
             },
           },
         ]);
@@ -343,7 +351,7 @@ export const useRequestsStore = defineStore("requests", {
           {
             memcmp: {
               offset: 8 + 32,
-              bytes: (offer as any).requestId.toString(),
+              bytes: ntobs58((offer as any).requestId),
             },
           },
         ]);
@@ -383,3 +391,5 @@ export const useRequestsStore = defineStore("requests", {
     },
   },
 });
+
+
