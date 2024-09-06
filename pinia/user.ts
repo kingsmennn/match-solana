@@ -246,17 +246,33 @@ export const useUserStore = defineStore(STORE_KEY, {
         );
 
         const contract = await this.getContract();
-        const latitude = new BN(
-          Math.trunc((lat ?? 0) * 10 ** LOCATION_DECIMALS)
-        );
-        const longitude = new BN(
-          Math.trunc((long ?? 0) * 10 ** LOCATION_DECIMALS)
-        );
+
+        const payload = {
+          username: username || this.userDetails?.[1],
+          phone: phone || this.userDetails?.[2],
+          lat: new BN(
+            Math.trunc(
+              (lat || this.userDetails?.[3][1]!) * 10 ** LOCATION_DECIMALS
+            )
+          ),
+          lng: new BN(
+            Math.trunc(
+              (long || this.userDetails?.[3][0]!) * 10 ** LOCATION_DECIMALS
+            )
+          ),
+          account_type: {
+            [account_type ?? "buyer"]: {},
+          },
+        };
 
         const tx = await contract.methods
-          .updateUser(username, phone, latitude, longitude, {
-            [account_type ?? "buyer"]: {},
-          })
+          .updateUser(
+            payload.username,
+            payload.phone,
+            payload.lat,
+            payload.lng,
+            payload.account_type
+          )
           .accounts({
             user: profilePda,
             authority: wallet!.value!.publicKey!,
@@ -265,7 +281,7 @@ export const useUserStore = defineStore(STORE_KEY, {
 
         return {
           tx,
-          location: [0, 0],
+          location: [Number(payload.lng), Number(payload.lat)],
         };
       } catch (error) {
         console.error("Error updating user:", error);
