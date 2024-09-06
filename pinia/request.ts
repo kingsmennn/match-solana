@@ -103,16 +103,17 @@ export const useRequestsStore = defineStore("requests", {
         const userStore = useUserStore();
         const contract = await userStore.getContract();
 
+
+
         const userRequests = await contract.account.request.all([
           {
             memcmp: {
               offset: 8 + 0,
-              bytes: ntobs58(accountId),
+              bytes:accountId,
             },
           },
         ]);
-        console.log("old res");
-        console.log(userRequests);
+
 
         const res: any = userRequests.map((request) => {
           const lifecycle_ = Object.keys(
@@ -143,9 +144,7 @@ export const useRequestsStore = defineStore("requests", {
           };
         });
 
-        console.log("new res");
-
-        console.log(res);
+    
 
         this.list = res;
         return res;
@@ -172,7 +171,6 @@ export const useRequestsStore = defineStore("requests", {
     },
     async getRequest(requestId: number) {
 
-      console.log({requestId})
       const userStore = useUserStore();
 
       try {
@@ -218,8 +216,6 @@ export const useRequestsStore = defineStore("requests", {
           updatedAt: Number(request_.account.updatedAt.toString()),
           images: request_.account.images,
         }
-
-        console.log(request);
        
         return request;
       } catch (error) {

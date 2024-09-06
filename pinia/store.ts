@@ -95,7 +95,7 @@ export const useStoreStore = defineStore(STORE_STORE_KEY, {
           {
             memcmp: {
               offset: 8 + 0,
-              bytes: ntobs58(accountId),
+              bytes: accountId,
             },
           },
         ]);
