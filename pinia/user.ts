@@ -27,7 +27,7 @@ import {
   PublicKey,
   SystemProgram,
 } from "@solana/web3.js";
-import { AnchorProvider, Idl, Program } from "@project-serum/anchor";
+import { AnchorProvider, BN, Idl, Program } from "@project-serum/anchor";
 import { marketAbi } from "@/blockchain/abi";
 
 type UserStore = {
@@ -187,8 +187,11 @@ export const useUserStore = defineStore(STORE_KEY, {
 
         const contract = await this.getContract();
 
+        const latitude = new BN(Math.trunc(lat * 10 ** LOCATION_DECIMALS));
+        const longitude = new BN(Math.trunc(long * 10 ** LOCATION_DECIMALS));
+
         const tx = await contract.methods
-          .create_user(username, phone, lat, long, account_type)
+          .createUser(username, phone, latitude, longitude, account_type)
           .accounts({
             user: profilePda,
             systemProgram: SystemProgram.programId,
@@ -227,7 +230,7 @@ export const useUserStore = defineStore(STORE_KEY, {
         const contract = await this.getContract();
 
         const tx = await contract.methods
-          .update_user(username, phone, lat, long, account_type)
+          .updateUser(username, phone, lat, long, account_type)
           .accounts({
             user: profilePda,
             authority: wallet!.value!.publicKey!,
