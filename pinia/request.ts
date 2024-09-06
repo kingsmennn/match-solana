@@ -76,8 +76,8 @@ export const useRequestsStore = defineStore("requests", {
             name,
             description,
             images,
-            latitude.toString(),
-            longitude.toString()
+            new BN(Math.trunc(latitude)),
+            new BN(Math.trunc(longitude))
           )
           .accounts({
             user: profilePda,

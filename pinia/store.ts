@@ -61,8 +61,8 @@ export const useStoreStore = defineStore(STORE_STORE_KEY, {
             payload.name,
             payload.description,
             payload.phone,
-            payload.lat.toString(),
-            payload.long.toString()
+            new BN(payload.lat),
+            new BN(payload.long)
           )
           .accounts({
             user: profilePda,
