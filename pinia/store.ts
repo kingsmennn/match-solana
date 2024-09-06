@@ -54,7 +54,7 @@ export const useStoreStore = defineStore(STORE_STORE_KEY, {
             new BN(storeCounter.current.toString()).toArrayLike(
               Buffer,
               "be",
-              "2"
+              2
             ),
           ],
           programID

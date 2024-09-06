@@ -58,9 +58,17 @@ export const useRequestsStore = defineStore("requests", {
           programID
         );
 
+        console.log("counter");
+
+        console.log(contract.account);
+
         const requestCounter = await contract.account.counter.fetch(
           REQUEST_COUNTER_PUBKEY
         );
+
+        console.log("ccc");
+
+        console.log(requestCounter);
 
         const [requestPda] = findProgramAddressSync(
           [
@@ -69,7 +77,7 @@ export const useRequestsStore = defineStore("requests", {
             new BN(requestCounter.current.toString()).toArrayLike(
               Buffer,
               "be",
-              "2"
+              2
             ),
           ],
           programID
@@ -249,7 +257,7 @@ export const useRequestsStore = defineStore("requests", {
             new BN(offerCounter.current.toString()).toArrayLike(
               Buffer,
               "be",
-              "2"
+              2
             ),
           ],
           programID
