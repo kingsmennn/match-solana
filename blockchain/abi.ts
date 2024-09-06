@@ -12,14 +12,61 @@ export const marketAbi = {
       type: "bytes",
       value: "[65, 68, 77, 73, 78, 95, 84, 65, 71]",
     },
+    {
+      name: "STORE_TAG",
+      type: "bytes",
+      value: "[83, 84, 79, 82, 69, 95, 83, 84, 65, 84, 69]",
+    },
     { name: "TIME_TO_LOCK", type: "u64", value: "900" },
+    {
+      name: "REQUEST_TAG",
+      type: "bytes",
+      value: "[82, 69, 81, 85, 69, 83, 84, 95, 83, 84, 65, 84, 69]",
+    },
+    {
+      name: "OFFER_TAG",
+      type: "bytes",
+      value: "[79, 70, 70, 69, 82, 95, 83, 84, 65, 84, 69]",
+    },
+    {
+      name: "USER_COUNTER",
+      type: "bytes",
+      value: "[85, 83, 69, 82, 95, 67, 79, 85, 78, 84, 69, 82]",
+    },
+    {
+      name: "STORE_COUNTER",
+      type: "bytes",
+      value: "[83, 84, 79, 82, 69, 95, 67, 79, 85, 78, 84, 69, 82]",
+    },
+    {
+      name: "REQUEST_COUNTER",
+      type: "bytes",
+      value: "[82, 69, 81, 85, 69, 83, 84, 95, 67, 79, 85, 78, 84, 69, 82]",
+    },
+    {
+      name: "OFFER_COUNTER",
+      type: "bytes",
+      value: "[79, 70, 70, 69, 82, 95, 67, 79, 85, 78, 84, 69, 82]",
+    },
   ],
   instructions: [
     {
+      name: "initializeCounters",
+      accounts: [
+        { name: "userCounter", isMut: true, isSigner: false },
+        { name: "storeCounter", isMut: true, isSigner: false },
+        { name: "requestCounter", isMut: true, isSigner: false },
+        { name: "offerCounter", isMut: true, isSigner: false },
+        { name: "authority", isMut: true, isSigner: true },
+        { name: "systemProgram", isMut: false, isSigner: false },
+      ],
+      args: [],
+    },
+    {
       name: "createUser",
       accounts: [
-        { name: "user", isMut: true, isSigner: true },
-        { name: "userSigner", isMut: true, isSigner: true },
+        { name: "user", isMut: true, isSigner: false },
+        { name: "authority", isMut: true, isSigner: true },
         { name: "userCounter", isMut: true, isSigner: false },
         { name: "systemProgram", isMut: false, isSigner: false },
       ],
@@ -35,7 +82,7 @@ export const marketAbi = {
       name: "updateUser",
       accounts: [
         { name: "user", isMut: true, isSigner: false },
-        { name: "signer", isMut: true, isSigner: true },
+        { name: "authority", isMut: true, isSigner: true },
       ],
       args: [
         { name: "username", type: "string" },
@@ -49,7 +96,8 @@ export const marketAbi = {
       name: "createStore",
       accounts: [
         { name: "user", isMut: true, isSigner: false },
-        { name: "store", isMut: true, isSigner: true },
+        { name: "store", isMut: true, isSigner: false },
+        { name: "authority", isMut: true, isSigner: true },
         { name: "storeCounter", isMut: true, isSigner: false },
         { name: "systemProgram", isMut: false, isSigner: false },
       ],
@@ -65,8 +113,9 @@ export const marketAbi = {
       name: "createRequest",
       accounts: [
         { name: "user", isMut: true, isSigner: false },
-        { name: "request", isMut: true, isSigner: true },
+        { name: "request", isMut: true, isSigner: false },
         { name: "requestCounter", isMut: true, isSigner: false },
+        { name: "authority", isMut: true, isSigner: true },
         { name: "systemProgram", isMut: false, isSigner: false },
       ],
       args: [
@@ -82,7 +131,8 @@ export const marketAbi = {
       accounts: [
         { name: "user", isMut: true, isSigner: false },
         { name: "request", isMut: true, isSigner: false },
-        { name: "offer", isMut: true, isSigner: true },
+        { name: "offer", isMut: true, isSigner: false },
+        { name: "authority", isMut: true, isSigner: true },
         { name: "offerCounter", isMut: true, isSigner: false },
         { name: "systemProgram", isMut: false, isSigner: false },
       ],
@@ -96,11 +146,12 @@ export const marketAbi = {
       name: "acceptOffer",
       accounts: [
         { name: "user", isMut: true, isSigner: false },
+        { name: "authority", isMut: true, isSigner: true },
         { name: "offer", isMut: true, isSigner: false },
         { name: "request", isMut: true, isSigner: false },
         { name: "systemProgram", isMut: false, isSigner: false },
       ],
-      args: [{ name: "offerId", type: "u64" }],
+      args: [],
     },
   ],
   accounts: [
@@ -116,6 +167,7 @@ export const marketAbi = {
           { name: "createdAt", type: "i64" },
           { name: "updatedAt", type: "i64" },
           { name: "accountType", type: { defined: "AccountType" } },
+          { name: "authority", type: "publicKey" },
         ],
       },
     },
@@ -124,6 +176,7 @@ export const marketAbi = {
       type: {
         kind: "struct",
         fields: [
+          { name: "authority", type: "publicKey" },
           { name: "id", type: "u64" },
           { name: "name", type: "string" },
           { name: "description", type: "string" },
@@ -137,6 +190,7 @@ export const marketAbi = {
       type: {
         kind: "struct",
         fields: [
+          { name: "authority", type: "publicKey" },
           { name: "id", type: "u64" },
           { name: "name", type: "string" },
           { name: "buyerId", type: "u64" },
@@ -158,6 +212,7 @@ export const marketAbi = {
       type: {
         kind: "struct",
         fields: [
+          { name: "authority", type: "publicKey" },
           { name: "id", type: "u64" },
           { name: "requestId", type: "u64" },
           { name: "price", type: "i64" },

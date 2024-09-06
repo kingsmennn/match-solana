@@ -41,7 +41,7 @@ const getProvider = () => {
   const provider = new ethers.BrowserProvider(window.ethereum!);
   return provider;
 };
-
+const env = useRuntimeConfig().public;
 export const useUserStore = defineStore(STORE_KEY, {
   state: (): UserStore => ({
     accountId: null,
@@ -110,8 +110,6 @@ export const useUserStore = defineStore(STORE_KEY, {
     },
 
     async getContract() {
-      const env = useRuntimeConfig().public;
-
       const provider = getProvider();
 
       const signer = await provider.getSigner();
@@ -128,7 +126,7 @@ export const useUserStore = defineStore(STORE_KEY, {
       return new ethers.Contract(env.contractId, [], signer);
     },
     async fetchUser(account_id: PublicKey): Promise<any> {
-      const programID = new PublicKey(marketAbi.metadata.address);
+      const programID = new PublicKey(env.contractId);
 
       const [profilePda, profileBump] = findProgramAddressSync(
         [utf8.encode(USER_TAG), account_id.toBuffer()],
