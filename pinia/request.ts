@@ -13,7 +13,7 @@ import {
   REQUEST_COUNTER_PUBKEY,
   REQUEST_TAG,
   USER_TAG,
-} from "utils/constants";
+} from "@/utils/constants";
 import { request } from "http";
 import { findProgramAddressSync } from "@project-serum/anchor/dist/cjs/utils/pubkey";
 import { utf8 } from "@project-serum/anchor/dist/cjs/utils/bytes";

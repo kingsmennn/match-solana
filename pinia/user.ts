@@ -123,7 +123,23 @@ export const useUserStore = defineStore(STORE_KEY, {
 
       try {
         const userData = await contract.account.user.fetch(profilePda);
-        return userData;
+
+        const accountType = Object.keys(userData.accountType)[0];
+
+        const results = [
+          Number(userData.id),
+          userData.username,
+          userData.phone,
+          [
+            Number(userData.location.longitude),
+            Number(userData.location.latitude),
+          ],
+          Number(userData.createdAt),
+          Number(userData.updatedAt),
+          Number(accountType === AccountType.BUYER ? 0 : 1),
+        ];
+
+        return results;
       } catch (error) {
         return [0, "", "", [0, 0], 0, 0, 0];
       }
