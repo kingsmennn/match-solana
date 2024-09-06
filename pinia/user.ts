@@ -228,9 +228,15 @@ export const useUserStore = defineStore(STORE_KEY, {
         );
 
         const contract = await this.getContract();
+        const latitude = new BN(
+          Math.trunc((lat ?? 0) * 10 ** LOCATION_DECIMALS)
+        );
+        const longitude = new BN(
+          Math.trunc((long ?? 0) * 10 ** LOCATION_DECIMALS)
+        );
 
         const tx = await contract.methods
-          .updateUser(username, phone, lat, long, account_type)
+          .updateUser(username, phone, latitude, longitude, account_type)
           .accounts({
             user: profilePda,
             authority: wallet!.value!.publicKey!,
