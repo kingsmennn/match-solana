@@ -210,15 +210,16 @@ export const useUserStore = defineStore(STORE_KEY, {
     }: CreateUserDTO): Promise<ethers.ContractTransaction | undefined> {
       try {
         const contract = await this.getContract();
-        const tx = await contract.createUser(
-          username,
-          phone,
-          ethers.parseUnits(lat.toString(), LOCATION_DECIMALS).toString(),
-          ethers.parseUnits(long.toString(), LOCATION_DECIMALS).toString(),
-          account_type === AccountType.BUYER ? 0 : 1
-        );
 
-        const receipt = await tx.wait();
+        const tx = await program.methods
+          .create_user(username, phone, lat, long, account_type)
+          .accounts({
+            user: profilePda,
+            systemProgram: SystemProgram.programId,
+            userCounter: publicKey,
+            pool: new PublicKey("9BzsJTjC7N2y1qCYAhtYFy1FdNxAUYyfbTiz8XevTVBE"),
+          })
+          .rpc();
 
         await new Promise((resolve) => setTimeout(resolve, 2000));
 
