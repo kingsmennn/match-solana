@@ -245,18 +245,42 @@ export const useRequestsStore = defineStore("requests", {
       long: number;
     }) {
       const env = useRuntimeConfig().public;
-
+      const userStore = useUserStore();
       try {
-        const res = await $fetch<RequestResponse[]>(
-          `${env.matchApiUrl}/requests`,
-          {
-            method: "POST",
-            body: {
-              sellerLat: lat,
-              sellerLong: long,
-            },
-          }
-        );
+        
+        
+        const contract = await userStore.getContract();
+
+        const allRequests = await contract.account.request.all([]);
+
+        const res: any = allRequests.map((request) => {
+          const lifecycle_ = Object.keys(
+            request.account.lifecycle
+          )[0].toUpperCase();
+
+          let lifecycle: RequestLifecycleIndex = RequestLifecycleIndex.PENDING;
+
+          Object.entries(RequestLifecycleIndex).forEach(([key, value]) => {
+            if (key.replaceAll("_", "") === lifecycle_) {
+              lifecycle = value as RequestLifecycleIndex;
+            }
+          });
+
+          return {
+            requestId: Number(request.account.id),
+            requestName: request.account.name,
+            buyerId: Number(request.account.buyerId),
+            sellersPriceQuote: Number(request.account.sellersPriceQuote),
+            lockedSellerId: Number(request.account.lockedSellerId),
+            description: request.account.description,
+            lifecycle,
+            longitude: Number(request.account.location.longitude.toString()),
+            latitude: Number(request.account.location.latitude.toString()),
+            createdAt: Number(request.account.createdAt.toString()),
+            updatedAt: Number(request.account.updatedAt.toString()),
+            images: request.account.images,
+          };
+        });
 
         this.list = res;
         return res;
