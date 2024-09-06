@@ -146,7 +146,6 @@ export const useRequestsStore = defineStore("requests", {
           requestId: 0,
           requestName: "",
           buyerId: 0,
-
           sellersPriceQuote: 0,
           lockedSellerId: 0,
           description: "",

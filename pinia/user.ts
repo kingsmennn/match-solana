@@ -191,7 +191,9 @@ export const useUserStore = defineStore(STORE_KEY, {
         const longitude = new BN(Math.trunc(long * 10 ** LOCATION_DECIMALS));
 
         const tx = await contract.methods
-          .createUser(username, phone, latitude, longitude, account_type)
+          .createUser(username, phone, latitude, longitude, {
+            [account_type]: {},
+          })
           .accounts({
             user: profilePda,
             systemProgram: SystemProgram.programId,
@@ -236,7 +238,9 @@ export const useUserStore = defineStore(STORE_KEY, {
         );
 
         const tx = await contract.methods
-          .updateUser(username, phone, latitude, longitude, account_type)
+          .updateUser(username, phone, latitude, longitude, {
+            [account_type ?? "buyer"]: {},
+          })
           .accounts({
             user: profilePda,
             authority: wallet!.value!.publicKey!,
