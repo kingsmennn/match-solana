@@ -90,6 +90,7 @@ export const useUserStore = defineStore(STORE_KEY, {
       
       walletAdapter.on("connect", (newPublicKey) => {
         this.accountId = newPublicKey.toBase58();
+        this.connectToSolana();
       });
       walletAdapter.on("disconnect", () => {
         this.disconnect();
@@ -358,7 +359,6 @@ export const useUserStore = defineStore(STORE_KEY, {
     ],
     async afterRestore(context) {
       if (context.store.accountId) {
-        await context.store.connectToSolana();
         await context.store.setUpSolanaConnectEvents();
       }
     },
