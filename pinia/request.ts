@@ -66,7 +66,11 @@ export const useRequestsStore = defineStore("requests", {
           [
             utf8.encode(REQUEST_TAG),
             publicKey.value!.toBuffer(),
-            new BN(requestCounter.current).toArrayLike(Buffer, "be", "2"),
+            new BN(requestCounter.current.toString()).toArrayLike(
+              Buffer,
+              "be",
+              "2"
+            ),
           ],
           programID
         );
@@ -76,8 +80,8 @@ export const useRequestsStore = defineStore("requests", {
             name,
             description,
             images,
-            new BN(Math.trunc(latitude)),
-            new BN(Math.trunc(longitude))
+            new BN(Math.trunc(latitude).toString()),
+            new BN(Math.trunc(longitude).toString())
           )
           .accounts({
             user: profilePda,
@@ -242,7 +246,11 @@ export const useRequestsStore = defineStore("requests", {
           [
             utf8.encode(OFFER_TAG),
             publicKey.value!.toBuffer(),
-            new BN(offerCounter.current).toArrayLike(Buffer, "be", "2"),
+            new BN(offerCounter.current.toString()).toArrayLike(
+              Buffer,
+              "be",
+              "2"
+            ),
           ],
           programID
         );

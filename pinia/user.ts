@@ -203,8 +203,12 @@ export const useUserStore = defineStore(STORE_KEY, {
 
         const contract = await this.getContract();
 
-        const latitude = new BN(Math.trunc(lat * 10 ** LOCATION_DECIMALS));
-        const longitude = new BN(Math.trunc(long * 10 ** LOCATION_DECIMALS));
+        const latitude = new BN(
+          Math.trunc(lat * 10 ** LOCATION_DECIMALS).toString()
+        );
+        const longitude = new BN(
+          Math.trunc(long * 10 ** LOCATION_DECIMALS).toString()
+        );
 
         const tx = await contract.methods
           .createUser(username, phone, latitude, longitude, {
@@ -253,17 +257,19 @@ export const useUserStore = defineStore(STORE_KEY, {
           lat: new BN(
             Math.trunc(
               (lat || this.userDetails?.[3][1]!) * 10 ** LOCATION_DECIMALS
-            )
+            ).toString()
           ),
           lng: new BN(
             Math.trunc(
               (long || this.userDetails?.[3][0]!) * 10 ** LOCATION_DECIMALS
-            )
+            ).toString()
           ),
           account_type: {
             [account_type ?? "buyer"]: {},
           },
         };
+
+        console.log("end");
 
         const tx = await contract.methods
           .updateUser(

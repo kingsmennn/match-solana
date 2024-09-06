@@ -51,7 +51,11 @@ export const useStoreStore = defineStore(STORE_STORE_KEY, {
           [
             utf8.encode(STORE_COUNTER),
             publicKey.value!.toBuffer(),
-            new BN(storeCounter.current).toArrayLike(Buffer, "be", "2"),
+            new BN(storeCounter.current.toString()).toArrayLike(
+              Buffer,
+              "be",
+              "2"
+            ),
           ],
           programID
         );
@@ -61,8 +65,8 @@ export const useStoreStore = defineStore(STORE_STORE_KEY, {
             payload.name,
             payload.description,
             payload.phone,
-            new BN(payload.lat),
-            new BN(payload.long)
+            new BN(payload.lat.toString()),
+            new BN(payload.long.toString())
           )
           .accounts({
             user: profilePda,
