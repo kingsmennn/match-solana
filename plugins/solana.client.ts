@@ -1,5 +1,6 @@
 import "solana-wallets-vue/styles.css";
 import SolanaWallets from "solana-wallets-vue";
+import { initWallet } from "solana-wallets-vue";
 import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
 import {
   BitgetWalletAdapter,
@@ -19,6 +20,8 @@ const walletOptions = {
   ],
   autoConnect: true,
 };
+
+initWallet(walletOptions);
 
 export default defineNuxtPlugin((nuxtApp) => {
   nuxtApp.vueApp.use(SolanaWallets, walletOptions);
