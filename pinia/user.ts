@@ -28,7 +28,7 @@ import {
   SystemProgram,
 } from "@solana/web3.js";
 import { AnchorProvider, Idl, Program } from "@project-serum/anchor";
-import { marketAbi } from "blockchain/abi";
+import { marketAbi } from "@/blockchain/abi";
 
 type UserStore = {
   accountId: string | null;
