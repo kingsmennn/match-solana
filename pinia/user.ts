@@ -121,8 +121,12 @@ export const useUserStore = defineStore(STORE_KEY, {
         programID
       );
 
-      const userData = await contract.account.user.fetch(profilePda);
-      return userData;
+      try {
+        const userData = await contract.account.user.fetch(profilePda);
+        return userData;
+      } catch (error) {
+        return [0, "", "", [0, 0], 0, 0, 0];
+      }
     },
 
     async storeUserDetails(user: BlockchainUser) {
