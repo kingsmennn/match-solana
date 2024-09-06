@@ -24,7 +24,7 @@ import { useStoreStore } from "./store";
 import { findProgramAddressSync } from "@project-serum/anchor/dist/cjs/utils/pubkey";
 import { utf8 } from "@project-serum/anchor/dist/cjs/utils/bytes";
 import { useWallet } from "solana-wallets-vue";
-import { PublicKey } from "@solana/web3.js";
+import { PublicKey, SystemProgram } from "@solana/web3.js";
 
 type UserStore = {
   accountId: string | null;
@@ -42,6 +42,7 @@ const getProvider = () => {
   return provider;
 };
 const env = useRuntimeConfig().public;
+const programID = new PublicKey(env.contractId);
 export const useUserStore = defineStore(STORE_KEY, {
   state: (): UserStore => ({
     accountId: null,
@@ -126,8 +127,6 @@ export const useUserStore = defineStore(STORE_KEY, {
       return new ethers.Contract(env.contractId, [], signer);
     },
     async fetchUser(account_id: PublicKey): Promise<any> {
-      const programID = new PublicKey(env.contractId);
-
       const [profilePda, profileBump] = findProgramAddressSync(
         [utf8.encode(USER_TAG), account_id.toBuffer()],
         programID
@@ -210,6 +209,11 @@ export const useUserStore = defineStore(STORE_KEY, {
     }: CreateUserDTO): Promise<ethers.ContractTransaction | undefined> {
       try {
         const contract = await this.getContract();
+
+        const [profilePda, _] = findProgramAddressSync(
+          [utf8.encode(USER_TAG), account_id.toBuffer()],
+          programID
+        );
 
         const tx = await program.methods
           .create_user(username, phone, lat, long, account_type)
