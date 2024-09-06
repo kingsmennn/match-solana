@@ -144,7 +144,7 @@ export const useRequestsStore = defineStore("requests", {
         console.log(res);
 
         this.list = res;
-        // return userRequests;
+        return res;
       } catch (error) {
         console.log({ error });
       }
@@ -181,23 +181,38 @@ export const useRequestsStore = defineStore("requests", {
           },
         ]);
 
-        const request: RequestResponse = {
-          requestId: 0,
-          requestName: "",
-          buyerId: 0,
-          sellersPriceQuote: 0,
-          lockedSellerId: 0,
-          description: "",
-          lifecycle: 0,
-          longitude: 0,
-          latitude: 0,
-          createdAt: 0,
-          updatedAt: 0,
-          images: [],
-        };
+        const request_ = requests[0];
 
-        const images = await this.getRequestImages(request.requestId);
-        request.images = images || [];
+      
+          const lifecycle_ = Object.keys(
+            request_.account.lifecycle
+          )[0].toUpperCase();
+
+          let lifecycle: RequestLifecycleIndex = RequestLifecycleIndex.PENDING;
+
+          Object.entries(RequestLifecycleIndex).forEach(([key, value]) => {
+            if (key.replaceAll("_", "") === lifecycle_) {
+              lifecycle = value as RequestLifecycleIndex;
+            }
+          });
+
+        const request: RequestResponse = {
+          requestId: Number(request_.account.id),
+          requestName: request_.account.name,
+          buyerId: Number(request_.account.buyerId),
+          sellersPriceQuote: Number(request_.account.sellersPriceQuote),
+          lockedSellerId: Number(request_.account.lockedSellerId),
+          description: request_.account.description,
+          lifecycle,
+          longitude: Number(request_.account.location.longitude.toString()),
+          latitude: Number(request_.account.location.latitude.toString()),
+          createdAt: Number(request_.account.createdAt.toString()),
+          updatedAt: Number(request_.account.updatedAt.toString()),
+          images: request_.account.images,
+        }
+
+        console.log(request);
+       
         return request;
       } catch (error) {
         console.log(error);
