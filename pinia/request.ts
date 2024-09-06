@@ -401,14 +401,44 @@ export const useRequestsStore = defineStore("requests", {
     async fetchAllOffers(requestId: number) {
       const env = useRuntimeConfig().public;
 
+      const userStore = useUserStore();
+
+ 
+        
+
       try {
-        const res = await $fetch<Offer[]>(
-          `${env.matchApiUrl}/offers/${requestId}`,
+  
+
+        const contract = await userStore.getContract();
+
+        const offers = await contract.account.offer.all([
           {
-            method: "GET",
-          }
-        );
-        // this.list = res
+            memcmp: {
+              offset: 8 + 32 + 8,
+              bytes: ntobs58(requestId),
+            },
+          },
+        ]);
+
+        const res :any=  offers.map((offer) => {
+          
+
+          const offer_: Offer = {
+            id: Number(offer.account.id),
+            offerId: Number(offer.account.offerId),
+            price: Number(offer.account.price),
+            images: offer.account.images,
+            requestId: offer.account.requestId,
+            storeName: offer.account.storeName,
+            sellerId: offer.account.sellerId,
+            isAccepted: offer.account.isAccepted,
+            createdAt: new Date(Number(offer.account.createdAt)),
+            updatedAt: new Date(Number(offer.account.updatedAt)),
+          };
+          return offer_;
+        });
+
+        this.list = res
         return res;
       } catch (error) {
         console.log({ error });
