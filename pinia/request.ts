@@ -372,11 +372,12 @@ export const useRequestsStore = defineStore("requests", {
 
         const offer = offerMade[0];
 
+
         const requestMade = await contract.account.request.all([
           {
             memcmp: {
               offset: 8 + 32,
-              bytes: ntobs58((offer as any).requestId),
+              bytes: ntobs58(offer.account.requestId),
             },
           },
         ]);

@@ -82,8 +82,23 @@ export const useUserStore = defineStore(STORE_KEY, {
     accountType: (state) => state.userDetails?.[6],
   },
   actions: {
+    async setUpSolanaConnectEvents() {
+      const { publicKey,wallet } = useWallet();
+
+      const walletAdapter = wallet.value!.adapter;
+
+      
+      walletAdapter.on("connect", (newPublicKey) => {
+        this.accountId = newPublicKey.toBase58();
+      });
+      walletAdapter.on("disconnect", () => {
+        this.disconnect();
+      });
+    },
     async connectToSolana() {
-      const { publicKey } = useWallet();
+      const { publicKey,wallet } = useWallet();
+
+     
       try {
         // Set the account ID (address)
         this.accountId = publicKey!.value!.toString();
@@ -344,6 +359,7 @@ export const useUserStore = defineStore(STORE_KEY, {
     async afterRestore(context) {
       if (context.store.accountId) {
         await context.store.connectToSolana();
+        await context.store.setUpSolanaConnectEvents();
       }
     },
   },

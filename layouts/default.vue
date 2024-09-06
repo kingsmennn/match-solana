@@ -135,15 +135,7 @@ const env = useRuntimeConfig().public;
 const router = useRouter();
 const route = useRoute();
 const userStore = useUserStore();
-watch(
-  publicKey,
-  async (val) => {
-    if (!!val) {
-      await userStore.connectToSolana();
-    }
-  },
-  { immediate: true }
-);
+
 
 const userCookie = useCookie<User>(STORE_KEY_MIDDLEWARE, { watch: true });
 const storeCookie = useCookie(STORE_KEY);
