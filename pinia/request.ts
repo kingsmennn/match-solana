@@ -74,16 +74,10 @@ export const useRequestsStore = defineStore("requests", {
           [
             utf8.encode(REQUEST_TAG),
             publicKey.value!.toBuffer(),
-            new BN(requestCounter.current.toString()).toArrayLike(
-              Buffer,
-              "le",
-              2
-            ),
+            Buffer.from(new BN(requestCounter.current).toArray("le", 8)),
           ],
           programID
         );
-
-        console.log({ requestPda });
 
         const receipt = await contract.methods
           .createRequest(
