@@ -148,17 +148,63 @@ export const useRequestsStore = defineStore("requests", {
     },
     async fetchAllSellersRequests(accountId: string) {
       const env = useRuntimeConfig().public;
-      const userAddress = await getEvmAddress(accountId);
-
+      const userStore = useUserStore();
       try {
-        const res = await $fetch<RequestResponse[]>(
-          `${env.matchApiUrl}/accepted-requests/${userAddress}`,
+        const contract = await userStore.getContract();
+        const offerMade = await contract.account.offer.all([
           {
-            method: "GET",
-          }
-        );
-        this.list = res;
-        return res;
+            memcmp: {
+              offset: 8 + 0,
+              bytes: accountId,
+            },
+          },
+        ]);
+
+        const requests = [];
+
+        for (let i = 0; i < offerMade.length; i++) {
+          const offer = offerMade[i];
+          const requestMade = await contract.account.request.all([
+            {
+              memcmp: {
+                offset: 8 + 32,
+                bytes: ntobs58(offer.account.requestId),
+              },
+            },
+          ]);
+
+          const request = requestMade[0];
+
+          const lifecycle_ = Object.keys(
+            request.account.lifecycle
+          )[0].toUpperCase();
+
+          let lifecycle: RequestLifecycleIndex = RequestLifecycleIndex.PENDING;
+
+          Object.entries(RequestLifecycleIndex).forEach(([key, value]) => {
+            if (key.replaceAll("_", "") === lifecycle_) {
+              lifecycle = value as RequestLifecycleIndex;
+            }
+          });
+
+          requests.push({
+            requestId: Number(request.account.id),
+            requestName: request.account.name,
+            buyerId: Number(request.account.buyerId),
+            sellersPriceQuote: Number(request.account.sellersPriceQuote),
+            lockedSellerId: Number(request.account.lockedSellerId),
+            description: request.account.description,
+            lifecycle,
+            longitude: Number(request.account.location.longitude.toString()),
+            latitude: Number(request.account.location.latitude.toString()),
+            createdAt: Number(request.account.createdAt.toString()),
+            updatedAt: Number(request.account.updatedAt.toString()),
+            images: request.account.images,
+          });
+        }
+
+        this.list = requests;
+        return requests;
       } catch (error) {
         console.log({ error });
         throw error;
