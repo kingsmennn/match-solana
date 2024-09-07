@@ -100,18 +100,21 @@ export const useStoreStore = defineStore(STORE_STORE_KEY, {
           },
         ]);
 
-        return stores.map((store) => {
-          return {
-            id: store.account.id,
-            name: store.account.name,
-            description: store.account.description,
-            phone: store.account.phone,
-            location: [
+        const response: any = stores.map((store) => {
+          return [
+            store.account.id.toString(),
+            store.account.name,
+            store.account.description,
+            store.account.phone,
+            [
               Number(store.account.location.longitude.toString()),
               Number(store.account.location.latitude.toString()),
             ],
-          };
+          ];
         });
+
+        userStore.storeDetails = response;
+        return response;
       } catch (error) {
         console.error(error);
       }
