@@ -66,17 +66,17 @@ export const REQUEST_COUNTER = "REQUEST_COUNTER";
 export const OFFER_COUNTER = "OFFER_COUNTER";
 
 export const USER_COUNTER_PUBKEY = new PublicKey(
-  "5wWGESB9g1ocAxTyk7gz7KmutPnzBxh7cANeoigJBcbQ"
+  "5sddT4AzjpYGpw9kFNGkk8jN4gxY7ptYjkjb8qVv6vas"
 );
 
 export const STORE_COUNTER_PUBKEY = new PublicKey(
-  "D9wumZd9QrPYysSdoFqqZfTbouyDmQirMtS3Q5Tgy8x1"
+  "3dasQGBqSYaiiManp4xhymJfxrVVodb1hY438NoHBTtS"
 );
 
 export const REQUEST_COUNTER_PUBKEY = new PublicKey(
-  "6pfzmfyRU9BKgmseVLsFazcyecxm7YxkvihroQM8CV5p"
+  "ETETC6gEtjrmD34zrapJeqgBzBkW2ERL3sGRpH5KRSzC"
 );
 
 export const OFFER_COUNTER_PUBKEY = new PublicKey(
-  "7rkRBLJN8GzkZJtWWsGgxCAJaCqRZHGsGs8vWwNGcHPv"
+  "DbKA8yJ8uZHWMh71vRSkroJUAgsrxLta1D275YtcZs1c"
 );
