@@ -93,6 +93,7 @@ export const useRequestsStore = defineStore("requests", {
         return receipt;
       } catch (error) {
         console.error(error);
+        throw error;
       }
     },
     async fetchAllUserRequests(accountId: string) {
@@ -142,6 +143,7 @@ export const useRequestsStore = defineStore("requests", {
         return res;
       } catch (error) {
         console.log({ error });
+        throw error;
       }
     },
     async fetchAllSellersRequests(accountId: string) {
@@ -159,6 +161,7 @@ export const useRequestsStore = defineStore("requests", {
         return res;
       } catch (error) {
         console.log({ error });
+        throw error;
       }
     },
     async getRequest(requestId: number) {
@@ -208,6 +211,7 @@ export const useRequestsStore = defineStore("requests", {
         return request;
       } catch (error) {
         console.log(error);
+        throw error;
       }
     },
     async getRequestImages(request_id: number): Promise<string[] | undefined> {
@@ -272,6 +276,7 @@ export const useRequestsStore = defineStore("requests", {
         return res;
       } catch (error) {
         console.log({ error });
+        throw error;
       }
     },
     async createOffer({
@@ -334,6 +339,7 @@ export const useRequestsStore = defineStore("requests", {
         return receipt;
       } catch (error) {
         console.error(error);
+        throw error;
       }
     },
     async acceptOffer(offerId: number): Promise<any | undefined> {
@@ -381,6 +387,7 @@ export const useRequestsStore = defineStore("requests", {
         return receipt;
       } catch (error) {
         console.error(error);
+        throw error;
       }
     },
     async fetchAllOffers(requestId: number) {
@@ -421,6 +428,7 @@ export const useRequestsStore = defineStore("requests", {
         return res;
       } catch (error) {
         console.log({ error });
+        throw error;
       }
     },
   },

@@ -251,6 +251,7 @@ export const useUserStore = defineStore(STORE_KEY, {
         return tx;
       } catch (error) {
         console.error("Error creating user:", error);
+        throw error;
       }
     },
 
@@ -311,6 +312,7 @@ export const useUserStore = defineStore(STORE_KEY, {
         };
       } catch (error) {
         console.error("Error updating user:", error);
+        throw error;
       }
     },
     async fetchUserById(userId: number) {
