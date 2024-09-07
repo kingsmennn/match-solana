@@ -186,7 +186,6 @@ watch(
   [() => userStore.blockchainError.userNotFound, () => userStore.accountId],
   ([userExists, accountId]) => {
     if (userExists && accountId) {
-      console.log({ userExists, accountId });
       // redirect to register page
       router.push("/onboarding");
     }
