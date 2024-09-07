@@ -372,6 +372,15 @@ export const useRequestsStore = defineStore("requests", {
           },
         ]);
 
+        const offerAccounts = await contract.account.offer.all([
+          {
+            memcmp: {
+              offset: 8 + 32 + 8,
+              bytes: ntobs58(offer.account.requestId),
+            },
+          },
+        ]);
+
         const request = requestMade[0];
 
         const receipt = await contract.methods
@@ -383,6 +392,13 @@ export const useRequestsStore = defineStore("requests", {
             offer: offer.publicKey,
             request: request.publicKey,
           })
+          .remainingAccounts(
+            offerAccounts.map((offerAccount) => ({
+              pubkey: offerAccount.publicKey,
+              isWritable: true,
+              isSigner: false,
+            }))
+          )
           .rpc();
         return receipt;
       } catch (error) {
