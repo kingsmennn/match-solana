@@ -25,9 +25,6 @@ import { BN, utils } from "@project-serum/anchor";
 import { off } from "process";
 import { ntobs58 } from "@/utils/nb58";
 
-
-
-
 type RequestsStoreType = {
   list: RequestResponse[];
 };
@@ -103,17 +100,14 @@ export const useRequestsStore = defineStore("requests", {
         const userStore = useUserStore();
         const contract = await userStore.getContract();
 
-
-
         const userRequests = await contract.account.request.all([
           {
             memcmp: {
               offset: 8 + 0,
-              bytes:accountId,
+              bytes: accountId,
             },
           },
         ]);
-
 
         const res: any = userRequests.map((request) => {
           const lifecycle_ = Object.keys(
@@ -144,8 +138,6 @@ export const useRequestsStore = defineStore("requests", {
           };
         });
 
-    
-
         this.list = res;
         return res;
       } catch (error) {
@@ -170,7 +162,6 @@ export const useRequestsStore = defineStore("requests", {
       }
     },
     async getRequest(requestId: number) {
-
       const userStore = useUserStore();
 
       try {
@@ -185,22 +176,19 @@ export const useRequestsStore = defineStore("requests", {
           },
         ]);
 
-        
-
         const request_ = requests[0];
 
-      
-          const lifecycle_ = Object.keys(
-            request_.account.lifecycle
-          )[0].toUpperCase();
+        const lifecycle_ = Object.keys(
+          request_.account.lifecycle
+        )[0].toUpperCase();
 
-          let lifecycle: RequestLifecycleIndex = RequestLifecycleIndex.PENDING;
+        let lifecycle: RequestLifecycleIndex = RequestLifecycleIndex.PENDING;
 
-          Object.entries(RequestLifecycleIndex).forEach(([key, value]) => {
-            if (key.replaceAll("_", "") === lifecycle_) {
-              lifecycle = value as RequestLifecycleIndex;
-            }
-          });
+        Object.entries(RequestLifecycleIndex).forEach(([key, value]) => {
+          if (key.replaceAll("_", "") === lifecycle_) {
+            lifecycle = value as RequestLifecycleIndex;
+          }
+        });
 
         const request: RequestResponse = {
           requestId: Number(request_.account.id),
@@ -215,8 +203,8 @@ export const useRequestsStore = defineStore("requests", {
           createdAt: Number(request_.account.createdAt.toString()),
           updatedAt: Number(request_.account.updatedAt.toString()),
           images: request_.account.images,
-        }
-       
+        };
+
         return request;
       } catch (error) {
         console.log(error);
@@ -247,8 +235,6 @@ export const useRequestsStore = defineStore("requests", {
       const env = useRuntimeConfig().public;
       const userStore = useUserStore();
       try {
-        
-        
         const contract = await userStore.getContract();
 
         const allRequests = await contract.account.request.all([]);
@@ -318,11 +304,7 @@ export const useRequestsStore = defineStore("requests", {
           },
         ]);
 
-
-
         const request = requestMade[0];
-
-        
 
         const [offerPda] = findProgramAddressSync(
           [
@@ -333,9 +315,12 @@ export const useRequestsStore = defineStore("requests", {
           programID
         );
 
-
         const receipt = await contract.methods
-          .createOffer(new BN(Math.trunc(price).toString()), [...images], storeName)
+          .createOffer(
+            new BN(Math.trunc(price).toString()),
+            [...images],
+            storeName
+          )
           .accounts({
             user: profilePda,
             systemProgram: SystemProgram.programId,
@@ -361,22 +346,16 @@ export const useRequestsStore = defineStore("requests", {
         );
         const contract = await userStore.getContract();
 
-
-
         const offerMade = await contract.account.offer.all([
           {
             memcmp: {
               offset: 8 + 32,
-              bytes:ntobs58(offerId),
+              bytes: ntobs58(offerId),
             },
           },
         ]);
 
-
         const offer = offerMade[0];
-
-        
-
 
         const requestMade = await contract.account.request.all([
           {
@@ -409,12 +388,7 @@ export const useRequestsStore = defineStore("requests", {
 
       const userStore = useUserStore();
 
- 
-        
-
       try {
-  
-
         const contract = await userStore.getContract();
 
         const offers = await contract.account.offer.all([
@@ -426,12 +400,7 @@ export const useRequestsStore = defineStore("requests", {
           },
         ]);
 
-        
-        
-
-        const res :any=  offers.map((offer) => {
-          
-
+        const res: any = offers.map((offer) => {
           const offer_: Offer = {
             id: Number(offer.account.id),
             offerId: Number(offer.account.id),
@@ -445,11 +414,10 @@ export const useRequestsStore = defineStore("requests", {
             updatedAt: new Date(Number(offer.account.updatedAt)),
           };
 
-      
           return offer_;
         });
 
-        this.list = res
+        this.list = res;
         return res;
       } catch (error) {
         console.log({ error });
@@ -457,5 +425,3 @@ export const useRequestsStore = defineStore("requests", {
     },
   },
 });
-
-

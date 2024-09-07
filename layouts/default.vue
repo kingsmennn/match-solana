@@ -135,13 +135,13 @@ const env = useRuntimeConfig().public;
 const router = useRouter();
 const route = useRoute();
 const userStore = useUserStore();
-const unwatch=watch(
+const unwatch = watch(
   publicKey,
   async (val) => {
     if (!!val) {
       await userStore.disconnect();
       await userStore.connectToSolana();
-      unwatch()
+      unwatch();
     }
   },
   { immediate: true }
@@ -185,7 +185,6 @@ const disconnect = async () => {
 watch(
   [() => userStore.blockchainError.userNotFound, () => userStore.accountId],
   ([userExists, accountId]) => {
-    
     if (userExists && accountId) {
       console.log({ userExists, accountId });
       // redirect to register page
