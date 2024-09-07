@@ -99,7 +99,19 @@ export const useStoreStore = defineStore(STORE_STORE_KEY, {
             },
           },
         ]);
-        return stores;
+
+        return stores.map((store) => {
+          return {
+            id: store.account.id,
+            name: store.account.name,
+            description: store.account.description,
+            phone: store.account.phone,
+            location: [
+              Number(store.account.location.longitude.toString()),
+              Number(store.account.location.latitude.toString()),
+            ],
+          };
+        });
       } catch (error) {
         console.error(error);
       }

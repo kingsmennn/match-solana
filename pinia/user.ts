@@ -345,6 +345,7 @@ export const useUserStore = defineStore(STORE_KEY, {
           createdAt: new Date(user_.account.createdAt.toString() * 1000),
           updatedAt: new Date(user_.account.updatedAt.toString() * 1000),
           accountType: Object.keys(user_.account.accountType)[0],
+          userAddress: user_.account.authority.toBase58(),
         };
 
         user.stores = userStores.map((store: any) => {
