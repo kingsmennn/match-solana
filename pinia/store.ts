@@ -3,7 +3,6 @@ import { CreateStoreDTO, Store, STORE_STORE_KEY } from "@/types";
 import { programID, useUserStore } from "./user";
 import {
   LOCATION_DECIMALS,
-  STORE_COUNTER,
   STORE_COUNTER_PUBKEY,
   USER_TAG,
 } from "@/utils/constants";
@@ -50,7 +49,7 @@ export const useStoreStore = defineStore(STORE_STORE_KEY, {
 
         const [storePda] = findProgramAddressSync(
           [
-            utf8.encode(STORE_COUNTER),
+            utf8.encode(STORE_TAG),
             publicKey.value!.toBuffer(),
             Buffer.from(storeCounter.current.toArray("le", 8)),
           ],
