@@ -361,6 +361,8 @@ export const useRequestsStore = defineStore("requests", {
         );
         const contract = await userStore.getContract();
 
+
+
         const offerMade = await contract.account.offer.all([
           {
             memcmp: {
@@ -370,7 +372,10 @@ export const useRequestsStore = defineStore("requests", {
           },
         ]);
 
+
         const offer = offerMade[0];
+
+        
 
 
         const requestMade = await contract.account.request.all([
@@ -421,12 +426,15 @@ export const useRequestsStore = defineStore("requests", {
           },
         ]);
 
+        
+        
+
         const res :any=  offers.map((offer) => {
           
 
           const offer_: Offer = {
             id: Number(offer.account.id),
-            offerId: Number(offer.account.offerId),
+            offerId: Number(offer.account.id),
             price: Number(offer.account.price),
             images: offer.account.images,
             requestId: offer.account.requestId,
@@ -436,6 +444,8 @@ export const useRequestsStore = defineStore("requests", {
             createdAt: new Date(Number(offer.account.createdAt)),
             updatedAt: new Date(Number(offer.account.updatedAt)),
           };
+
+      
           return offer_;
         });
 
