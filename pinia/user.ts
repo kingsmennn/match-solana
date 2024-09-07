@@ -44,7 +44,8 @@ const env = useRuntimeConfig().public;
 const wallet = useAnchorWallet();
 export const programID = new PublicKey(env.contractId);
 const preflightCommitment = "processed";
-const connection = new Connection(clusterApiUrl("devnet"), preflightCommitment);
+const connection = new Connection(env.solanaRpcUrl, preflightCommitment);
+// const connection = new Connection(clusterApiUrl("devnet"), preflightCommitment);
 const provider = computed(() => {
   if (!wallet.value) return;
   return new AnchorProvider(
