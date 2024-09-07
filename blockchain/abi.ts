@@ -251,7 +251,9 @@ export const marketAbi = {
         kind: "enum",
         variants: [
           { name: "Pending" },
+          { name: "AcceptedBySeller" },
           { name: "AcceptedByBuyer" },
+          { name: "RequestLocked" },
           { name: "Completed" },
         ],
       },
@@ -332,5 +334,10 @@ export const marketAbi = {
       msg: "Offer already accepted.",
     },
     { code: 6007, name: "RequestLocked", msg: "Request locked." },
+    {
+      code: 6008,
+      name: "IncorrectNumberOfSellers",
+      msg: "Incorrect number of sellers.",
+    },
   ],
 };
