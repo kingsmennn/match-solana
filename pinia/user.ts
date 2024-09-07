@@ -89,9 +89,11 @@ export const useUserStore = defineStore(STORE_KEY, {
 
       
       walletAdapter.on("connect", (newPublicKey) => {
+        this.disconnect();
         this.accountId = newPublicKey.toBase58();
         this.connectToSolana();
       });
+
       walletAdapter.on("disconnect", () => {
         this.disconnect();
       });
@@ -99,12 +101,12 @@ export const useUserStore = defineStore(STORE_KEY, {
     async connectToSolana() {
       const { publicKey,wallet } = useWallet();
 
-     
       try {
         // Set the account ID (address)
         this.accountId = publicKey!.value!.toString();
 
         const blockchainUser = await this.fetchUser(publicKey!.value!);
+
         this.storeUserDetails(blockchainUser);
 
         // If the user is a seller, fetch their store details
@@ -165,6 +167,7 @@ export const useUserStore = defineStore(STORE_KEY, {
       const userCookie = useCookie<User>(STORE_KEY_MIDDLEWARE);
 
       const hasId = !!user[0];
+ 
       if (hasId) {
         const details = {
           id: Number(user[0]),
@@ -200,6 +203,8 @@ export const useUserStore = defineStore(STORE_KEY, {
           accountType: details.accountType,
         };
       } else if (!hasId && this.accountId) {
+        console.log(this.blockchainError.userNotFound )
+        console.log("onboard")
         this.blockchainError.userNotFound = true;
       }
     },

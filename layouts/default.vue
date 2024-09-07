@@ -135,7 +135,17 @@ const env = useRuntimeConfig().public;
 const router = useRouter();
 const route = useRoute();
 const userStore = useUserStore();
-
+const unwatch=watch(
+  publicKey,
+  async (val) => {
+    if (!!val) {
+      await userStore.disconnect();
+      await userStore.connectToSolana();
+      unwatch()
+    }
+  },
+  { immediate: true }
+);
 
 const userCookie = useCookie<User>(STORE_KEY_MIDDLEWARE, { watch: true });
 const storeCookie = useCookie(STORE_KEY);
@@ -175,7 +185,9 @@ const disconnect = async () => {
 watch(
   [() => userStore.blockchainError.userNotFound, () => userStore.accountId],
   ([userExists, accountId]) => {
+    
     if (userExists && accountId) {
+      console.log({ userExists, accountId });
       // redirect to register page
       router.push("/onboarding");
     }
