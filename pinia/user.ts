@@ -202,8 +202,6 @@ export const useUserStore = defineStore(STORE_KEY, {
           accountType: details.accountType,
         };
       } else if (!hasId && this.accountId) {
-        console.log(this.blockchainError.userNotFound);
-        console.log("onboard");
         this.blockchainError.userNotFound = true;
       }
     },
@@ -290,8 +288,6 @@ export const useUserStore = defineStore(STORE_KEY, {
           },
         };
 
-        console.log("end");
-
         const tx = await contract.methods
           .updateUser(
             payload.username,
@@ -316,12 +312,55 @@ export const useUserStore = defineStore(STORE_KEY, {
       }
     },
     async fetchUserById(userId: number) {
-      const env = useRuntimeConfig().public;
+      const contract = await this.getContract();
       try {
-        const res = await $fetch<User>(`${env.matchApiUrl}/user/${userId}`, {
-          method: "GET",
+        const userInfo = await contract.account.user.all([
+          {
+            memcmp: {
+              offset: 8 + 0,
+              bytes: ntobs58(userId),
+            },
+          },
+        ]);
+
+        const user_ = userInfo[0];
+
+        const userStores = await contract.account.store.all([
+          {
+            memcmp: {
+              offset: 8 + 0,
+              bytes: user_.account.authority,
+            },
+          },
+        ]);
+
+        const user: any = {
+          id: user_.account.id.toString(),
+          username: user_.account.username,
+          phone: user_.account.phone,
+          location: [
+            user_.account.location.longitude.toString(),
+            user_.account.location.latitude.toString(),
+          ],
+          createdAt: new Date(user_.account.createdAt.toString() * 1000),
+          updatedAt: new Date(user_.account.updatedAt.toString() * 1000),
+          accountType: Object.keys(user_.account.accountType)[0],
+        };
+
+        user.stores = userStores.map((store: any) => {
+          return {
+            id: store.account.id.toString(),
+            name: store.account.name,
+            description: store.account.description,
+            phone: store.account.phone,
+            location: [
+              store.account.location.longitude.toString(),
+              store.account.location.latitude.toString(),
+            ],
+          };
         });
-        return res;
+
+        return user;
       } catch (error) {
         console.log({ error });
       }
