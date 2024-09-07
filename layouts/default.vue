@@ -139,7 +139,7 @@ const unwatch = watch(
   publicKey,
   async (val) => {
     if (!!val) {
-      // await userStore.disconnect();
+      userStore.blockchainError.userNotFound = false;
       await userStore.connectToSolana();
       unwatch();
     }
