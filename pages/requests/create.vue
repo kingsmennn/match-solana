@@ -244,6 +244,7 @@ const handleNewRequest = async () => {
   }
 
   try {
+    submiting.value = true;
     const response = await requestsStore.createRequest({
       name: form.value.name,
       description: form.value.description,
@@ -261,6 +262,8 @@ const handleNewRequest = async () => {
   } catch (error) {
     toast.error("an error occured, please try again");
     console.log({ errorCreatingRequest: error });
+  } finally {
+    submiting.value = false;
   }
 };
 </script>
