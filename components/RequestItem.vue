@@ -35,11 +35,11 @@
                 <template v-else>
                   <p class="tw-text-sm">
                     Store name:
-                    <strong>{{ usedSellerStoreDetails?.name }}</strong>
+                    <strong>{{ sellerStore?.name }}</strong>
                   </p>
                   <p class="tw-text-sm">
                     Contact number:
-                    <strong>{{ usedSellerStoreDetails?.phone }}</strong>
+                    <strong>{{ sellerStore?.phone }}</strong>
                   </p>
                   <p class="tw-text-sm">
                     Price:
@@ -206,24 +206,6 @@ const userStore = useUserStore();
 const storesStore = useStoreStore();
 
 const sellerStore = ref<Store>();
-const usedSellerStoreDetails = computed(() => {
-  const store = sellerStore.value as unknown as [
-    number,
-    string,
-    string,
-    string,
-    [number, number]
-  ];
-  if (!store) return undefined;
-
-  return {
-    id: Number(store[0]),
-    name: store[1],
-    description: store[2],
-    phone: store[3],
-    location: [Number(store[4][0]), Number(store[4][1])],
-  };
-});
 
 const fetchingStoreDetails = ref(false);
 watch(
