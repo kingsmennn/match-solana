@@ -87,7 +87,7 @@ export const useStoreStore = defineStore(STORE_STORE_KEY, {
         throw error;
       }
     },
-    async getUserStores(accountId: string): Promise<any[] | undefined> {
+    async getUserStores(accountId: string): Promise<Store[] | undefined> {
       const userStore = useUserStore();
       const contract = await userStore.getContract();
       try {
@@ -100,17 +100,17 @@ export const useStoreStore = defineStore(STORE_STORE_KEY, {
           },
         ]);
 
-        const response: any = stores.map((store) => {
-          return [
-            store.account.id.toString(),
-            store.account.name,
-            store.account.description,
-            store.account.phone,
-            [
+        const response: Store[] = stores.map((store) => {
+          return {
+            id: store.account.id.toString(),
+            name: store.account.name,
+            description: store.account.description,
+            phone: store.account.phone,
+            location: [
               Number(store.account.location.longitude.toString()),
               Number(store.account.location.latitude.toString()),
             ],
-          ];
+          }
         });
 
         userStore.storeDetails = response;
