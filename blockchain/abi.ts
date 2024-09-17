@@ -2,6 +2,7 @@ export const marketAbi = {
   version: "0.1.0",
   name: "marketplace",
   constants: [
+    { name: "TIME_TO_LOCK", type: "u64", value: "900" },
     {
       name: "USER_TAG",
       type: "bytes",
@@ -17,11 +18,16 @@ export const marketAbi = {
       type: "bytes",
       value: "[83, 84, 79, 82, 69, 95, 83, 84, 65, 84, 69]",
     },
-    { name: "TIME_TO_LOCK", type: "u64", value: "900" },
     {
       name: "REQUEST_TAG",
       type: "bytes",
       value: "[82, 69, 81, 85, 69, 83, 84, 95, 83, 84, 65, 84, 69]",
+    },
+    {
+      name: "LOCATION_PREFERENCE_TAG",
+      type: "bytes",
+      value:
+        "[76, 79, 67, 65, 84, 73, 79, 78, 95, 80, 82, 69, 70, 69, 82, 69, 78, 67, 69, 95, 83, 84, 65, 84, 69]",
     },
     {
       name: "OFFER_TAG",
@@ -73,8 +79,8 @@ export const marketAbi = {
       args: [
         { name: "username", type: "string" },
         { name: "phone", type: "string" },
-        { name: "latitude", type: "i64" },
-        { name: "longitude", type: "i64" },
+        { name: "latitude", type: "i128" },
+        { name: "longitude", type: "i128" },
         { name: "accountType", type: { defined: "AccountType" } },
       ],
     },
@@ -87,8 +93,8 @@ export const marketAbi = {
       args: [
         { name: "username", type: "string" },
         { name: "phone", type: "string" },
-        { name: "latitude", type: "i64" },
-        { name: "longitude", type: "i64" },
+        { name: "latitude", type: "i128" },
+        { name: "longitude", type: "i128" },
         { name: "accountType", type: { defined: "AccountType" } },
       ],
     },
@@ -105,8 +111,8 @@ export const marketAbi = {
         { name: "name", type: "string" },
         { name: "description", type: "string" },
         { name: "phone", type: "string" },
-        { name: "latitude", type: "i64" },
-        { name: "longitude", type: "i64" },
+        { name: "latitude", type: "i128" },
+        { name: "longitude", type: "i128" },
       ],
     },
     {
@@ -122,9 +128,47 @@ export const marketAbi = {
         { name: "name", type: "string" },
         { name: "description", type: "string" },
         { name: "images", type: { vec: "string" } },
-        { name: "latitude", type: "i64" },
-        { name: "longitude", type: "i64" },
+        { name: "latitude", type: "i128" },
+        { name: "longitude", type: "i128" },
       ],
+    },
+    {
+      name: "deleteRequest",
+      accounts: [
+        { name: "request", isMut: true, isSigner: false },
+        { name: "authority", isMut: true, isSigner: true },
+        { name: "systemProgram", isMut: false, isSigner: false },
+      ],
+      args: [],
+    },
+    {
+      name: "markRequestAsCompleted",
+      accounts: [
+        { name: "request", isMut: true, isSigner: false },
+        { name: "authority", isMut: true, isSigner: true },
+        { name: "systemProgram", isMut: false, isSigner: false },
+      ],
+      args: [],
+    },
+    {
+      name: "toggleLocation",
+      accounts: [
+        { name: "authority", isMut: true, isSigner: true },
+        { name: "location", isMut: true, isSigner: false },
+        { name: "user", isMut: true, isSigner: false },
+        { name: "systemProgram", isMut: false, isSigner: false },
+      ],
+      args: [{ name: "enabled", type: "bool" }],
+    },
+    {
+      name: "getLocationPreference",
+      accounts: [
+        { name: "authority", isMut: true, isSigner: true },
+        { name: "location", isMut: true, isSigner: false },
+        { name: "systemProgram", isMut: false, isSigner: false },
+      ],
+      args: [],
+      returns: "bool",
     },
     {
       name: "createOffer",
@@ -226,6 +270,17 @@ export const marketAbi = {
       },
     },
     {
+      name: "EnableLocation",
+      type: {
+        kind: "struct",
+        fields: [
+          { name: "userId", type: "u64" },
+          { name: "authority", type: "publicKey" },
+          { name: "locationEnabled", type: "bool" },
+        ],
+      },
+    },
+    {
       name: "Counter",
       type: { kind: "struct", fields: [{ name: "current", type: "u64" }] },
     },
@@ -236,8 +291,8 @@ export const marketAbi = {
       type: {
         kind: "struct",
         fields: [
-          { name: "latitude", type: "i64" },
-          { name: "longitude", type: "i64" },
+          { name: "latitude", type: "i128" },
+          { name: "longitude", type: "i128" },
         ],
       },
     },
@@ -266,8 +321,8 @@ export const marketAbi = {
         { name: "sellerAddress", type: "publicKey", index: false },
         { name: "storeId", type: "u64", index: false },
         { name: "storeName", type: "string", index: false },
-        { name: "latitude", type: "i64", index: false },
-        { name: "longitude", type: "i64", index: false },
+        { name: "latitude", type: "i128", index: false },
+        { name: "longitude", type: "i128", index: false },
       ],
     },
     {
@@ -276,8 +331,8 @@ export const marketAbi = {
         { name: "requestId", type: "u64", index: false },
         { name: "buyerAddress", type: "publicKey", index: false },
         { name: "requestName", type: "string", index: false },
-        { name: "latitude", type: "i64", index: false },
-        { name: "longitude", type: "i64", index: false },
+        { name: "latitude", type: "i128", index: false },
+        { name: "longitude", type: "i128", index: false },
         { name: "images", type: { vec: "string" }, index: false },
         { name: "lifecycle", type: "u8", index: false },
         { name: "description", type: "string", index: false },
@@ -320,6 +375,14 @@ export const marketAbi = {
         { name: "isAccepted", type: "bool", index: false },
       ],
     },
+    {
+      name: "LocationEnabled",
+      fields: [
+        { name: "userId", type: "u64", index: false },
+        { name: "locationEnabled", type: "bool", index: false },
+        { name: "authority", type: "publicKey", index: false },
+      ],
+    },
   ],
   errors: [
     { code: 6000, name: "UserAlreadyExists", msg: "User already exists." },
@@ -339,5 +402,7 @@ export const marketAbi = {
       name: "IncorrectNumberOfSellers",
       msg: "Incorrect number of sellers.",
     },
+    { code: 6009, name: "RequestNotAccepted", msg: "Request not accepted." },
+    { code: 6010, name: "RequestNotLocked", msg: "Request not locked." },
   ],
 };
