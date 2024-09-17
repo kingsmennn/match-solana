@@ -311,6 +311,54 @@ export const useUserStore = defineStore(STORE_KEY, {
         throw error;
       }
     },
+    async toggleEnableLocation(value: boolean) {
+      try {
+        const [locationPda] = findProgramAddressSync(
+          [
+            utf8.encode(LOCATION_PREFERENCE_TAG),
+            wallet!.value!.publicKey!.toBuffer(),
+          ],
+          programID
+        );
+        const [profilePda] = findProgramAddressSync(
+          [utf8.encode(USER_TAG), wallet!.value!.publicKey!.toBuffer()],
+          programID
+        );
+        const contract = await this.getContract();
+
+        const tx = await contract.methods
+          .toggleLocation(value)
+          .accounts({
+            user: profilePda,
+            authority: wallet!.value!.publicKey!,
+            location: locationPda,
+          })
+          .rpc();
+      } catch (error) {
+        console.error("Error updating user:", error);
+        throw error;
+      }
+    },
+    async fetchLocationPreference(): Promise<boolean> {
+      try {
+        const contract = await this.getContract();
+        const userStore = useUserStore();
+        const userLocationPreference =
+          await contract.account.enablelocation.all([
+            {
+              memcmp: {
+                offset: 8 + 0,
+                bytes: userStore.accountId!,
+              },
+            },
+          ]);
+        const locationPreference = userLocationPreference[0];
+        return locationPreference.account.locationEnabled;
+      } catch (error) {
+        console.error("Error fetching location preference:", error);
+        throw error;
+      }
+    },
     async fetchUserById(userId: number) {
       const contract = await this.getContract();
       try {
