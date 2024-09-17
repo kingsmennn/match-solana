@@ -313,13 +313,6 @@ export const useUserStore = defineStore(STORE_KEY, {
     },
     async toggleEnableLocation(value: boolean) {
       try {
-        const [locationPda] = findProgramAddressSync(
-          [
-            utf8.encode(LOCATION_PREFERENCE_TAG),
-            wallet!.value!.publicKey!.toBuffer(),
-          ],
-          programID
-        );
         const [profilePda] = findProgramAddressSync(
           [utf8.encode(USER_TAG), wallet!.value!.publicKey!.toBuffer()],
           programID
@@ -331,7 +324,6 @@ export const useUserStore = defineStore(STORE_KEY, {
           .accounts({
             user: profilePda,
             authority: wallet!.value!.publicKey!,
-            location: locationPda,
           })
           .rpc();
       } catch (error) {
@@ -342,18 +334,12 @@ export const useUserStore = defineStore(STORE_KEY, {
     async fetchLocationPreference(): Promise<boolean> {
       try {
         const contract = await this.getContract();
-        const userStore = useUserStore();
-        const userLocationPreference =
-          await contract.account.enablelocation.all([
-            {
-              memcmp: {
-                offset: 8 + 0,
-                bytes: userStore.accountId!,
-              },
-            },
-          ]);
-        const locationPreference = userLocationPreference[0];
-        return locationPreference.account.locationEnabled;
+        const [profilePda] = findProgramAddressSync(
+          [utf8.encode(USER_TAG), wallet!.value!.publicKey!.toBuffer()],
+          programID
+        );
+        const userData = await contract.account.user.fetch(profilePda);
+        return userData.locationEnabled;
       } catch (error) {
         console.error("Error fetching location preference:", error);
         throw error;
