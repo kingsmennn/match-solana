@@ -38,6 +38,7 @@ type UserStore = {
     userNotFound: boolean;
     message?: string;
   };
+  locationEnabled: boolean;
 };
 
 const env = useRuntimeConfig().public;
@@ -66,6 +67,7 @@ export const useUserStore = defineStore(STORE_KEY, {
     blockchainError: {
       userNotFound: false,
     },
+    locationEnabled: false,
   }),
   getters: {
     isConnected: (state) => !!state.accountId,
@@ -109,6 +111,10 @@ export const useUserStore = defineStore(STORE_KEY, {
 
         this.storeUserDetails(blockchainUser);
 
+        this.fetchLocationPreference().then((res) => {
+          this.locationEnabled = res;
+        })
+
         // If the user is a seller, fetch their store details
         if (this.accountType === AccountType.SELLER) {
           const storeStore = useStoreStore();
@@ -127,9 +133,19 @@ export const useUserStore = defineStore(STORE_KEY, {
     },
 
     async disconnect() {
-      this.accountId = null;
-      this.userDetails = undefined;
-      this.blockchainError.userNotFound = false;
+      try {
+        this.accountId = null;
+        this.userDetails = undefined;
+        this.storeDetails = undefined;
+        this.blockchainError.userNotFound = false;
+        this.locationEnabled = false;
+        const userCookie = useCookie<User | null>(STORE_KEY_MIDDLEWARE, {
+          watch: true,
+        });
+        userCookie.value = null;
+      } catch (error) {
+        console.error("Error disconnecting:", error);
+      }
     },
 
     async fetchUser(account_id: PublicKey): Promise<any> {
@@ -434,6 +450,7 @@ export const useUserStore = defineStore(STORE_KEY, {
       "accountId",
       "userDetails",
       "blockchainError.userNotFound",
+      "locationEnabled",
       "storeDetails.name",
       "storeDetails.description",
       "storeDetails.location",
