@@ -347,6 +347,7 @@ export const useUserStore = defineStore(STORE_KEY, {
             authority: this.anchorWallet!.publicKey!,
           })
           .rpc();
+          this.locationEnabled = value;
       } catch (error) {
         console.error("Error updating user:", error);
         throw error;
