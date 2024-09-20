@@ -87,9 +87,9 @@ export type Offer = {
   offerId?: number
   price: number;
   images: string[];
-  requestId: string;
+  requestId: number;
   storeName: string;
-  sellerId: string;
+  sellerId: number;
   isAccepted: boolean;
   createdAt: Date;
   updatedAt: Date;

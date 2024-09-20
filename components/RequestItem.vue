@@ -49,6 +49,70 @@
                   </p>
                 </template>
               </template>
+
+              <template v-if="lifecycle === RequestLifecycleIndex.PENDING && accountType === AccountType.BUYER">
+                <div class="tw-block max-md:tw-hidden md:tw-h-12 tw-invisible">
+                  artificial spacer
+                </div>
+                <button
+                  v-if="lifecycle === RequestLifecycleIndex.PENDING"
+                  :id="`revert-${requestId}`"
+                  class="tw-absolute tw-z-10 tw-bottom-2 tw-right-2 tw-inline-block tw-p-2 tw-px-4 tw-rounded-full tw-bg-black tw-select-none tw-text-white hover:tw-bg-black/80 tw-transition-all tw-duration-300 tw-font-medium"
+                >
+                  <v-progress-circular
+                    v-if="cancelingRequest"
+                    indeterminate
+                    color="white"
+                    size="20"
+                    width="2"
+                  >
+                  </v-progress-circular>
+                  <template v-else> Revert </template>
+                </button>
+
+                <v-menu
+                  v-if="userStore.isConnected"
+                  :activator="`#revert-${requestId}`"
+                  transition="slide-y-transition"
+                >
+                  <div
+                    class="tw-bg-white tw-mt-2 tw-p-2 tw-rounded-lg tw-flex tw-flex-col tw-gap-3 tw-shadow-lg"
+                  >
+                    <span
+                      class="tw-text-sm tw-border-b tw-px-3 tw-py-2 tw-pb-1.5"
+                    >
+                      Are you sure you want <br />to cancel this request?
+                    </span>
+
+                    <button
+                      @click="handleCancelRequest"
+                      class="tw-p-2 tw-px-4 tw-rounded-full tw-bg-red-600 tw-select-none tw-text-white hover:tw-bg-red-600/80 tw-transition-all tw-duration-300 tw-font-medium"
+                    >
+                      Cancel request
+                    </button>
+                  </div>
+                </v-menu>
+              </template>
+
+              <button
+                v-if="
+                  hasLocked &&
+                  lifecycle === RequestLifecycleIndex.ACCEPTED_BY_BUYER &&
+                  accountType === AccountType.BUYER
+                "
+                @click="handleMarkAsCompleted"
+                class="tw-inline-block tw-p-2 tw-px-4 mt-2 tw-rounded-full tw-bg-black tw-select-none tw-text-white hover:tw-bg-black/80 tw-transition-all tw-duration-300 tw-font-medium"
+              >
+                <v-progress-circular
+                  v-if="markingAsCompleted"
+                  indeterminate
+                  color="white"
+                  size="20"
+                  width="2"
+                >
+                </v-progress-circular>
+                <template v-else> Mark as completed </template>
+              </button>
             </div>
           </div>
           <span class="tw-text-sm">{{ timeAgo }}</span>
@@ -78,8 +142,10 @@
               <span>seller</span>
             </template>
             <template v-else>
-              <v-icon>mdi-checkbox-marked-circle</v-icon>
-              <span>accepted</span>
+              <v-icon>
+                {{ hasMyOffer ? "mdi-checkbox-marked-circle" : "mdi-timelapse" }}
+              </v-icon>
+              <span>{{ hasMyOffer ? "accepted" : "available" }}</span>
             </template>
           </div>
           <div class="tw-flex tw-justify-center tw-items-center tw-gap-1">
@@ -142,13 +208,12 @@
 
 <script setup lang="ts">
 import { computed } from "vue";
-import { AccountType, RequestLifecycleIndex, Store, User } from "@/types";
+import { AccountType, Offer, RequestLifecycleIndex, Store, User } from "@/types";
 import moment from "moment";
 import { useRequestsStore } from "@/pinia/request";
 import { TIME_TILL_LOCK } from "@/utils/constants";
 import { useUserStore } from "@/pinia/user";
 import { useStoreStore } from "@/pinia/store";
-import { AnchorError } from "@project-serum/anchor";
 import { toast } from "vue-sonner";
 
 interface Props {
@@ -175,7 +240,7 @@ const hasLocked = computed(() =>
 const lifecycleProgress = computed<number>(() => {
   if (
     hasLocked.value &&
-    RequestLifecycleIndex.ACCEPTED_BY_BUYER &&
+    props.lifecycle === RequestLifecycleIndex.ACCEPTED_BY_BUYER &&
     props.accountType === AccountType.BUYER
   )
     return 100;
@@ -220,17 +285,57 @@ watch(
       const stores = await storesStore.getUserStores(res?.userAddress);
       if (!stores) return;
       sellerStore.value = !!stores[0] ? stores[0] : undefined;
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
-      if (error instanceof AnchorError) {
-        const err: AnchorError = error;
-        toast.error(err.error.errorMessage);
-        return;
-      }
+      toast.error(error);
     } finally {
       fetchingStoreDetails.value = false;
     }
   },
   { immediate: true }
 );
+
+const markingAsCompleted = ref(false);
+const handleMarkAsCompleted = async () => {
+  markingAsCompleted.value = true;
+  try {
+    await requestStore.markRequestAsCompleted(props.requestId);
+    completed.value = true;
+    toast.success("request completed");
+  } catch (error: any) {
+    console.log(error);
+    toast.error(error);
+  } finally {
+    markingAsCompleted.value = false;
+  }
+};
+
+const cancelingRequest = ref(false);
+const handleCancelRequest = async () => {
+  cancelingRequest.value = true;
+  try {
+    await requestStore.deleteRequest(props.requestId);
+    requestStore.removeDeletedRequestFromList(props.requestId);
+    toast.success("request canceled");
+  } catch (error: any) {
+    console.log(error);
+    toast.error(error);
+  } finally {
+    cancelingRequest.value = false;
+  }
+};
+
+// check if I have made offer to request
+const hasMyOffer = ref(false);
+const requestsStore = useRequestsStore();
+const fetchAllRequestOffers = async () => {
+  try {
+    const res = await requestsStore.fetchAllOffers(props.requestId!) as Offer[]
+    hasMyOffer.value = res.some((offer) => offer.sellerId === userStore.userId)
+  } catch (error) {
+    toast.error("error fetching offers")
+  } finally {
+  }
+}
+onMounted(fetchAllRequestOffers)
 </script>

@@ -69,6 +69,7 @@ export const useUserStore = defineStore(STORE_KEY, {
   }),
   getters: {
     isConnected: (state) => !!state.accountId,
+    userId: (state): number | undefined => state.userDetails?.[0],
     isNotOnboarded: (state) =>
       !!state.accountId && state.blockchainError.userNotFound,
     passedSecondaryCheck: (state) => {
