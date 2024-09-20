@@ -20,7 +20,7 @@ import {
 import { useStoreStore } from "./store";
 import { findProgramAddressSync } from "@project-serum/anchor/dist/cjs/utils/pubkey";
 import { utf8 } from "@project-serum/anchor/dist/cjs/utils/bytes";
-import { useAnchorWallet, useWallet } from "solana-wallets-vue";
+import { AnchorWallet, useAnchorWallet, useWallet } from "solana-wallets-vue";
 import {
   clusterApiUrl,
   Connection,
@@ -39,10 +39,10 @@ type UserStore = {
     message?: string;
   };
   locationEnabled: boolean;
+  anchorWallet: AnchorWallet | undefined;
 };
 
 const env = useRuntimeConfig().public;
-const wallet = useAnchorWallet();
 export const programID = new PublicKey(env.contractId);
 const preflightCommitment = "processed";
 const connection = new Connection(env.solanaRpcUrl, preflightCommitment);
@@ -56,6 +56,7 @@ export const useUserStore = defineStore(STORE_KEY, {
       userNotFound: false,
     },
     locationEnabled: false,
+    anchorWallet: undefined,
   }),
   getters: {
     isConnected: (state) => !!state.accountId,
@@ -71,7 +72,7 @@ export const useUserStore = defineStore(STORE_KEY, {
     phone: (state) => state.userDetails?.[2],
     location: (state) => state.userDetails?.[3],
     accountType: (state) => state.userDetails?.[6],
-    provider: (state) => {
+    provider: (_) => {
       const wallet = useAnchorWallet();
       if (!wallet.value) return;
       return new AnchorProvider(
@@ -114,7 +115,7 @@ export const useUserStore = defineStore(STORE_KEY, {
 
         this.fetchLocationPreference().then((res) => {
           this.locationEnabled = res;
-        })
+        });
 
         // If the user is a seller, fetch their store details
         if (this.accountType === AccountType.SELLER) {
@@ -233,7 +234,7 @@ export const useUserStore = defineStore(STORE_KEY, {
     }: CreateUserDTO): Promise<string | undefined> {
       try {
         const [profilePda, _] = findProgramAddressSync(
-          [utf8.encode(USER_TAG), wallet!.value!.publicKey!.toBuffer()],
+          [utf8.encode(USER_TAG), this.anchorWallet!.publicKey!.toBuffer()],
           programID
         );
 
@@ -254,13 +255,15 @@ export const useUserStore = defineStore(STORE_KEY, {
             user: profilePda,
             systemProgram: SystemProgram.programId,
             userCounter: USER_COUNTER_PUBKEY,
-            authority: wallet!.value!.publicKey!,
+            authority: this.anchorWallet!.publicKey!,
           })
           .rpc();
 
         await new Promise((resolve) => setTimeout(resolve, 2000));
 
-        const blockchainUser = await this.fetchUser(wallet!.value!.publicKey!);
+        const blockchainUser = await this.fetchUser(
+          this.anchorWallet!.publicKey!
+        );
         this.storeUserDetails(blockchainUser);
 
         this.blockchainError.userNotFound = false;
@@ -282,7 +285,7 @@ export const useUserStore = defineStore(STORE_KEY, {
     > {
       try {
         const [profilePda] = findProgramAddressSync(
-          [utf8.encode(USER_TAG), wallet!.value!.publicKey!.toBuffer()],
+          [utf8.encode(USER_TAG), this.anchorWallet!.publicKey!.toBuffer()],
           programID
         );
 
@@ -316,7 +319,7 @@ export const useUserStore = defineStore(STORE_KEY, {
           )
           .accounts({
             user: profilePda,
-            authority: wallet!.value!.publicKey!,
+            authority: this.anchorWallet!.publicKey!,
           })
           .rpc();
 
@@ -332,7 +335,7 @@ export const useUserStore = defineStore(STORE_KEY, {
     async toggleEnableLocation(value: boolean) {
       try {
         const [profilePda] = findProgramAddressSync(
-          [utf8.encode(USER_TAG), wallet!.value!.publicKey!.toBuffer()],
+          [utf8.encode(USER_TAG), this.anchorWallet!.publicKey!.toBuffer()],
           programID
         );
         const contract = await this.getContract();
@@ -341,7 +344,7 @@ export const useUserStore = defineStore(STORE_KEY, {
           .toggleLocation(value)
           .accounts({
             user: profilePda,
-            authority: wallet!.value!.publicKey!,
+            authority: this.anchorWallet!.publicKey!,
           })
           .rpc();
       } catch (error) {
@@ -353,7 +356,7 @@ export const useUserStore = defineStore(STORE_KEY, {
       try {
         const contract = await this.getContract();
         const [profilePda] = findProgramAddressSync(
-          [utf8.encode(USER_TAG), wallet!.value!.publicKey!.toBuffer()],
+          [utf8.encode(USER_TAG), this.anchorWallet!.publicKey!.toBuffer()],
           programID
         );
         const userData = await contract.account.user.fetch(profilePda);
@@ -457,6 +460,7 @@ export const useUserStore = defineStore(STORE_KEY, {
       "storeDetails.location",
     ],
     async afterRestore(context) {
+      context.store.anchorWallet = useAnchorWallet();
       if (context.store.accountId) {
         await context.store.setUpSolanaConnectEvents();
       }
