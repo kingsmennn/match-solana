@@ -154,7 +154,6 @@ export const marketAbi = {
       name: "toggleLocation",
       accounts: [
         { name: "authority", isMut: true, isSigner: true },
-        { name: "location", isMut: true, isSigner: false },
         { name: "user", isMut: true, isSigner: false },
         { name: "systemProgram", isMut: false, isSigner: false },
       ],
@@ -164,7 +163,7 @@ export const marketAbi = {
       name: "getLocationPreference",
       accounts: [
         { name: "authority", isMut: true, isSigner: true },
-        { name: "location", isMut: true, isSigner: false },
+        { name: "user", isMut: true, isSigner: false },
         { name: "systemProgram", isMut: false, isSigner: false },
       ],
       args: [],
@@ -212,6 +211,7 @@ export const marketAbi = {
           { name: "updatedAt", type: "i64" },
           { name: "accountType", type: { defined: "AccountType" } },
           { name: "authority", type: "publicKey" },
+          { name: "locationEnabled", type: "bool" },
         ],
       },
     },
@@ -266,17 +266,6 @@ export const marketAbi = {
           { name: "isAccepted", type: "bool" },
           { name: "createdAt", type: "u64" },
           { name: "updatedAt", type: "u64" },
-        ],
-      },
-    },
-    {
-      name: "EnableLocation",
-      type: {
-        kind: "struct",
-        fields: [
-          { name: "userId", type: "u64" },
-          { name: "authority", type: "publicKey" },
-          { name: "locationEnabled", type: "bool" },
         ],
       },
     },
@@ -380,7 +369,6 @@ export const marketAbi = {
       fields: [
         { name: "userId", type: "u64", index: false },
         { name: "locationEnabled", type: "bool", index: false },
-        { name: "authority", type: "publicKey", index: false },
       ],
     },
   ],
