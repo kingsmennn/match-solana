@@ -18,8 +18,15 @@
           </nav>
         </div>
 
-        <div class="tw-space-x-2">
+        <div class="tw-flex tw-gap-2 tw-items-center">
           <wallet-multi-button></wallet-multi-button>
+          <NuxtLink
+            to="/settings"
+            class="tw-flex tw-bg-white hover:tw-bg-white/80 tw-rounded-full tw-h-7 tw-w-7
+            tw-items-center tw-justify-center tw-leading-none
+            tw-transition-all tw-duration-300">
+            <v-icon class="tw-text-black !tw-text-xl">mdi-cog</v-icon>
+          </NuxtLink>
           <!-- <button
             id="account-type"
             class="tw-inline-flex tw-items-center tw-p-1 tw-px-3 tw-rounded-full tw-bg-white tw-select-none tw-text-black hover:tw-bg-white/80 tw-relative tw-transition-all tw-duration-300"
