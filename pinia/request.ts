@@ -498,115 +498,62 @@ export const useRequestsStore = defineStore("requests", {
       }
     },
     async markRequestAsCompleted(requestId: number) {
-      // try {
-      //   const userStore = useUserStore();
-      //   const injector = await web3FromAddress(userStore.accountId!);
-      //   const api = await userStore.polkadotApi();
-      //   const contract = await userStore.getContract();
+      const userStore = useUserStore();
+      const { publicKey } = useWallet();
+      try {
+        const contract = await userStore.getContract();
+        const request = await contract.account.request.all([
+          {
+            memcmp: {
+              offset: 8 + 32,
+              bytes: ntobs58(requestId),
+            },
+          },
+        ]);
 
-      //   const { gasRequired } = await contract.query.markRequestAsCompleted(
-      //     userStore.accountId!,
-      //     {
-      //       gasLimit: api?.registry.createType("WeightV2", {
-      //         refTime: MAX_CALL_WEIGHT,
-      //         proofSize: PROOFSIZE,
-      //       }) as WeightV2,
-      //       storageDepositLimit,
-      //     },
-      //     requestId
-      //   );
+        const receipt = await contract.methods
+          .markAsCompleteRequest()
+          .accounts({
+            systemProgram: SystemProgram.programId,
+            authority: publicKey.value!,
+            request: request[0].publicKey,
+          })
+          .rpc();
 
-      //   const result = await new Promise(async (resolve, reject) => {
-      //     const markResult = await contract.tx
-      //       .markRequestAsCompleted(
-      //         {
-      //           gasLimit: api?.registry.createType(
-      //             "WeightV2",
-      //             gasRequired
-      //           ) as WeightV2,
-      //           storageDepositLimit,
-      //         },
-      //         requestId
-      //       )
-      //       .signAndSend(
-      //         userStore.accountId!,
-      //         { signer: injector.signer },
-      //         (result) => {
-      //           try {
-      //             const success = getPolkadotContractResult({
-      //               result,
-      //               api: api!,
-      //             });
-      //             if (success) {
-      //               resolve(markResult);
-      //             }
-      //           } catch (error) {
-      //             reject(error);
-      //           }
-      //         }
-      //       );
-      //   });
-
-      //   return result;
-      // } catch (error) {
-      //   console.error(error);
-      //   throw error;
-      // }
+        return receipt;
+      } catch (error) {
+        console.error(error);
+        throw error;
+      }
     },
     async deleteRequest(requestId: number) {
-      // try {
-      //   const userStore = useUserStore();
-      //   const injector = await web3FromAddress(userStore.accountId!);
-      //   const api = await userStore.polkadotApi();
-      //   const contract = await userStore.getContract();
+      const userStore = useUserStore();
+      const { publicKey } = useWallet();
+      try {
+        const contract = await userStore.getContract();
+        const request = await contract.account.request.all([
+          {
+            memcmp: {
+              offset: 8 + 32,
+              bytes: ntobs58(requestId),
+            },
+          },
+        ]);
 
-      //   const { gasRequired } = await contract.query.deleteRequest(
-      //     userStore.accountId!,
-      //     {
-      //       gasLimit: api?.registry.createType("WeightV2", {
-      //         refTime: MAX_CALL_WEIGHT,
-      //         proofSize: PROOFSIZE,
-      //       }) as WeightV2,
-      //       storageDepositLimit,
-      //     },
-      //     requestId
-      //   );
-      //   const result = await new Promise(async (resolve, reject) => {
-      //     const deleteRequest = await contract.tx
-      //       .deleteRequest(
-      //         {
-      //           gasLimit: api?.registry.createType(
-      //             "WeightV2",
-      //             gasRequired
-      //           ) as WeightV2,
-      //           storageDepositLimit,
-      //         },
-      //         requestId
-      //       )
-      //       .signAndSend(
-      //         userStore.accountId!,
-      //         { signer: injector.signer },
-      //         (result) => {
-      //           try {
-      //             const success = getPolkadotContractResult({
-      //               result,
-      //               api: api!,
-      //             });
-      //             if (success) {
-      //               resolve(deleteRequest);
-      //             }
-      //           } catch (error) {
-      //             reject(error);
-      //           }
-      //         }
-      //       );
-      //   });
+        const receipt = await contract.methods
+          .deleteRequest()
+          .accounts({
+            systemProgram: SystemProgram.programId,
+            authority: publicKey.value!,
+            request: request[0].publicKey,
+          })
+          .rpc();
 
-      //   return result;
-      // } catch (error) {
-      //   console.error(error);
-      //   throw error;
-      // }
+        return receipt;
+      } catch (error) {
+        console.error(error);
+        throw error;
+      }
     },
     removeDeletedRequestFromList(requestId: number) {
       this.list = this.list.filter(
