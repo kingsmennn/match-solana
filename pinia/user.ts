@@ -46,18 +46,6 @@ const wallet = useAnchorWallet();
 export const programID = new PublicKey(env.contractId);
 const preflightCommitment = "processed";
 const connection = new Connection(env.solanaRpcUrl, preflightCommitment);
-const provider = computed(() => {
-  if (!wallet.value) return;
-  return new AnchorProvider(
-    connection,
-    wallet.value,
-    AnchorProvider.defaultOptions()
-  );
-});
-const program = computed(() => {
-  if (!provider.value) return;
-  return new Program(marketAbi as Idl, programID, provider.value);
-});
 
 export const useUserStore = defineStore(STORE_KEY, {
   state: (): UserStore => ({
@@ -83,6 +71,19 @@ export const useUserStore = defineStore(STORE_KEY, {
     phone: (state) => state.userDetails?.[2],
     location: (state) => state.userDetails?.[3],
     accountType: (state) => state.userDetails?.[6],
+    provider: (state) => {
+      const wallet = useAnchorWallet();
+      if (!wallet.value) return;
+      return new AnchorProvider(
+        connection,
+        wallet.value,
+        AnchorProvider.defaultOptions()
+      );
+    },
+    program() {
+      if (!this.provider) return;
+      return new Program(marketAbi as Idl, programID, this.provider as any);
+    },
   },
   actions: {
     async setUpSolanaConnectEvents() {
@@ -126,10 +127,10 @@ export const useUserStore = defineStore(STORE_KEY, {
       }
     },
     async getContract() {
-      if (!program.value) {
+      if (!this.program) {
         throw new Error("Program not initialized");
       }
-      return program.value;
+      return this.program;
     },
 
     async disconnect() {
