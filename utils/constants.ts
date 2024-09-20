@@ -49,6 +49,8 @@ export const TIME_TILL_LOCK = 15 * 60 * 1000; // mss
 
 export const USER_TAG = "USER_STATE";
 
+export const LOCATION_PREFERENCE_TAG = "LOCATION_PREFERENCE_STATE";
+
 export const ADMIN_TAG = "ADMIN_TAG";
 
 export const STORE_TAG = "STORE_STATE";
@@ -66,17 +68,17 @@ export const REQUEST_COUNTER = "REQUEST_COUNTER";
 export const OFFER_COUNTER = "OFFER_COUNTER";
 
 export const USER_COUNTER_PUBKEY = new PublicKey(
-  "5sddT4AzjpYGpw9kFNGkk8jN4gxY7ptYjkjb8qVv6vas"
+  "BCo2p5do9KvuUjHaYfELcemNCvMQ529j2Jn6RszQEbpv"
 );
 
 export const STORE_COUNTER_PUBKEY = new PublicKey(
-  "3dasQGBqSYaiiManp4xhymJfxrVVodb1hY438NoHBTtS"
+  "HLyULUkEbbUh12fnbfxaXQbz5kBz65WTgMN3PgYsBNKE"
 );
 
 export const REQUEST_COUNTER_PUBKEY = new PublicKey(
-  "ETETC6gEtjrmD34zrapJeqgBzBkW2ERL3sGRpH5KRSzC"
+  "51t7N49H2BVXGcUjvzxD6ahsf4HjhghSCh6NzFU4ha1r"
 );
 
 export const OFFER_COUNTER_PUBKEY = new PublicKey(
-  "DbKA8yJ8uZHWMh71vRSkroJUAgsrxLta1D275YtcZs1c"
+  "8V1oQ3pUEGrAAuuZ3tYb1r1LpWcnpbGrwQHBEMdAPoCe"
 );
