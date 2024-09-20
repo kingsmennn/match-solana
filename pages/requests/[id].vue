@@ -68,11 +68,12 @@
                     :request-id="requestDetails.requestId"
                     :store-name="offer.storeName"
                     :buyer-id="requestDetails.buyerId"
-                    :seller-id="offer.sellerId"
+                    :seller-id="Number(offer.sellerId)"
                     :images="offer.images"
                     :lifecycle="requestDetails.lifecycle"
                     :price-quote="offer.price"
                     :is-accepted="offer.isAccepted"
+                    @offer-accepted="handleMarkAsAccepted(offer.offerId!)"
                   />
                 </template>
               </div>
@@ -213,11 +214,21 @@ const sellerExistingOffer = computed(()=>{
   if(!allOffers.value.length) return null as unknown as Offer
   let res: Offer = null as unknown as Offer
   allOffers.value.forEach((offer)=>{
-    if(offer.sellerId === userStore.accountId){
+    if(Number(offer.sellerId) === userStore.userId){
       res = offer
     }
   })
   return res
 })
 
+const handleMarkAsAccepted = (offerId: number) => {
+  // mark offer as accepted
+  allOffers.value.forEach((offer)=>{
+    // reset all other offers
+    offer.isAccepted = false
+    if(offer.id === offerId){
+      offer.isAccepted = true
+    }
+  })
+}
 </script>

@@ -65,7 +65,6 @@
 import { RequestLifecycleIndex } from "@/types";
 import { useRequestsStore } from "@/pinia/request";
 import { toast } from "vue-sonner";
-import { AnchorError } from "@project-serum/anchor";
 
 interface Props {
   offerId: number;
@@ -74,11 +73,14 @@ interface Props {
   images: string[];
   priceQuote: number | null;
   buyerId: number;
-  sellerId: string;
+  sellerId: number;
   storeName: string;
   isAccepted?: boolean;
 }
 const props = defineProps<Props>();
+const emits = defineEmits<{
+  (e: "offer-accepted", offerId: number): void
+}>();
 
 const carousel = ref(0);
 const displayedPrice = computed<string>(() => {
@@ -91,15 +93,10 @@ const requestStore = useRequestsStore();
 const handleAcceptBtnClick = async () => {
   submiting.value = true;
   try {
-    console.log(props);
     await requestStore.acceptOffer(props.offerId);
+    emits("offer-accepted", props.offerId);
     toast.success("offer accepted!");
   } catch (error: any) {
-    if (error instanceof AnchorError) {
-      const err: AnchorError = error;
-      toast.error(err.error.errorMessage);
-      return;
-    }
     toast.error(error);
   } finally {
     submiting.value = false;

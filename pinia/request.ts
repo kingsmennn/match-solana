@@ -322,6 +322,7 @@ export const useRequestsStore = defineStore("requests", {
           };
         });
 
+        this.list = res;
         return res;
       } catch (error) {
         console.log({ error });
