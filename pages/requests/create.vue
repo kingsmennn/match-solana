@@ -81,6 +81,18 @@
                       :src="image"
                       cover
                     >
+                      <button
+                        v-if="hasImages"
+                        type="button"
+                        class="tw-group tw-absolute tw-top-2 tw-right-2 tw-bg-white tw-rounded-full
+                        tw-h-8 tw-w-8 tw-ring-4 tw-ring-black/10 tw-flex tw-items-center tw-justify-center"
+                        @click="removeImage(n)">
+                        <v-icon
+                          class="group-hover:!tw-text-red-600  tw-transition-all tw-duration-300"
+                          size="28">
+                          mdi-minus-circle
+                        </v-icon>
+                      </button>
                     </v-carousel-item>
                   </v-carousel>
                 </ClientOnly>
@@ -182,8 +194,9 @@ const spatularImages = [
   "https://firebasestorage.googleapis.com/v0/b/i-get-am.appspot.com/o/istockphoto-1270011649-612x612.jpg?alt=media&token=210f6704-b960-437a-b30b-3ea4c3a146ff",
   "https://firebasestorage.googleapis.com/v0/b/i-get-am.appspot.com/o/istockphoto-134724298-612x612.jpg?alt=media&token=adf99e2d-daef-41f9-af29-4fc4fbb72284",
 ];
+const hasImages = computed(() => form.value.images.length > 0);
 const renderedCarouselImages = computed(() =>
-  form.value.images.length ? form.value.images : spatularImages
+  hasImages.value ? form.value.images : spatularImages
 );
 
 const form = ref({
@@ -204,6 +217,7 @@ const resetForm = () => {
     market: "",
   };
 };
+const removeImage = (n: number) => form.value.images.splice(n, 1);
 
 // IMAGE UPLOAD SECTION
 const { progress, uploadFile } = useLightHouseUpload();

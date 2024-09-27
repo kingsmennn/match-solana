@@ -20,6 +20,18 @@
                   :src="image"
                   cover
                 >
+                  <button
+                    v-if="hasImages"
+                    type="button"
+                    class="tw-group tw-absolute tw-top-2 tw-right-2 tw-bg-white tw-rounded-full
+                    tw-h-8 tw-w-8 tw-ring-4 tw-ring-black/10 tw-flex tw-items-center tw-justify-center"
+                    @click="removeImage(n)">
+                    <v-icon
+                      class="group-hover:!tw-text-red-600  tw-transition-all tw-duration-300"
+                      size="28">
+                      mdi-minus-circle
+                    </v-icon>
+                  </button>
                 </v-carousel-item>
               </v-carousel>
             </ClientOnly>
@@ -140,6 +152,7 @@ const { files, open, reset: resetFiles } = useFileDialog();
 const uploadingImage = ref(false);
 const readyForAnotherUpload = ref(true);
 const images = ref<string[]>([]);
+const hasImages = computed(() => images.value.length > 0);
 const handleAddImageBtnClick = async () => {
   // if a file has been selected
   if (files.value?.length === 1) {
@@ -159,6 +172,7 @@ const handleAddImageBtnClick = async () => {
   }
   open({ accept: "image/*", multiple: false });
 };
+const removeImage = (n: number) => images.value.splice(n, 1);
 
 // SUBMIT OFFER
 const form = ref({
