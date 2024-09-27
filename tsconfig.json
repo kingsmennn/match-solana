@@ -1,4 +1,6 @@
 {
-  // https://nuxt.com/docs/guide/concepts/typescript
+  "compilerOptions": {
+    "lib": ["es2022", "dom"],
+  },
   "extends": "./.nuxt/tsconfig.json"
 }
