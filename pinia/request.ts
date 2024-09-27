@@ -511,7 +511,7 @@ export const useRequestsStore = defineStore("requests", {
         ]);
 
         const receipt = await contract.methods
-          .markAsCompleteRequest()
+          .markRequestAsCompleted()
           .accounts({
             systemProgram: SystemProgram.programId,
             authority: publicKey.value!,
