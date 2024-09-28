@@ -9,7 +9,7 @@ import {
   RequestResponse,
 } from "@/types";
 
-import { programID, useUserStore } from "./user";
+import { useUserStore } from "./user";
 import {
   OFFER_COUNTER_PUBKEY,
   OFFER_TAG,
@@ -33,6 +33,7 @@ import {
   getOrCreateAssociatedTokenAccount,
   TOKEN_PROGRAM_ID,
 } from "@solana/spl-token";
+import { programID } from "@/utils/constants";
 
 type RequestsStoreType = {
   list: RequestResponse[];

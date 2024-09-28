@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { CreateStoreDTO, Store, STORE_STORE_KEY } from "@/types";
-import { programID, useUserStore } from "./user";
+import { useUserStore } from "./user";
 import {
   LOCATION_DECIMALS,
   STORE_COUNTER_PUBKEY,
@@ -13,6 +13,7 @@ import { findProgramAddressSync } from "@project-serum/anchor/dist/cjs/utils/pub
 import { utf8 } from "@project-serum/anchor/dist/cjs/utils/bytes";
 import { BN } from "@project-serum/anchor";
 import { ntobs58 } from "@/utils/nb58";
+import { programID } from "@/utils/constants";
 
 export const useStoreStore = defineStore(STORE_STORE_KEY, {
   state: () => ({}),

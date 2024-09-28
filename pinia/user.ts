@@ -29,6 +29,7 @@ import {
 } from "@solana/web3.js";
 import { AnchorProvider, BN, Idl, Program } from "@project-serum/anchor";
 import { marketAbi } from "@/blockchain/abi";
+import { programID } from "@/utils/constants";
 
 type UserStore = {
   accountId: string | null;
@@ -43,7 +44,6 @@ type UserStore = {
 };
 
 const env = useRuntimeConfig().public;
-export const programID = new PublicKey(env.contractId);
 const preflightCommitment = "processed";
 const connection = new Connection(env.solanaRpcUrl, preflightCommitment);
 

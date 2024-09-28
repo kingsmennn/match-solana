@@ -1,6 +1,5 @@
 import { findProgramAddressSync } from "@project-serum/anchor/dist/cjs/utils/pubkey";
 import { PublicKey } from "@solana/web3.js";
-import { programID } from "pinia/user";
 import { utf8 } from "@project-serum/anchor/dist/cjs/utils/bytes";
 
 export const chainName = "Sepolia";
@@ -70,6 +69,7 @@ export const REQUEST_COUNTER = "REQUEST_COUNTER";
 
 export const OFFER_COUNTER = "OFFER_COUNTER";
 
+export const programID = new PublicKey(env.contractId);
 export const USER_COUNTER_PUBKEY = findProgramAddressSync(
   [utf8.encode(USER_COUNTER)],
   programID
