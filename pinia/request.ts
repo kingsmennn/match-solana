@@ -565,7 +565,7 @@ export const useRequestsStore = defineStore("requests", {
       const { publicKey } = useWallet();
       try {
         const contract = await userStore.getContract();
-        const request = await contract.account.request.all([
+        const requestMade = await contract.account.request.all([
           {
             memcmp: {
               offset: 8 + 32,
@@ -573,6 +573,20 @@ export const useRequestsStore = defineStore("requests", {
             },
           },
         ]);
+
+        const request = requestMade[0];
+        const offerId = request.account.acceptedOfferId;
+
+        const offerMade = await contract.account.offer.all([
+          {
+            memcmp: {
+              offset: 8 + 32,
+              bytes: ntobs58(offerId),
+            },
+          },
+        ]);
+
+        const offer = offerMade[0];
 
         const fromAta = await getAssociatedTokenAddress(
           PYUSD_ADDR,
@@ -587,9 +601,9 @@ export const useRequestsStore = defineStore("requests", {
           .accounts({
             systemProgram: SystemProgram.programId,
             authority: publicKey.value!,
-            request: request[0].publicKey,
+            request: request.publicKey,
             to: PORTAL_CLIENT_PUBKEY,
-            offer: new PublicKey(""),
+            offer: offer.publicKey,
             toAta: PORTAL_PYUSD_ATA_PUBKEY,
             fromAta: fromAta,
             tokenProgram: TOKEN_PROGRAM_ID,
