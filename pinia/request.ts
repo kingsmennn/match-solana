@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import {
+  CoinPayment,
   CreateOfferDTO,
   CreateRequestDTO,
   Offer,
@@ -559,7 +560,7 @@ export const useRequestsStore = defineStore("requests", {
         throw error;
       }
     },
-    async payForRequestSol(requestId: number) {
+    async payForRequest(requestId: number, coin: CoinPayment) {
       const userStore = useUserStore();
       const { publicKey } = useWallet();
       try {
@@ -573,14 +574,26 @@ export const useRequestsStore = defineStore("requests", {
           },
         ]);
 
+        const fromAta = await getAssociatedTokenAddress(
+          PYUSD_ADDR,
+          publicKey.value!,
+          true
+        );
+
         const receipt = await contract.methods
-          .payForRequestSol()
+          .payForRequest({
+            [coin]: {},
+          })
           .accounts({
             systemProgram: SystemProgram.programId,
             authority: publicKey.value!,
             request: request[0].publicKey,
             to: PORTAL_CLIENT_PUBKEY,
             offer: new PublicKey(""),
+            toAta: PORTAL_PYUSD_ATA_PUBKEY,
+            fromAta: fromAta,
+            tokenProgram: TOKEN_PROGRAM_ID,
+            priceFeed: PYTH_USDC_PRICE_FEED_PUBKEY,
           })
           .rpc();
 
