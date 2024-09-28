@@ -593,6 +593,11 @@ export const useRequestsStore = defineStore("requests", {
           publicKey.value!,
           true
         );
+        const toAta = await getAssociatedTokenAddress(
+          PYUSD_ADDR,
+          PORTAL_CLIENT_PUBKEY,
+          true
+        );
 
         const receipt = await contract.methods
           .payForRequest({
@@ -604,7 +609,7 @@ export const useRequestsStore = defineStore("requests", {
             request: request.publicKey,
             to: PORTAL_CLIENT_PUBKEY,
             offer: offer.publicKey,
-            toAta: PORTAL_PYUSD_ATA_PUBKEY,
+            toAta: toAta,
             fromAta: fromAta,
             tokenProgram: TOKEN_PROGRAM_ID,
             priceFeed: PYTH_USDC_PRICE_FEED_PUBKEY,
