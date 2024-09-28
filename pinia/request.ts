@@ -12,6 +12,7 @@ import { programID, useUserStore } from "./user";
 import {
   OFFER_COUNTER_PUBKEY,
   OFFER_TAG,
+  PORTAL_CLIENT_PUBKEY,
   REQUEST_COUNTER_PUBKEY,
   REQUEST_TAG,
   USER_TAG,
@@ -545,6 +546,37 @@ export const useRequestsStore = defineStore("requests", {
             systemProgram: SystemProgram.programId,
             authority: publicKey.value!,
             request: request[0].publicKey,
+          })
+          .rpc();
+
+        return receipt;
+      } catch (error) {
+        console.error(error);
+        throw error;
+      }
+    },
+    async payForRequestSol(requestId: number) {
+      const userStore = useUserStore();
+      const { publicKey } = useWallet();
+      try {
+        const contract = await userStore.getContract();
+        const request = await contract.account.request.all([
+          {
+            memcmp: {
+              offset: 8 + 32,
+              bytes: ntobs58(requestId),
+            },
+          },
+        ]);
+
+        const receipt = await contract.methods
+          .payForRequestSol()
+          .accounts({
+            systemProgram: SystemProgram.programId,
+            authority: publicKey.value!,
+            request: request[0].publicKey,
+            to: PORTAL_CLIENT_PUBKEY,
+            offer: new PublicKey(""),
           })
           .rpc();
 

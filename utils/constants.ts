@@ -82,3 +82,5 @@ export const REQUEST_COUNTER_PUBKEY = new PublicKey(
 export const OFFER_COUNTER_PUBKEY = new PublicKey(
   "8V1oQ3pUEGrAAuuZ3tYb1r1LpWcnpbGrwQHBEMdAPoCe"
 );
+
+export const PORTAL_CLIENT_PUBKEY = new PublicKey("BBb3WBLjQaBc7aT9pkzveEGsf8R3pm42mijrbrfYpM5w");
