@@ -15,6 +15,7 @@ import {
   PORTAL_CLIENT_PUBKEY,
   PORTAL_PYUSD_ATA_PUBKEY,
   PYTH_USDC_PRICE_FEED_PUBKEY,
+  PYUSD_ADDR,
   REQUEST_COUNTER_PUBKEY,
   REQUEST_TAG,
   USER_TAG,
@@ -27,7 +28,11 @@ import { PublicKey, SystemProgram } from "@solana/web3.js";
 import { BN, utils } from "@project-serum/anchor";
 import { off } from "process";
 import { ntobs58 } from "@/utils/nb58";
-import { TOKEN_PROGRAM_ID } from "@solana/spl-token";
+import {
+  getAssociatedTokenAddress,
+  getOrCreateAssociatedTokenAccount,
+  TOKEN_PROGRAM_ID,
+} from "@solana/spl-token";
 
 type RequestsStoreType = {
   list: RequestResponse[];
@@ -599,14 +604,20 @@ export const useRequestsStore = defineStore("requests", {
           },
         ]);
 
+        const fromAta = await getAssociatedTokenAddress(
+          PYUSD_ADDR,
+          publicKey.value!,
+          true
+        );
+
         const receipt = await contract.methods
           .payForRequestPusd()
           .accounts({
             systemProgram: SystemProgram.programId,
             authority: publicKey.value!,
             request: request[0].publicKey,
-            toAta: PORTAL_CLIENT_PUBKEY,
-            fromAta: PORTAL_PYUSD_ATA_PUBKEY,
+            toAta: PORTAL_PYUSD_ATA_PUBKEY,
+            fromAta: fromAta,
             offer: new PublicKey(""),
             tokenProgram: TOKEN_PROGRAM_ID,
             priceFeed: PYTH_USDC_PRICE_FEED_PUBKEY,

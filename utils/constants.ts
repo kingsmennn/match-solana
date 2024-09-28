@@ -91,3 +91,7 @@ export const PORTAL_PYUSD_ATA_PUBKEY = new PublicKey("7Z8ZQ5ZQ7Z");
 export const PYTH_USDC_PRICE_FEED_PUBKEY = new PublicKey(
   "EdVCmQ9FSPcVe5YySXDPCRmc8aDQLKJ9xvYBMZPie1Vw"
 );
+
+export const PYUSD_ADDR = new PublicKey(
+  "EdVCmQ9FSPcVe5YySXDPCRmc8aDQLKJ9xvYBMZPie1Vw"
+);
