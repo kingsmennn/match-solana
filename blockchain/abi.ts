@@ -151,6 +151,31 @@ export const marketAbi = {
       args: [],
     },
     {
+      name: "payForRequestPusd",
+      accounts: [
+        { name: "request", isMut: true, isSigner: false },
+        { name: "offer", isMut: true, isSigner: false },
+        { name: "authority", isMut: true, isSigner: true },
+        { name: "fromAta", isMut: true, isSigner: false },
+        { name: "priceFeed", isMut: false, isSigner: false },
+        { name: "toAta", isMut: true, isSigner: false },
+        { name: "tokenProgram", isMut: false, isSigner: false },
+        { name: "systemProgram", isMut: false, isSigner: false },
+      ],
+      args: [],
+    },
+    {
+      name: "payForRequestSol",
+      accounts: [
+        { name: "request", isMut: true, isSigner: false },
+        { name: "offer", isMut: true, isSigner: false },
+        { name: "authority", isMut: true, isSigner: true },
+        { name: "to", isMut: true, isSigner: false },
+        { name: "systemProgram", isMut: false, isSigner: false },
+      ],
+      args: [],
+    },
+    {
       name: "toggleLocation",
       accounts: [
         { name: "authority", isMut: true, isSigner: true },
@@ -248,6 +273,7 @@ export const marketAbi = {
           { name: "createdAt", type: "u64" },
           { name: "updatedAt", type: "u64" },
           { name: "lifecycle", type: { defined: "RequestLifecycle" } },
+          { name: "paid", type: "bool" },
         ],
       },
     },
@@ -392,5 +418,6 @@ export const marketAbi = {
     },
     { code: 6009, name: "RequestNotAccepted", msg: "Request not accepted." },
     { code: 6010, name: "RequestNotLocked", msg: "Request not locked." },
+    { code: 6011, name: "InvalidSeller", msg: "Invalid seller." },
   ],
 };

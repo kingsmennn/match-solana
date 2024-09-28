@@ -1,12 +1,37 @@
 import Portal from "@portal-hq/web";
 const env = useRuntimeConfig().public;
 export const portal = new Portal({
-  apiKey: "YOUR-CLIENT-API-KEY",
+  apiKey: env.portalClientApiKey,
   autoApprove: true,
   rpcConfig: {
-    "eip155:1": "YOUR-INFURA-OR-ALCHEMY-URL",
-    "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp":
-      "https://api.mainnet-beta.solana.com",
+    [env.solanaChainId]: env.solanaRpcUrl,
   },
-  host: "YOUR-CUSTOM-SUBDOMAN", // Set this once you've defined your custom subdomain
 });
+
+const sendTokensOnSolana = async (
+  to: any,
+  tokenMint: any,
+  tokenAmount: any
+) => {
+  if (!portal || !portal?.ready) throw new Error("Portal has not initialised");
+
+  const res = await fetch("/api/buildSolanaTransaction", {
+    method: "POST",
+    body: JSON.stringify({
+      to,
+      token: tokenMint,
+      amount: String(tokenAmount),
+    }),
+  });
+  const data = await res.json();
+
+  if (data.error) throw new Error(data.error);
+
+  const txnHash = await portal.request({
+    chainId: process.env.solanaChainId,
+    method: "sol_signAndSendTransaction",
+    params: data.transaction,
+  });
+
+  return txnHash;
+};

@@ -11,7 +11,7 @@ export default defineNuxtConfig({
   build: {
     transpile: ["vue-sonner"],
   },
-  css: ['~/assets/css/solana.css'],
+  css: ["~/assets/css/solana.css"],
   vite: {
     esbuild: {
       target: "esnext",
@@ -42,6 +42,10 @@ export default defineNuxtConfig({
       chainId: process.env.CHAIN_ID,
       googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY,
       solanaRpcUrl: process.env.SOLANA_RPC_URL,
+      portalClientApiKey: process.env.PORTAL_CLIENT_API_KEY,
+      solanaChainId: "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1",
+      solMint: "So11111111111111111111111111111111111111112",
+      pyUsdMint: "CXk2AMBfi3TwaEL2468s6zP8xq9NxTXjp9gjMgzeUynM",
     },
   },
   vuetify: {
