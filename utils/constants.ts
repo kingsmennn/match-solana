@@ -1,4 +1,7 @@
+import { findProgramAddressSync } from "@project-serum/anchor/dist/cjs/utils/pubkey";
 import { PublicKey } from "@solana/web3.js";
+import { programID } from "pinia/user";
+import { utf8 } from "@project-serum/anchor/dist/cjs/utils/bytes";
 
 export const chainName = "Sepolia";
 const env = useRuntimeConfig().public;
@@ -67,26 +70,28 @@ export const REQUEST_COUNTER = "REQUEST_COUNTER";
 
 export const OFFER_COUNTER = "OFFER_COUNTER";
 
-export const USER_COUNTER_PUBKEY = new PublicKey(
-  "BCo2p5do9KvuUjHaYfELcemNCvMQ529j2Jn6RszQEbpv"
-);
+export const USER_COUNTER_PUBKEY = findProgramAddressSync(
+  [utf8.encode(USER_COUNTER)],
+  programID
+)[0];
 
-export const STORE_COUNTER_PUBKEY = new PublicKey(
-  "HLyULUkEbbUh12fnbfxaXQbz5kBz65WTgMN3PgYsBNKE"
-);
+export const STORE_COUNTER_PUBKEY = findProgramAddressSync(
+  [utf8.encode(STORE_COUNTER)],
+  programID
+)[0];
 
-export const REQUEST_COUNTER_PUBKEY = new PublicKey(
-  "51t7N49H2BVXGcUjvzxD6ahsf4HjhghSCh6NzFU4ha1r"
-);
+export const REQUEST_COUNTER_PUBKEY = findProgramAddressSync(
+  [utf8.encode(REQUEST_COUNTER)],
+  programID
+)[0];
 
-export const OFFER_COUNTER_PUBKEY = new PublicKey(
-  "8V1oQ3pUEGrAAuuZ3tYb1r1LpWcnpbGrwQHBEMdAPoCe"
-);
-
+export const OFFER_COUNTER_PUBKEY = findProgramAddressSync(
+  [utf8.encode(OFFER_COUNTER)],
+  programID
+)[0];
 export const PORTAL_CLIENT_PUBKEY = new PublicKey(
   "BBb3WBLjQaBc7aT9pkzveEGsf8R3pm42mijrbrfYpM5w"
 );
-
 
 export const PYTH_USDC_PRICE_FEED_PUBKEY = new PublicKey(
   "EdVCmQ9FSPcVe5YySXDPCRmc8aDQLKJ9xvYBMZPie1Vw"
