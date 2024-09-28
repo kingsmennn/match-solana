@@ -2,6 +2,10 @@ export enum AccountType {
   BUYER = 'buyer',
   SELLER = 'seller'
 }
+export enum CoinPayment {
+  SOLANA = 'Solana',
+  PyUSDT = 'PyUSDT'
+}
 
 export type Location = [
   // state: string
