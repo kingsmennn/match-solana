@@ -603,46 +603,7 @@ export const useRequestsStore = defineStore("requests", {
         throw error;
       }
     },
-    async payForRequestPusd(requestId: number) {
-      const userStore = useUserStore();
-      const { publicKey } = useWallet();
-      try {
-        const contract = await userStore.getContract();
-        const request = await contract.account.request.all([
-          {
-            memcmp: {
-              offset: 8 + 32,
-              bytes: ntobs58(requestId),
-            },
-          },
-        ]);
 
-        const fromAta = await getAssociatedTokenAddress(
-          PYUSD_ADDR,
-          publicKey.value!,
-          true
-        );
-
-        const receipt = await contract.methods
-          .payForRequestPusd()
-          .accounts({
-            systemProgram: SystemProgram.programId,
-            authority: publicKey.value!,
-            request: request[0].publicKey,
-            toAta: PORTAL_PYUSD_ATA_PUBKEY,
-            fromAta: fromAta,
-            offer: new PublicKey(""),
-            tokenProgram: TOKEN_PROGRAM_ID,
-            priceFeed: PYTH_USDC_PRICE_FEED_PUBKEY,
-          })
-          .rpc();
-
-        return receipt;
-      } catch (error) {
-        console.error(error);
-        throw error;
-      }
-    },
     removeDeletedRequestFromList(requestId: number) {
       this.list = this.list.filter(
         (request) => request.requestId !== requestId
