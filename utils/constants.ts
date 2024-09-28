@@ -83,4 +83,11 @@ export const OFFER_COUNTER_PUBKEY = new PublicKey(
   "8V1oQ3pUEGrAAuuZ3tYb1r1LpWcnpbGrwQHBEMdAPoCe"
 );
 
-export const PORTAL_CLIENT_PUBKEY = new PublicKey("BBb3WBLjQaBc7aT9pkzveEGsf8R3pm42mijrbrfYpM5w");
+export const PORTAL_CLIENT_PUBKEY = new PublicKey(
+  "BBb3WBLjQaBc7aT9pkzveEGsf8R3pm42mijrbrfYpM5w"
+);
+export const PORTAL_PYUSD_ATA_PUBKEY = new PublicKey("7Z8ZQ5ZQ7Z");
+
+export const PYTH_USDC_PRICE_FEED_PUBKEY = new PublicKey(
+  "EdVCmQ9FSPcVe5YySXDPCRmc8aDQLKJ9xvYBMZPie1Vw"
+);

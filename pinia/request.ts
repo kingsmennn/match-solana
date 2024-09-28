@@ -13,6 +13,8 @@ import {
   OFFER_COUNTER_PUBKEY,
   OFFER_TAG,
   PORTAL_CLIENT_PUBKEY,
+  PORTAL_PYUSD_ATA_PUBKEY,
+  PYTH_USDC_PRICE_FEED_PUBKEY,
   REQUEST_COUNTER_PUBKEY,
   REQUEST_TAG,
   USER_TAG,
@@ -25,6 +27,7 @@ import { PublicKey, SystemProgram } from "@solana/web3.js";
 import { BN, utils } from "@project-serum/anchor";
 import { off } from "process";
 import { ntobs58 } from "@/utils/nb58";
+import { TOKEN_PROGRAM_ID } from "@solana/spl-token";
 
 type RequestsStoreType = {
   list: RequestResponse[];
@@ -577,6 +580,40 @@ export const useRequestsStore = defineStore("requests", {
             request: request[0].publicKey,
             to: PORTAL_CLIENT_PUBKEY,
             offer: new PublicKey(""),
+          })
+          .rpc();
+
+        return receipt;
+      } catch (error) {
+        console.error(error);
+        throw error;
+      }
+    },
+    async payForRequestPusd(requestId: number) {
+      const userStore = useUserStore();
+      const { publicKey } = useWallet();
+      try {
+        const contract = await userStore.getContract();
+        const request = await contract.account.request.all([
+          {
+            memcmp: {
+              offset: 8 + 32,
+              bytes: ntobs58(requestId),
+            },
+          },
+        ]);
+
+        const receipt = await contract.methods
+          .payForRequestPusd()
+          .accounts({
+            systemProgram: SystemProgram.programId,
+            authority: publicKey.value!,
+            request: request[0].publicKey,
+            toAta: PORTAL_CLIENT_PUBKEY,
+            fromAta: PORTAL_PYUSD_ATA_PUBKEY,
+            offer: new PublicKey(""),
+            tokenProgram: TOKEN_PROGRAM_ID,
+            priceFeed: PYTH_USDC_PRICE_FEED_PUBKEY,
           })
           .rpc();
 
