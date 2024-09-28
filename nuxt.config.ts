@@ -43,9 +43,9 @@ export default defineNuxtConfig({
       googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY,
       solanaRpcUrl: process.env.SOLANA_RPC_URL,
       portalClientApiKey: process.env.PORTAL_CLIENT_API_KEY,
-      solanaChainId: "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1",
-      solMint: "So11111111111111111111111111111111111111112",
-      pyUsdMint: "CXk2AMBfi3TwaEL2468s6zP8xq9NxTXjp9gjMgzeUynM",
+      solanaChainId: process.env.SOLANA_CHAIN_ID,
+      solMint: process.env.SOL_MINT,
+      pyUsdMint: process.env.PY_USD_MINT,
     },
   },
   vuetify: {
