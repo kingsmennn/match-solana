@@ -95,6 +95,4 @@ export const PYTH_USDC_PRICE_FEED_PUBKEY = new PublicKey(
   "EdVCmQ9FSPcVe5YySXDPCRmc8aDQLKJ9xvYBMZPie1Vw"
 );
 
-export const PYUSD_ADDR = new PublicKey(
-  "EdVCmQ9FSPcVe5YySXDPCRmc8aDQLKJ9xvYBMZPie1Vw"
-);
+export const PYUSD_ADDR = new PublicKey(env.pyUsdMint);
