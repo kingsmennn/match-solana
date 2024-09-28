@@ -115,7 +115,6 @@ export const useRequestsStore = defineStore("requests", {
         ]);
 
         const res: any = userRequests.map((request) => {
-          console.log(request.account.lifecycle);
           const lifecycle_ = Object.keys(
             request.account.lifecycle
           )[0].toUpperCase();
@@ -127,9 +126,6 @@ export const useRequestsStore = defineStore("requests", {
               lifecycle = value as RequestLifecycleIndex;
             }
           });
-
-          console.log({ lifecycle });
-          console.log({ lifecycle_ });
 
           return {
             requestId: Number(request.account.id),
