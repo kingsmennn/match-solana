@@ -46,6 +46,7 @@ export default defineNuxtConfig({
       solanaChainId: process.env.SOLANA_CHAIN_ID,
       solMint: process.env.SOL_MINT,
       pyUsdMint: process.env.PY_USD_MINT,
+      timeTillLock: process.env.TIME_TILL_LOCK
     },
   },
   vuetify: {

@@ -58,6 +58,7 @@
                   v-if="lifecycle === RequestLifecycleIndex.PENDING"
                   :id="`revert-${requestId}`"
                   class="tw-absolute tw-z-10 tw-bottom-2 tw-right-2 tw-inline-block tw-p-2 tw-px-4 tw-rounded-full tw-bg-black tw-select-none tw-text-white hover:tw-bg-black/80 tw-transition-all tw-duration-300 tw-font-medium"
+                  :disabled="cancelingRequest"
                 >
                   <v-progress-circular
                     v-if="cancelingRequest"
@@ -102,6 +103,7 @@
                 "
                 @click="handleMarkAsCompleted"
                 class="tw-inline-block tw-p-2 tw-px-4 mt-2 tw-rounded-full tw-bg-black tw-select-none tw-text-white hover:tw-bg-black/80 tw-transition-all tw-duration-300 tw-font-medium"
+                :disabled="markingAsCompleted || completed"
               >
                 <v-progress-circular
                   v-if="markingAsCompleted"
@@ -180,7 +182,7 @@
                 hasLocked &&
                 lifecycle === RequestLifecycleIndex.ACCEPTED_BY_BUYER
                   ? "locked"
-                  : "locks in 15mins"
+                  : "locks in "+formatedTTL
               }}
             </span>
           </div>
@@ -211,7 +213,6 @@ import { computed } from "vue";
 import { AccountType, Offer, RequestLifecycleIndex, Store, User } from "@/types";
 import moment from "moment";
 import { useRequestsStore } from "@/pinia/request";
-import { TIME_TILL_LOCK } from "@/utils/constants";
 import { useUserStore } from "@/pinia/user";
 import { useStoreStore } from "@/pinia/store";
 import { toast } from "vue-sonner";
@@ -232,11 +233,15 @@ interface Props {
 
 const props = defineProps<Props>();
 const completed = ref(!!props?.isCompleted);
+const env = useRuntimeConfig().public;
 
 const requestStore = useRequestsStore();
 const hasLocked = computed(() =>
-  requestStore.hasLocked({ updatedAt: props.updatedAt, period: TIME_TILL_LOCK })
+  requestStore.hasLocked({ updatedAt: props.updatedAt, period: eval(env.timeTillLock) })
 );
+
+// TTL is in ms
+const formatedTTL = moment(eval(env.timeTillLock)).format("m [mins]");
 const lifecycleProgress = computed<number>(() => {
   if (
     hasLocked.value &&

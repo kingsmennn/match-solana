@@ -47,8 +47,6 @@ export const appMetaData = {
   url: window.location.origin,
 };
 
-export const TIME_TILL_LOCK = 15 * 60 * 1000; // mss
-
 export const USER_TAG = "USER_STATE";
 
 export const LOCATION_PREFERENCE_TAG = "LOCATION_PREFERENCE_STATE";

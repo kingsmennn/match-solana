@@ -88,6 +88,7 @@ export const useUserStore = defineStore(STORE_KEY, {
   },
   actions: {
     async setUpSolanaConnectEvents() {
+      await this.disconnect()
       const { publicKey, wallet } = useWallet();
 
       const walletAdapter = wallet.value!.adapter;
