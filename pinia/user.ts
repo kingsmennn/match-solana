@@ -88,10 +88,12 @@ export const useUserStore = defineStore(STORE_KEY, {
   },
   actions: {
     async setUpSolanaConnectEvents() {
-      await this.disconnect()
+      await this.disconnect();
       const { publicKey, wallet } = useWallet();
 
-      const walletAdapter = wallet.value!.adapter;
+      if (!wallet.value) return;
+
+      const walletAdapter = wallet.value.adapter;
 
       walletAdapter.on("connect", (newPublicKey) => {
         this.blockchainError.userNotFound = false;
@@ -348,7 +350,7 @@ export const useUserStore = defineStore(STORE_KEY, {
             authority: this.anchorWallet!.publicKey!,
           })
           .rpc();
-          this.locationEnabled = value;
+        this.locationEnabled = value;
       } catch (error) {
         console.error("Error updating user:", error);
         throw error;
