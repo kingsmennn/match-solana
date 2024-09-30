@@ -135,10 +135,9 @@
 import { User, AccountType, STORE_KEY_MIDDLEWARE, STORE_KEY } from "@/types";
 import { useUserStore } from "@/pinia/user";
 import { toast, Toaster } from "vue-sonner";
-import { ellipsify } from "@/utils/ellipsify";
 import { useWallet, WalletMultiButton } from "solana-wallets-vue";
 
-const { publicKey, wallet, disconnect: solDisconnect } = useWallet();
+const { publicKey, disconnecting } = useWallet();
 const env = useRuntimeConfig().public;
 const router = useRouter();
 const route = useRoute();
@@ -154,26 +153,13 @@ const unwatch = watch(
   },
   { immediate: true }
 );
+watch(disconnecting, (val) => val && disconnect());
 
 const userCookie = useCookie<User>(STORE_KEY_MIDDLEWARE, { watch: true });
 const storeCookie = useCookie(STORE_KEY);
 const isSeller = computed(
   () => userCookie.value?.accountType === AccountType.SELLER
 );
-
-const connecting = ref(false);
-const handleWalletConnect = async () => {
-  connecting.value = true;
-  try {
-    await userStore.connectToSolana();
-    // once connected the subscription function will update the user store
-  } catch (e) {
-    // haldle errors
-    console.log(e);
-  } finally {
-    connecting.value = false;
-  }
-};
 
 const disconnect = async () => {
   try {

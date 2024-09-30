@@ -45,7 +45,7 @@
                   () => {
                     userStore.isConnected
                       ? router.push('/accounts/' + userStore.accountId)
-                      : handleWalletConnect();
+                      : ()=>{};
                   }
                 "
                 class="tw-inline-block tw-bg-black tw-text-white tw-p-4 tw-py-2.5 tw-mt-4 tw-rounded-lg"
@@ -171,44 +171,6 @@
         </p>
       </div>
     </div>
-
-    <div
-      class="tw-px-6 sm:tw-px-10 tw-p-4 tw-max-w-7xl tw-mx-auto tw-mt-4 sm:tw-mt-10"
-    >
-      <div
-        class="tw-flex tw-flex-col sm:tw-flex-row tw-gap-10 tw-justify-between"
-      >
-        <button
-          @click="
-            () => {
-              handleWalletConnect();
-              router.push({
-                query: { user_type: AccountType.BUYER },
-              });
-            }
-          "
-          class="tw-inline-flex tw-justify-between tw-text-4xl tw-font-bold tw-gap-2 tw-flex-grow sm:tw-max-w-[50%] tw-border-b tw-border-solid tw-border-black"
-        >
-          <span>Register as buyer</span>
-          <v-icon>mdi-arrow-right</v-icon>
-        </button>
-
-        <button
-          @click="
-            () => {
-              handleWalletConnect();
-              router.push({
-                query: { user_type: AccountType.SELLER },
-              });
-            }
-          "
-          class="tw-inline-flex tw-justify-between tw-text-4xl tw-font-bold tw-gap-2 tw-flex-grow sm:tw-max-w-[50%] tw-border-b tw-border-solid tw-border-black"
-        >
-          <span>Register as seller</span>
-          <v-icon>mdi-arrow-right</v-icon>
-        </button>
-      </div>
-    </div>
   </div>
 </template>
 
@@ -292,22 +254,8 @@ const handleSellerBtnClick = async () => {
     return;
   } else if (isBuyer.value) {
     await disconnect();
-    await handleWalletConnect();
   }
 };
 
-const connecting = ref(false);
 const userStore = useUserStore();
-const handleWalletConnect = async () => {
-  connecting.value = true;
-  try {
-    await userStore.connectToSolana();
-    // once connected the subscription function will update the user store
-  } catch (e) {
-    // haldle errors
-    console.log(e);
-  } finally {
-    connecting.value = false;
-  }
-};
 </script>
