@@ -145,7 +145,7 @@ import { useUserStore } from "@/pinia/user";
 import { toast, Toaster } from "vue-sonner";
 import { useWallet, WalletMultiButton } from "solana-wallets-vue";
 
-const { publicKey, disconnecting } = useWallet();
+const { publicKey, connected, disconnecting } = useWallet();
 const env = useRuntimeConfig().public;
 const router = useRouter();
 const route = useRoute();
@@ -161,6 +161,8 @@ const unwatch = watch(
   },
   { immediate: true }
 );
+
+watch(connected, (val) => val && userStore.setUpSolanaConnectEvents());
 watch(disconnecting, (val) => val && disconnect());
 
 const userCookie = useCookie<User>(STORE_KEY_MIDDLEWARE, { watch: true });
