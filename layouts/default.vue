@@ -22,6 +22,14 @@
           <wallet-multi-button></wallet-multi-button>
           <NuxtLink
             v-if="!!userStore.accountId"
+            :to="'/accounts/' + userStore.accountId"
+            class="tw-flex tw-bg-white hover:tw-bg-white/80 tw-rounded-full tw-h-7 tw-w-7
+            tw-items-center tw-justify-center tw-leading-none
+            tw-transition-all tw-duration-300">
+            <v-icon class="tw-text-black !tw-text-xl">mdi-home</v-icon>
+          </NuxtLink>
+          <NuxtLink
+            v-if="!!userStore.accountId"
             to="/settings"
             class="tw-flex tw-bg-white hover:tw-bg-white/80 tw-rounded-full tw-h-7 tw-w-7
             tw-items-center tw-justify-center tw-leading-none
