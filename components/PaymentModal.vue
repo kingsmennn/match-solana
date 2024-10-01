@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Request } from "@/types";
+import { toast } from "vue-sonner";
 import { ellipsify } from "~/utils/ellipsify";
 
 type Props = {
@@ -74,6 +75,14 @@ const handleCancel = () => {
 }
 
 const handleProceed = () => {
+  if (!selectedPaymentMethod.value) {
+    toast.error('Please select a payment method')
+    return
+  }
+  if (!selectedToken.value) {
+    toast.error('Please select a token')
+    return
+  }
   emits('onProcessPayment', {
     accountId: props.accountId,
     requestId: props.requestId!
