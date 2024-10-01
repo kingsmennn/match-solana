@@ -1,0 +1,172 @@
+<script setup lang="ts">
+import { Request } from "@/types";
+import { ellipsify } from "~/utils/ellipsify";
+
+type Props = {
+  requestId: Request['id']
+  accountId: string
+  isOpen: boolean
+}
+const props = defineProps<Props>();
+const emits = defineEmits<{
+  (e: 'update:isOpen', value: boolean): void
+}>()
+const truncatedAccountId = computed(() => ellipsify(props.accountId, 6))
+
+const tokens: {
+  name: string
+  symbol: string
+  network?: string
+  logo: string
+}[] = [
+  {
+    name: 'Solana',
+    symbol: 'SOL',
+    logo: 'https://www.svgrepo.com/show/470684/solana.svg',
+  },
+  {
+    name: 'Tether',
+    symbol: 'USDT',
+    network: 'solana',
+    logo: 'https://www.svgrepo.com/show/367728/usdt.svg',
+  },
+]
+const selectedToken = ref()
+
+const paymentMethods:{
+  name: string
+  value: string
+  channelImages: string[]
+  disabled?: boolean
+}[] = [
+  {
+    name: 'Credit card or debit card',
+    value: 'credit-card',
+    channelImages: [
+      'https://www.svgrepo.com/show/328112/visa.svg',
+      'https://www.svgrepo.com/show/303248/mastercard-2-logo.svg'
+    ],
+    disabled: true
+  },
+  {
+    name: 'Crypto',
+    value: 'crypto',
+    channelImages: [...tokens.map(token => token.logo)],
+  }
+]
+const selectedPaymentMethod = ref('crypto')
+
+const dialog = ref(false)
+watch(() => props.isOpen, (val) => {
+  if (val) dialog.value = true
+})
+const handleCancel = () => {
+  dialog.value = false
+  selectedToken.value = undefined
+  selectedPaymentMethod.value = 'crypto'
+  emits('update:isOpen', false)
+}
+</script>
+
+<template>
+  <v-dialog
+    v-model="dialog"
+    max-width="500"
+    persistent>
+    <div
+      class="tw-bg-white tw-min-h-[400px] tw-p-6 tw-rounded-2xl
+      tw-flex tw-flex-col tw-gap-8">
+      <section>
+        <div
+          class="tw-flex tw-items-center tw-border-2 tw-border-gray-200 tw-rounded-xl
+          tw-p-2 tw-gap-2">
+          <v-icon
+            class="tw-text-2xl"
+            color="black">
+            mdi-check-circle
+          </v-icon>
+  
+          <div class="tw-text-sm">
+            <p class="tw-text-gray-400">Connected with</p>
+            <span class="tw-font-semibold">{{ truncatedAccountId }}</span>
+          </div>
+        </div>
+      </section>
+      
+      <section class="tw-space-y-2">
+        <p class="tw-leading-tight tw-text-gray-500">Payment method</p>
+        <div
+          v-for="method in paymentMethods"
+          :key="method.name"
+          class="tw-flex tw-items-center tw-justify-between tw-border-2
+          tw-border-gray-400 tw-rounded-xl tw-p-2 tw-gap-4 tw-mt-2"
+          :class="{
+            'tw-grayscale tw-cursor-not-allowed tw-text-gray-400 !tw-border-gray-200': method.disabled,
+          }">
+          <div class="tw-flex tw-gap-1 tw-items-center">
+            <v-radio
+              v-model="selectedPaymentMethod"
+              :value="method.value"
+              :disabled="method.disabled"
+            />
+            <span class="text-sm">{{ method.name }}</span>
+          </div>
+
+          <div class="tw-flex tw-gap-3 tw-text-sm tw-select-none">
+            <img
+              v-for="image in method.channelImages"
+              :key="image"
+              :src="image"
+              class="tw-object-contain tw-h-10"
+            />
+          </div>
+        </div>
+      </section>
+
+      <section class="tw-space-y-2">
+        <p class="tw-leading-tight tw-text-gray-500">Token selection</p>
+        <div class="tw-grid tw-grid-cols-2 tw-gap-4">
+          <div
+            v-for="token in tokens"
+            :key="token.name"
+            @click="()=>selectedToken = token.symbol"
+            class="tw-flex tw-items-center tw-justify-between tw-border-2
+            tw-border-gray-200 tw-rounded-xl tw-p-2 tw-gap-4 tw-cursor-pointer
+            transition-all duration-300"
+            :class="{'tw-bg-black tw-text-white': selectedToken === token.symbol}">
+            <div class="tw-flex tw-flex-col">
+              <span class="tw-text-semibold">{{ token.name }}</span>
+              <span
+                v-if="token?.network"
+                class="tw-text-xs tw-text-gray-500"
+                :class="{'tw-text-white': selectedToken === token.symbol}">
+                On {{ token.network }}
+              </span>
+            </div>
+            <span class="tw-h-10 tw-w-10 tw-rounded-full tw-bg-white">
+              <img
+                :src="token.logo"
+                class="tw-object-contain tw-h-10"
+              />
+            </span>
+          </div>
+        </div>
+      </section>
+
+      <section
+        class="tw-flex tw-justify-between tw-gap-4
+        [&>*]:tw-p-4 [&>*]:tw-rounded-full [&>*]:tw-w-full
+        [&>*]:tw-transition-all [&>*]:tw-duration-300">
+        <button
+          @click="handleCancel"
+          class="hover:tw-bg-gray-200">
+          Cancel
+        </button>
+        <button
+          class="tw-bg-black tw-text-white hover:tw-bg-black/80">
+          Confirm
+        </button>
+      </section>
+    </div>
+  </v-dialog>
+</template>

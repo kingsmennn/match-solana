@@ -101,19 +101,19 @@
                   lifecycle === RequestLifecycleIndex.ACCEPTED_BY_BUYER &&
                   accountType === AccountType.BUYER
                 "
-                @click="handleMarkAsCompleted"
+                @click="handleAttemptPayment"
                 class="tw-inline-block tw-p-2 tw-px-4 mt-2 tw-rounded-full tw-bg-black tw-select-none tw-text-white hover:tw-bg-black/80 tw-transition-all tw-duration-300 tw-font-medium"
-                :disabled="markingAsCompleted || completed"
+                :disabled="attemptingPayment"
               >
                 <v-progress-circular
-                  v-if="markingAsCompleted"
+                  v-if="attemptingPayment"
                   indeterminate
                   color="white"
                   size="20"
                   width="2"
                 >
                 </v-progress-circular>
-                <template v-else> Mark as completed </template>
+                <template v-else> Pay </template>
               </button>
             </div>
           </div>
@@ -233,6 +233,9 @@ interface Props {
 
 const props = defineProps<Props>();
 const completed = ref(!!props?.isCompleted);
+const emits = defineEmits<{
+  (e: 'onAttemptPayment', requestId: number): void
+}>()
 const env = useRuntimeConfig().public;
 
 const requestStore = useRequestsStore();
@@ -300,19 +303,22 @@ watch(
   { immediate: true }
 );
 
-const markingAsCompleted = ref(false);
-const handleMarkAsCompleted = async () => {
-  markingAsCompleted.value = true;
-  try {
-    await requestStore.markRequestAsCompleted(props.requestId);
-    completed.value = true;
-    toast.success("request completed");
-  } catch (error: any) {
-    console.log(error);
-    toast.error(error);
-  } finally {
-    markingAsCompleted.value = false;
-  }
+const attemptingPayment = ref(false);
+const handleAttemptPayment = async () => {
+  attemptingPayment.value = true;
+  await new Promise((resolve) => setTimeout(resolve, 1000));
+  emits('onAttemptPayment', props.requestId);
+  attemptingPayment.value = false;
+  // try {
+  //   await requestStore.markRequestAsCompleted(props.requestId);
+  //   completed.value = true;
+  //   toast.success("request completed");
+  // } catch (error: any) {
+  //   console.log(error);
+  //   toast.error(error);
+  // } finally {
+  //   attemptingPayment.value = false;
+  // }
 };
 
 const cancelingRequest = ref(false);

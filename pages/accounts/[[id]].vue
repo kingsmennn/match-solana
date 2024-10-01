@@ -57,6 +57,7 @@
               :lockedSellerId="request.lockedSellerId ?? null"
               :sellers-price-quote="request.sellersPriceQuote ?? null"
               :account-type="userStore.accountType!"
+              @on-attempt-payment="()=>handlePaymentModal(request.requestId)"
             />
           </div>
           
@@ -88,6 +89,13 @@
         </div>
       </div>
     </div>
+
+    <PaymentModal
+      :is-open="showPaymentModal"
+      :requestId="attemptPaymentForRequestWithId!"
+      :account-id="userStore.accountId!"
+      @update:is-open="(val) => showPaymentModal = val"
+    />
   </div>
 </template>
 
@@ -100,6 +108,7 @@ import { useRoute } from 'vue-router'
 import { RequestLifecycle, AccountType, User, Request, Offer, RequestLifecycleIndex } from '@/types'
 import { useUserStore } from '@/pinia/user';
 import { useRequestsStore } from '@/pinia/request';
+import PaymentModal from '@/components/PaymentModal.vue';
 
 const env = useRuntimeConfig().public
 useHead({
@@ -160,4 +169,12 @@ const completedRequestList = computed(() => {
     return request.lifecycle === RequestLifecycleIndex.COMPLETED
   })
 })
+
+const showPaymentModal = ref(false)
+const attemptPaymentForRequestWithId = ref<Request['id']>()
+const handlePaymentModal = (requestId: Request['id']) => {
+  showPaymentModal.value = true
+  console.log(requestId)
+  attemptPaymentForRequestWithId.value = requestId
+}
 </script>
