@@ -47,7 +47,7 @@ const paymentMethods:{
   disabled?: boolean
 }[] = [
   {
-    name: 'Credit card or debit card',
+    name: 'Credit or debit card (coming soon)',
     value: 'credit-card',
     channelImages: [
       'https://www.svgrepo.com/show/328112/visa.svg',

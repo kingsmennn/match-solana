@@ -38,6 +38,7 @@ export enum RequestLifecycle {
   ACCEPTED_BY_SELLER = "accepted_by_seller",
   ACCEPTED_BY_BUYER = "accepted_by_buyer",
   REQUEST_LOCKED = "request_locked",
+  PAID = "paid",
   COMPLETED = "completed",
 }
 export enum RequestLifecycleIndex {
@@ -45,6 +46,7 @@ export enum RequestLifecycleIndex {
   ACCEPTED_BY_SELLER,
   ACCEPTED_BY_BUYER,
   REQUEST_LOCKED,
+  PAID,
   COMPLETED,
 }
 

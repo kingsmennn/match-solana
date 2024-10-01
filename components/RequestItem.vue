@@ -115,6 +115,22 @@
                 </v-progress-circular>
                 <template v-else> Pay </template>
               </button>
+              <button
+                v-if="lifecycle === RequestLifecycleIndex.PAID"
+                @click="handleMarkAsCompleted"
+                class="tw-inline-block tw-p-2 tw-px-4 mt-2 tw-rounded-full tw-bg-black tw-select-none tw-text-white hover:tw-bg-black/80 tw-transition-all tw-duration-300 tw-font-medium"
+                :disabled="markingAsCompleted || completed"
+              >
+                <v-progress-circular
+                  v-if="markingAsCompleted"
+                  indeterminate
+                  color="white"
+                  size="20"
+                  width="2"
+                >
+                </v-progress-circular>
+                <template v-else> Mark as completed </template>
+              </button>
             </div>
           </div>
           <span class="tw-text-sm">{{ timeAgo }}</span>
@@ -319,6 +335,21 @@ const handleAttemptPayment = async () => {
   // } finally {
   //   attemptingPayment.value = false;
   // }
+};
+
+const markingAsCompleted = ref(false);
+const handleMarkAsCompleted = async () => {
+  markingAsCompleted.value = true;
+  try {
+    await requestStore.markRequestAsCompleted(props.requestId);
+    completed.value = true;
+    toast.success("request completed");
+  } catch (error: any) {
+    console.log(error);
+    toast.error(error);
+  } finally {
+    markingAsCompleted.value = false;
+  }
 };
 
 const cancelingRequest = ref(false);
