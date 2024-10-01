@@ -5,6 +5,7 @@ import { ellipsify } from "~/utils/ellipsify";
 type Props = {
   requestId: Request['id']
   accountId: string
+  amount: number
   isOpen: boolean
 }
 const props = defineProps<Props>();
@@ -87,7 +88,7 @@ const handleProceed = () => {
     persistent>
     <div
       class="tw-bg-white tw-min-h-[400px] tw-p-6 tw-rounded-2xl
-      tw-flex tw-flex-col tw-gap-8">
+      tw-flex tw-flex-col tw-gap-8 tw-overflow-y-auto">
       <section>
         <div
           class="tw-flex tw-items-center tw-border-2 tw-border-gray-200 tw-rounded-xl
@@ -103,6 +104,15 @@ const handleProceed = () => {
             <span class="tw-font-semibold">{{ truncatedAccountId }}</span>
           </div>
         </div>
+      </section>
+
+      <section>
+        <fieldset class="tw-border-t-4 tw-my-4">
+          <legend class="tw-px-4 tw-text-center">
+            <p class="tw-leading-tight tw-text-gray-500">Payable amount</p>
+            <p class="tw-text-2xl tw-font-bold">₦{{ amount.toLocaleString() }}</p>
+          </legend>
+        </fieldset>
       </section>
       
       <section class="tw-space-y-2">
@@ -121,7 +131,9 @@ const handleProceed = () => {
               :value="method.value"
               :disabled="method.disabled"
             />
-            <span class="text-sm">{{ method.name }}</span>
+            <span class="max-md:tw-text-sm max-md:tw-max-w-[100px] tw-truncate">
+              {{ method.name }}
+            </span>
           </div>
 
           <div class="tw-flex tw-gap-3 tw-text-sm tw-select-none">

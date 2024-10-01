@@ -92,7 +92,8 @@
 
     <PaymentModal
       :is-open="showPaymentModal"
-      :requestId="attemptPaymentForRequestWithId!"
+      :requestId="attemptPaymentForRequest?.id!"
+      :amount="attemptPaymentForRequest?.sellersPriceQuote!"
       :account-id="userStore.accountId!"
       @update:is-open="(val) => showPaymentModal = val"
       @on-process-payment="()=>{}"
@@ -172,9 +173,11 @@ const completedRequestList = computed(() => {
 })
 
 const showPaymentModal = ref(false)
-const attemptPaymentForRequestWithId = ref<Request['id']>()
+const attemptPaymentForRequest = ref<Request>()
 const handlePaymentModal = (requestId: Request['id']) => {
+  const request = requestsStore.list.find(request => request.requestId === requestId) as unknown as Request
+  if (!request) return
   showPaymentModal.value = true
-  attemptPaymentForRequestWithId.value = requestId
+  attemptPaymentForRequest.value = request
 }
 </script>
