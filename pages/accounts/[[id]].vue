@@ -175,7 +175,6 @@ const showPaymentModal = ref(false)
 const attemptPaymentForRequestWithId = ref<Request['id']>()
 const handlePaymentModal = (requestId: Request['id']) => {
   showPaymentModal.value = true
-  console.log(requestId)
   attemptPaymentForRequestWithId.value = requestId
 }
 </script>
