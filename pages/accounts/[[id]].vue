@@ -95,6 +95,7 @@
       :requestId="attemptPaymentForRequestWithId!"
       :account-id="userStore.accountId!"
       @update:is-open="(val) => showPaymentModal = val"
+      @on-process-payment="()=>{}"
     />
   </div>
 </template>

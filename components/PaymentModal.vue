@@ -8,8 +8,13 @@ type Props = {
   isOpen: boolean
 }
 const props = defineProps<Props>();
+type ProcessPaymentPayload = {
+  accountId: string
+  requestId: number
+}
 const emits = defineEmits<{
-  (e: 'update:isOpen', value: boolean): void
+  (e: 'update:isOpen', value: boolean): void,
+  (e: 'onProcessPayment', value: ProcessPaymentPayload): void
 }>()
 const truncatedAccountId = computed(() => ellipsify(props.accountId, 6))
 
@@ -65,6 +70,13 @@ const handleCancel = () => {
   selectedToken.value = undefined
   selectedPaymentMethod.value = 'crypto'
   emits('update:isOpen', false)
+}
+
+const handleProceed = () => {
+  emits('onProcessPayment', {
+    accountId: props.accountId,
+    requestId: props.requestId!
+  })
 }
 </script>
 
@@ -163,8 +175,9 @@ const handleCancel = () => {
           Cancel
         </button>
         <button
+          @click="handleProceed"
           class="tw-bg-black tw-text-white hover:tw-bg-black/80">
-          Confirm
+          Proceed
         </button>
       </section>
     </div>
