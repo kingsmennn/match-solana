@@ -85,7 +85,7 @@ const emits = defineEmits<{
 const carousel = ref(0);
 const displayedPrice = computed<string>(() => {
   if (!props.priceQuote) return "";
-  return `₦${props.priceQuote.toLocaleString()}`;
+  return `${lamportsToSol(props.priceQuote)} ${PAYMENT_COIN}`;
 });
 
 const submiting = ref(false);
