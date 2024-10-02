@@ -67,7 +67,7 @@ const selectedPaymentMethod = ref('crypto')
 
 const dialog = ref(false)
 watch(() => props.isOpen, (val) => {
-  if (val) dialog.value = true
+  dialog.value = val
 })
 const handleCancel = () => {
   dialog.value = false
