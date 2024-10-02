@@ -151,6 +151,20 @@ export const marketAbi = {
       args: [],
     },
     {
+      name: "payForRequestToken",
+      accounts: [
+        { name: "request", isMut: true, isSigner: false },
+        { name: "offer", isMut: true, isSigner: false },
+        { name: "authority", isMut: true, isSigner: true },
+        { name: "systemProgram", isMut: false, isSigner: false },
+        { name: "fromAta", isMut: true, isSigner: false },
+        { name: "priceFeed", isMut: false, isSigner: false },
+        { name: "toAta", isMut: true, isSigner: false },
+        { name: "tokenProgram", isMut: false, isSigner: false },
+      ],
+      args: [{ name: "coin", type: { defined: "CoinPayment" } }],
+    },
+    {
       name: "payForRequest",
       accounts: [
         { name: "request", isMut: true, isSigner: false },
@@ -158,7 +172,6 @@ export const marketAbi = {
         { name: "authority", isMut: true, isSigner: true },
         { name: "to", isMut: true, isSigner: false },
         { name: "systemProgram", isMut: false, isSigner: false },
-        { name: "tokenProgram", isMut: false, isSigner: false },
       ],
       args: [{ name: "coin", type: { defined: "CoinPayment" } }],
     },

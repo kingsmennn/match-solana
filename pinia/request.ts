@@ -569,6 +569,8 @@ export const useRequestsStore = defineStore("requests", {
         if (coin !== CoinPayment.SOLANA) {
           throw new Error("use payForRequestToken instead");
         }
+
+        console.log(PORTAL_PYUSD_TOKEN_ACCOUNT.toBase58());
         const contract = await userStore.getContract();
         const requestMade = await contract.account.request.all([
           {
