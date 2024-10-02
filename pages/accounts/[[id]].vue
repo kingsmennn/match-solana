@@ -181,7 +181,7 @@ const handlePaymentModal = (requestId: RequestResponse['requestId']) => {
   attemptPaymentForRequest.value = request
 }
 
-const handleProceesPayment = (
+const handleProceesPayment =async (
   {
     requestId,
     amount,
@@ -194,6 +194,8 @@ const handleProceesPayment = (
     accountId: string
   }
 ) => {
+
   console.log({ requestId, amount, token, accountId })
+  await requestsStore.payForRequest(requestId,token)
 }
 </script>

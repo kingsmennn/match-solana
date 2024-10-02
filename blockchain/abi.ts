@@ -2,7 +2,7 @@ export const marketAbi = {
   version: "0.1.0",
   name: "marketplace",
   constants: [
-    { name: "TIME_TO_LOCK", type: "u64", value: "900" },
+    { name: "TIME_TO_LOCK", type: "u64", value: "60" },
     {
       name: "USER_TAG",
       type: "bytes",
@@ -264,6 +264,7 @@ export const marketAbi = {
           { name: "updatedAt", type: "u64" },
           { name: "lifecycle", type: { defined: "RequestLifecycle" } },
           { name: "paid", type: "bool" },
+          { name: "acceptedOfferId", type: "u64" },
         ],
       },
     },
