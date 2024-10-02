@@ -575,6 +575,8 @@ export const useRequestsStore = defineStore("requests", {
         ]);
 
         const request = requestMade[0];
+
+        console.log(request);
         const offerId = request.account.acceptedOfferId;
 
         const offerMade = await contract.account.offer.all([

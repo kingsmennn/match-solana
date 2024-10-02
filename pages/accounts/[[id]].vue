@@ -194,7 +194,9 @@ const handleProceesPayment = async (
     accountId: string
   }
 ) => {
+
   console.log({ requestId, amount, token, accountId })
+  await requestsStore.payForRequest(requestId,token)
   showPaymentModal.value = false
 }
 </script>
