@@ -101,6 +101,7 @@
                 type="number"
                 placeholder="0.1 SOL"
                 min="0"
+                step="0.0000000001"
                 :required="true"
                 class="tw-w-full tw-bg-gray-100 tw-p-4 tw-pt-7 tw-rounded-md tw-outline-black"
               />

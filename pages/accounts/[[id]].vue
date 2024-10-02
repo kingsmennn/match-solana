@@ -112,6 +112,7 @@ import { useUserStore } from '@/pinia/user';
 import { useRequestsStore } from '@/pinia/request';
 import PaymentModal from '@/components/PaymentModal.vue';
 import { toast } from 'vue-sonner';
+import { AnchorError } from '@project-serum/anchor';
 
 const env = useRuntimeConfig().public
 useHead({
@@ -197,10 +198,13 @@ const handleProceesPayment = async (
 ) => {
 
   try {
-    
     await requestsStore.payForRequest(requestId,token)
   } catch (error:any) {
-    toast.error(error)
+    if (error instanceof AnchorError) {
+      const err: AnchorError = error;
+      toast.error(err.error.errorMessage);
+      return;
+    }
   }finally {
     showPaymentModal.value = false
   }
