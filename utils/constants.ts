@@ -1,6 +1,7 @@
 import { findProgramAddressSync } from "@project-serum/anchor/dist/cjs/utils/pubkey";
 import { PublicKey } from "@solana/web3.js";
 import { utf8 } from "@project-serum/anchor/dist/cjs/utils/bytes";
+import { getAssociatedTokenAddressSync } from "@solana/spl-token";
 
 export const chainName = "Sepolia";
 const env = useRuntimeConfig().public;
@@ -87,6 +88,7 @@ export const OFFER_COUNTER_PUBKEY = findProgramAddressSync(
   [utf8.encode(OFFER_COUNTER)],
   programID
 )[0];
+
 export const PORTAL_CLIENT_PUBKEY = new PublicKey(
   "BBb3WBLjQaBc7aT9pkzveEGsf8R3pm42mijrbrfYpM5w"
 );
@@ -96,3 +98,9 @@ export const PYTH_USDC_PRICE_FEED_PUBKEY = new PublicKey(
 );
 
 export const PYUSD_ADDR = new PublicKey(env.pyUsdMint);
+
+export const PORTAL_PYUSD_TOKEN_ACCOUNT = getAssociatedTokenAddressSync(
+  PYUSD_ADDR,
+  PORTAL_CLIENT_PUBKEY,
+  true
+);

@@ -14,6 +14,7 @@ import {
   OFFER_COUNTER_PUBKEY,
   OFFER_TAG,
   PORTAL_CLIENT_PUBKEY,
+  PORTAL_PYUSD_TOKEN_ACCOUNT,
   PYTH_USDC_PRICE_FEED_PUBKEY,
   PYUSD_ADDR,
   REQUEST_COUNTER_PUBKEY,
@@ -30,6 +31,7 @@ import { off } from "process";
 import { ntobs58 } from "@/utils/nb58";
 import {
   getAssociatedTokenAddress,
+  getAssociatedTokenAddressSync,
   getOrCreateAssociatedTokenAccount,
   TOKEN_PROGRAM_ID,
 } from "@solana/spl-token";
@@ -564,6 +566,61 @@ export const useRequestsStore = defineStore("requests", {
       const userStore = useUserStore();
       const { publicKey } = useWallet();
       try {
+        if (coin !== CoinPayment.SOLANA) {
+          throw new Error("use payForRequestToken instead");
+        }
+        const contract = await userStore.getContract();
+        const requestMade = await contract.account.request.all([
+          {
+            memcmp: {
+              offset: 8 + 32,
+              bytes: ntobs58(requestId),
+            },
+          },
+        ]);
+
+        const request = requestMade[0];
+
+        const offerId = request.account.acceptedOfferId;
+
+        const offerMade = await contract.account.offer.all([
+          {
+            memcmp: {
+              offset: 8 + 32,
+              bytes: ntobs58(offerId),
+            },
+          },
+        ]);
+
+        const offer = offerMade[0];
+
+        const receipt = await contract.methods
+          .payForRequest({
+            [coin]: {},
+          })
+          .accounts({
+            systemProgram: SystemProgram.programId,
+            authority: publicKey.value!,
+            request: request.publicKey,
+            to: PORTAL_CLIENT_PUBKEY,
+            offer: offer.publicKey,
+            tokenProgram: TOKEN_PROGRAM_ID,
+          })
+          .rpc();
+
+        return receipt;
+      } catch (error) {
+        console.error(error);
+        throw error;
+      }
+    },
+    async payForRequestToken(requestId: number, coin: CoinPayment) {
+      const userStore = useUserStore();
+      const { publicKey } = useWallet();
+      try {
+        if (coin === CoinPayment.SOLANA) {
+          throw new Error("use payForRequest instead");
+        }
         const contract = await userStore.getContract();
         const requestMade = await contract.account.request.all([
           {
@@ -594,11 +651,6 @@ export const useRequestsStore = defineStore("requests", {
           publicKey.value!,
           true
         );
-        const toAta = await getAssociatedTokenAddress(
-          PYUSD_ADDR,
-          PORTAL_CLIENT_PUBKEY,
-          true
-        );
 
         const receipt = await contract.methods
           .payForRequest({
@@ -610,10 +662,10 @@ export const useRequestsStore = defineStore("requests", {
             request: request.publicKey,
             to: PORTAL_CLIENT_PUBKEY,
             offer: offer.publicKey,
-            // toAta: toAta,
-            // fromAta: fromAta,
+            toAta: PORTAL_PYUSD_TOKEN_ACCOUNT,
+            fromAta: fromAta,
             tokenProgram: TOKEN_PROGRAM_ID,
-            // priceFeed: PYTH_USDC_PRICE_FEED_PUBKEY,
+            priceFeed: PYTH_USDC_PRICE_FEED_PUBKEY,
           })
           .rpc();
 
