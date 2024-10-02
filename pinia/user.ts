@@ -102,15 +102,7 @@ export const useUserStore = defineStore(STORE_KEY, {
         this.disconnect();
       });
     },
-    // async setUpSolanaConnectEvents() {
-    //   await this.disconnect();
-    //   const { publicKey, wallet } = useWallet();
 
-    //   if (!wallet.value) return;
-    //   this.blockchainError.userNotFound = false;
-    //   this.accountId = publicKey.value!.toBase58();
-    //   await this.connectToSolana();
-    // },
     async connectToSolana() {
       const { publicKey, wallet } = useWallet();
 
