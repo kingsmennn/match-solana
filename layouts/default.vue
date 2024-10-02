@@ -162,7 +162,12 @@ const unwatch = watch(
   { immediate: true }
 );
 
-watch(connected, (val) => val && userStore.setUpSolanaConnectEvents());
+watch(connected, (val) => {
+  if(val){
+    userStore.setUpSolanaConnectEvents();
+    userStore.connectToSolana();
+  }
+});
 watch(disconnecting, (val) => val && disconnect());
 
 const userCookie = useCookie<User>(STORE_KEY_MIDDLEWARE, { watch: true });
