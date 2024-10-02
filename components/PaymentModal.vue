@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { RequestResponse } from "@/types";
+import { CoinPayment, RequestResponse } from "@/types";
 import { toast } from "vue-sonner";
 import { ellipsify } from "~/utils/ellipsify";
 
@@ -29,14 +29,14 @@ const tokens: {
 }[] = [
   {
     name: 'Solana',
-    symbol: 'SOL',
+    symbol: CoinPayment.SOLANA,
     logo: 'https://www.svgrepo.com/show/470684/solana.svg',
   },
   {
-    name: 'Tether',
-    symbol: 'USDT',
+    name: 'Paypal USD',
+    symbol: CoinPayment.PyUSDT,
     network: 'solana',
-    logo: 'https://www.svgrepo.com/show/367728/usdt.svg',
+    logo: 'https://svgicons.com/api/ogimage/?id=213765&n=pyusd',
   },
 ]
 const selectedToken = ref()
