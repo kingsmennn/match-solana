@@ -88,14 +88,29 @@ export const useUserStore = defineStore(STORE_KEY, {
   },
   actions: {
     async setUpSolanaConnectEvents() {
-      await this.disconnect();
       const { publicKey, wallet } = useWallet();
-
       if (!wallet.value) return;
-      this.blockchainError.userNotFound = false;
-      this.accountId = publicKey.value!.toBase58();
-      await this.connectToSolana();
+      const walletAdapter = wallet.value!.adapter;
+
+      walletAdapter.on("connect", (newPublicKey) => {
+        this.blockchainError.userNotFound = false;
+        this.accountId = newPublicKey.toBase58();
+        this.connectToSolana();
+      });
+
+      walletAdapter.on("disconnect", () => {
+        this.disconnect();
+      });
     },
+    // async setUpSolanaConnectEvents() {
+    //   await this.disconnect();
+    //   const { publicKey, wallet } = useWallet();
+
+    //   if (!wallet.value) return;
+    //   this.blockchainError.userNotFound = false;
+    //   this.accountId = publicKey.value!.toBase58();
+    //   await this.connectToSolana();
+    // },
     async connectToSolana() {
       const { publicKey, wallet } = useWallet();
 
