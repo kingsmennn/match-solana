@@ -68,6 +68,8 @@ export const REQUEST_COUNTER = "REQUEST_COUNTER";
 
 export const OFFER_COUNTER = "OFFER_COUNTER";
 
+export const PAYMENT_COIN = "SOL";
+
 export const programID = new PublicKey(env.contractId);
 export const USER_COUNTER_PUBKEY = findProgramAddressSync(
   [utf8.encode(USER_COUNTER)],

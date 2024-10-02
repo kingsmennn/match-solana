@@ -94,12 +94,12 @@
           <div class="tw-col-span-3 sm:tw-col-span-2 tw-row-start-1">
             <label class="tw-relative tw-block">
               <span class="tw-absolute tw-text-base tw-pl-4 tw-pt-1"
-                >How much are you selling(₦)?</span
+                >How much are you selling({{ PAYMENT_COIN }})?</span
               >
               <input
                 v-model="form.price"
                 type="number"
-                placeholder="30000"
+                placeholder="0.1 SOL"
                 min="0"
                 :required="true"
                 class="tw-w-full tw-bg-gray-100 tw-p-4 tw-pt-7 tw-rounded-md tw-outline-black"
@@ -134,6 +134,8 @@ import { useUserStore } from "@/pinia/user";
 import { useRequestsStore } from "@/pinia/request";
 import { toast } from "vue-sonner";
 import { AnchorError } from "@project-serum/anchor";
+import { lamportsToSol } from "@/utils/contract-utils";
+import { PAYMENT_COIN } from "@/utils/constants";
 
 type Props = {
   requestId: number;
@@ -192,7 +194,7 @@ const handleFormSubmit = async () => {
   submiting.value = true;
   try {
     await requestsStore.createOffer({
-      price: Math.trunc(form.value.price!),
+      price: Math.trunc(solToLamports(form.value.price!)),
       requestId: props.requestId,
       storeName: userStore.storeDetails?.[0]?.name! || "default store",
       images: [...images.value],

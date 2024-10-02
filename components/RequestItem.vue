@@ -42,9 +42,9 @@
                     <strong>{{ sellerStore?.phone }}</strong>
                   </p>
                   <p class="tw-text-sm">
-                    Price:
+                    Price: 
                     <strong
-                      >₦{{ Number(sellersPriceQuote).toLocaleString() }}</strong
+                      >{{ Number(lamportsToSol(sellersPriceQuote)) }} {{PAYMENT_COIN}}</strong
                     >
                   </p>
                 </template>
@@ -232,6 +232,8 @@ import { useRequestsStore } from "@/pinia/request";
 import { useUserStore } from "@/pinia/user";
 import { useStoreStore } from "@/pinia/store";
 import { toast } from "vue-sonner";
+import { lamportsToSol } from "@/utils/contract-utils";
+import { PAYMENT_COIN } from "@/utils/constants";
 
 interface Props {
   requestId: number;
