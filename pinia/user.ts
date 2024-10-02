@@ -109,7 +109,6 @@ export const useUserStore = defineStore(STORE_KEY, {
       try {
         // Set the account ID (address)
         this.accountId = publicKey!.value!.toString();
-
         const blockchainUser = await this.fetchUser(publicKey!.value!);
 
         this.storeUserDetails(blockchainUser);
@@ -149,6 +148,20 @@ export const useUserStore = defineStore(STORE_KEY, {
       } catch (error) {
         console.error("Error disconnecting:", error);
       }
+    },
+    async initializeCounters() {
+      const contract = await this.getContract();
+      await contract.methods
+        .initializeCounters() // Corresponds to your instruction name in Rust
+        .accounts({
+          userCounter: USER_COUNTER_PUBKEY,
+          storeCounter: STORE_COUNTER_PUBKEY,
+          requestCounter: REQUEST_COUNTER_PUBKEY,
+          offerCounter: OFFER_COUNTER_PUBKEY,
+          authority: this.anchorWallet!.publicKey!,
+          systemProgram: SystemProgram.programId,
+        })
+        .rpc(); // Send the transaction
     },
 
     async fetchUser(account_id: PublicKey): Promise<any> {
