@@ -123,7 +123,7 @@ const handleProceed = () => {
         <fieldset class="tw-border-t-4 tw-my-4">
           <legend class="tw-px-4 tw-text-center">
             <p class="tw-leading-tight tw-text-gray-500">Payable amount</p>
-            <p class="tw-text-2xl tw-font-bold">₦{{ amount.toLocaleString() }}</p>
+            <p class="tw-text-2xl tw-font-bold">{{ lamportsToSol(amount) }} {{ PAYMENT_COIN }}</p>
           </legend>
         </fieldset>
       </section>
