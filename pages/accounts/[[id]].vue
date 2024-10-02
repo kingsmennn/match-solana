@@ -96,7 +96,7 @@
       :amount="attemptPaymentForRequest?.sellersPriceQuote!"
       :account-id="userStore.accountId!"
       @update:is-open="(val) => showPaymentModal = val"
-      @on-process-payment="handleProceesPayment"
+      @on-process-payment="handleProcessPayment"
     />
   </div>
 </template>
@@ -183,7 +183,7 @@ const handlePaymentModal = (requestId: RequestResponse['requestId']) => {
   attemptPaymentForRequest.value = request
 }
 
-const handleProceesPayment = async (
+const handleProcessPayment = async (
   {
     requestId,
     amount,
