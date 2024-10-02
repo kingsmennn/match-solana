@@ -158,9 +158,6 @@ export const marketAbi = {
         { name: "authority", isMut: true, isSigner: true },
         { name: "to", isMut: true, isSigner: false },
         { name: "systemProgram", isMut: false, isSigner: false },
-        { name: "fromAta", isMut: true, isSigner: false },
-        { name: "priceFeed", isMut: false, isSigner: false },
-        { name: "toAta", isMut: true, isSigner: false },
         { name: "tokenProgram", isMut: false, isSigner: false },
       ],
       args: [{ name: "coin", type: { defined: "CoinPayment" } }],
@@ -417,5 +414,6 @@ export const marketAbi = {
     { code: 6009, name: "RequestNotAccepted", msg: "Request not accepted." },
     { code: 6010, name: "RequestNotLocked", msg: "Request not locked." },
     { code: 6011, name: "InvalidSeller", msg: "Invalid seller." },
+    { code: 6012, name: "InvalidCoinPayment", msg: "Invalid coin payment." },
   ],
 };

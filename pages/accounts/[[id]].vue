@@ -111,6 +111,7 @@ import { RequestLifecycle, AccountType, User, RequestResponse, Offer, RequestLif
 import { useUserStore } from '@/pinia/user';
 import { useRequestsStore } from '@/pinia/request';
 import PaymentModal from '@/components/PaymentModal.vue';
+import { toast } from 'vue-sonner';
 
 const env = useRuntimeConfig().public
 useHead({
@@ -195,8 +196,14 @@ const handleProceesPayment = async (
   }
 ) => {
 
-  console.log({ requestId, amount, token, accountId })
-  await requestsStore.payForRequest(requestId,token)
-  showPaymentModal.value = false
+  try {
+    
+    await requestsStore.payForRequest(requestId,token)
+  } catch (error:any) {
+    toast.error(error)
+  }finally {
+    showPaymentModal.value = false
+  }
+
 }
 </script>

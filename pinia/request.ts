@@ -576,7 +576,6 @@ export const useRequestsStore = defineStore("requests", {
 
         const request = requestMade[0];
 
-        console.log(request);
         const offerId = request.account.acceptedOfferId;
 
         const offerMade = await contract.account.offer.all([
@@ -601,10 +600,6 @@ export const useRequestsStore = defineStore("requests", {
           true
         );
 
-        console.log({
-          [coin]: {},
-        });
-
         const receipt = await contract.methods
           .payForRequest({
             [coin]: {},
@@ -615,10 +610,10 @@ export const useRequestsStore = defineStore("requests", {
             request: request.publicKey,
             to: PORTAL_CLIENT_PUBKEY,
             offer: offer.publicKey,
-            toAta: toAta,
-            fromAta: fromAta,
+            // toAta: toAta,
+            // fromAta: fromAta,
             tokenProgram: TOKEN_PROGRAM_ID,
-            priceFeed: PYTH_USDC_PRICE_FEED_PUBKEY,
+            // priceFeed: PYTH_USDC_PRICE_FEED_PUBKEY,
           })
           .rpc();
 

@@ -3,8 +3,8 @@ export enum AccountType {
   SELLER = "seller",
 }
 export enum CoinPayment {
-  SOLANA = "Solana",
-  PyUSDT = "PyUsdt",
+  SOLANA = "solana",
+  PyUSDT = "pyusdt",
 }
 
 export type Location = [
