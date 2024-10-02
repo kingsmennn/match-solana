@@ -92,11 +92,11 @@
 
     <PaymentModal
       :is-open="showPaymentModal"
-      :requestId="attemptPaymentForRequest?.id!"
+      :requestId="attemptPaymentForRequest?.requestId!"
       :amount="attemptPaymentForRequest?.sellersPriceQuote!"
       :account-id="userStore.accountId!"
       @update:is-open="(val) => showPaymentModal = val"
-      @on-process-payment="()=>{}"
+      @on-process-payment="(val)=>{console.log({paymentPayload: val})}"
     />
   </div>
 </template>
@@ -107,7 +107,7 @@ import Tabs from '@/components/Tabs.vue';
 import RequestItem from '@/components/RequestItem.vue';
 import { ref, computed } from 'vue'
 import { useRoute } from 'vue-router'
-import { RequestLifecycle, AccountType, User, Request, Offer, RequestLifecycleIndex } from '@/types'
+import { RequestLifecycle, AccountType, User, RequestResponse, Offer, RequestLifecycleIndex } from '@/types'
 import { useUserStore } from '@/pinia/user';
 import { useRequestsStore } from '@/pinia/request';
 import PaymentModal from '@/components/PaymentModal.vue';
@@ -173,9 +173,9 @@ const completedRequestList = computed(() => {
 })
 
 const showPaymentModal = ref(false)
-const attemptPaymentForRequest = ref<Request>()
-const handlePaymentModal = (requestId: Request['id']) => {
-  const request = requestsStore.list.find(request => request.requestId === requestId) as unknown as Request
+const attemptPaymentForRequest = ref<RequestResponse>()
+const handlePaymentModal = (requestId: RequestResponse['requestId']) => {
+  const request = requestsStore.list.find(request => request.requestId === requestId)
   if (!request) return
   showPaymentModal.value = true
   attemptPaymentForRequest.value = request

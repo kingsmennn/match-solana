@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { Request } from "@/types";
+import { RequestResponse } from "@/types";
 import { toast } from "vue-sonner";
 import { ellipsify } from "~/utils/ellipsify";
 
 type Props = {
-  requestId: Request['id']
+  requestId: RequestResponse['requestId']
   accountId: string
   amount: number
   isOpen: boolean
@@ -13,6 +13,7 @@ const props = defineProps<Props>();
 type ProcessPaymentPayload = {
   accountId: string
   requestId: number
+  token: string
 }
 const emits = defineEmits<{
   (e: 'update:isOpen', value: boolean): void,
@@ -85,7 +86,8 @@ const handleProceed = () => {
   }
   emits('onProcessPayment', {
     accountId: props.accountId,
-    requestId: props.requestId!
+    requestId: props.requestId!,
+    token: selectedToken.value
   })
 }
 </script>
