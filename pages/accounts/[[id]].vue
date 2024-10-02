@@ -96,7 +96,7 @@
       :amount="attemptPaymentForRequest?.sellersPriceQuote!"
       :account-id="userStore.accountId!"
       @update:is-open="(val) => showPaymentModal = val"
-      @on-process-payment="(val)=>{console.log({paymentPayload: val})}"
+      @on-process-payment="handleProceesPayment"
     />
   </div>
 </template>
@@ -107,7 +107,7 @@ import Tabs from '@/components/Tabs.vue';
 import RequestItem from '@/components/RequestItem.vue';
 import { ref, computed } from 'vue'
 import { useRoute } from 'vue-router'
-import { RequestLifecycle, AccountType, User, RequestResponse, Offer, RequestLifecycleIndex } from '@/types'
+import { RequestLifecycle, AccountType, User, RequestResponse, Offer, RequestLifecycleIndex, CoinPayment } from '@/types'
 import { useUserStore } from '@/pinia/user';
 import { useRequestsStore } from '@/pinia/request';
 import PaymentModal from '@/components/PaymentModal.vue';
@@ -179,5 +179,21 @@ const handlePaymentModal = (requestId: RequestResponse['requestId']) => {
   if (!request) return
   showPaymentModal.value = true
   attemptPaymentForRequest.value = request
+}
+
+const handleProceesPayment = (
+  {
+    requestId,
+    amount,
+    token,
+    accountId
+  }:{
+    requestId: RequestResponse['requestId'],
+    amount: number
+    token: CoinPayment
+    accountId: string
+  }
+) => {
+  console.log({ requestId, amount, token, accountId })
 }
 </script>

@@ -13,7 +13,8 @@ const props = defineProps<Props>();
 type ProcessPaymentPayload = {
   accountId: string
   requestId: number
-  token: string
+  token: CoinPayment
+  amount: number
 }
 const emits = defineEmits<{
   (e: 'update:isOpen', value: boolean): void,
@@ -87,7 +88,8 @@ const handleProceed = () => {
   emits('onProcessPayment', {
     accountId: props.accountId,
     requestId: props.requestId!,
-    token: selectedToken.value
+    token: selectedToken.value,
+    amount: props.amount
   })
 }
 </script>
