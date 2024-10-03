@@ -63,6 +63,8 @@ export const REQUEST_TAG = "REQUEST_STATE";
 
 export const OFFER_TAG = "OFFER_STATE";
 
+export const REQUEST_PAYMENT_TAG = "REQUEST_PAYMENT_STATE";
+
 export const USER_COUNTER = "USER_COUNTER";
 
 export const STORE_COUNTER = "STORE_COUNTER";
@@ -70,6 +72,8 @@ export const STORE_COUNTER = "STORE_COUNTER";
 export const REQUEST_COUNTER = "REQUEST_COUNTER";
 
 export const OFFER_COUNTER = "OFFER_COUNTER";
+
+export const REQUEST_PAYMENT_COUNTER = "REQUEST_PAYMENT_COUNTER";
 
 export const PAYMENT_COIN = "SOL";
 
@@ -91,6 +95,11 @@ export const REQUEST_COUNTER_PUBKEY = findProgramAddressSync(
 
 export const OFFER_COUNTER_PUBKEY = findProgramAddressSync(
   [utf8.encode(OFFER_COUNTER)],
+  programID
+)[0];
+
+export const REQUEST_PAYMENT_COUNTER_PUBKEY = findProgramAddressSync(
+  [utf8.encode(REQUEST_PAYMENT_COUNTER)],
   programID
 )[0];
 
