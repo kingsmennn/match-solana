@@ -279,6 +279,9 @@ export const useUserStore = defineStore(STORE_KEY, {
           this.anchorWallet!.publicKey!
         );
         this.storeUserDetails(blockchainUser);
+        this.fetchLocationPreference().then((res) => {
+          this.locationEnabled = res;
+        });
 
         this.blockchainError.userNotFound = false;
         return tx;
