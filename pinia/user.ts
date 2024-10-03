@@ -113,7 +113,7 @@ export const useUserStore = defineStore(STORE_KEY, {
 
         this.storeUserDetails(blockchainUser);
 
-        this.fetchLocationPreference().then((res) => {p
+        this.fetchLocationPreference().then((res) => {
           this.locationEnabled = res;
         });
 

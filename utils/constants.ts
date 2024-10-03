@@ -99,7 +99,7 @@ export const PORTAL_CLIENT_PUBKEY = new PublicKey(
 );
 
 export const PYTH_USDC_PRICE_FEED_PUBKEY = new PublicKey(
-  "EdVCmQ9FSPcVe5YySXDPCRmc8aDQLKJ9xvYBMZPie1Vw"
+  "J83w4HKfqxwcq3BEMMkPFSppX3gqekLyLJBexebFVkix"
 );
 
 export const PYUSD_ADDR = new PublicKey(env.pyUsdMint);
