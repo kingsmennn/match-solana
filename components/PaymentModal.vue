@@ -9,6 +9,7 @@ type Props = {
   amount: number
   isOpen: boolean
   inProgress: boolean
+  paymentCoin: string
 }
 const props = defineProps<Props>();
 type ProcessPaymentPayload = {
@@ -124,7 +125,7 @@ const handleProceed = () => {
         <fieldset class="tw-border-t-4 tw-my-4">
           <legend class="tw-px-4 tw-text-center">
             <p class="tw-leading-tight tw-text-gray-500">Payable amount</p>
-            <p class="tw-text-2xl tw-font-bold">{{ lamportsToSol(amount) }} {{ PAYMENT_COIN }}</p>
+            <p class="tw-text-2xl tw-font-bold">{{ amount }} {{ paymentCoin }}</p>
           </legend>
         </fieldset>
       </section>
