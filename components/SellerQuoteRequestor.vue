@@ -208,7 +208,6 @@ const handleFormSubmit = async () => {
       } offer!`
     );
   } catch (error:any) {
-    console.log(error);
     if (error instanceof AnchorError) {
       const err: AnchorError = error;
       toast.error(err.error.errorMessage);
