@@ -648,7 +648,7 @@ export const useRequestsStore = defineStore("requests", {
 
         const offer = offerMade[0];
 
-        const fromAta = await getAssociatedTokenAddress(
+        const fromAta = getAssociatedTokenAddressSync(
           PYUSD_ADDR,
           publicKey.value!,
           true,
