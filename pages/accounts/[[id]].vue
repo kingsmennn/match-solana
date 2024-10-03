@@ -202,7 +202,12 @@ const handleProcessPayment = async (
   processingPayment.value = true
 
   try {
-    await requestsStore.payForRequest(requestId,token)
+    if(token == CoinPayment.SOLANA) {
+      await requestsStore.payForRequest(requestId,token)
+    }else {
+      await requestsStore.payForRequestToken(requestId,token)
+    }
+    
   } catch (error:any) {
     if (error instanceof AnchorError) {
       const err: AnchorError = error;
@@ -213,6 +218,5 @@ const handleProcessPayment = async (
     showPaymentModal.value = false
     processingPayment.value = false
   }
-
 }
 </script>

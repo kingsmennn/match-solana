@@ -663,12 +663,12 @@ export const useRequestsStore = defineStore("requests", {
             systemProgram: SystemProgram.programId,
             authority: publicKey.value!,
             request: request.publicKey,
-            to: PORTAL_CLIENT_PUBKEY,
             offer: offer.publicKey,
             toAta: PORTAL_PYUSD_TOKEN_ACCOUNT,
             fromAta: fromAta,
-            tokenProgram: TOKEN_PROGRAM_ID,
+            tokenProgram: TOKEN_2022_PROGRAM_ID,
             priceFeed: PYTH_USDC_PRICE_FEED_PUBKEY,
+            mint: PYUSD_ADDR,
           })
           .rpc();
 
