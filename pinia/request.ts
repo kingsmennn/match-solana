@@ -656,7 +656,7 @@ export const useRequestsStore = defineStore("requests", {
         );
 
         const receipt = await contract.methods
-          .payForRequest({
+          .payForRequestToken({
             [coin]: {},
           })
           .accounts({
