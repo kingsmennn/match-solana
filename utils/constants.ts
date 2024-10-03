@@ -1,7 +1,10 @@
 import { findProgramAddressSync } from "@project-serum/anchor/dist/cjs/utils/pubkey";
 import { PublicKey } from "@solana/web3.js";
 import { utf8 } from "@project-serum/anchor/dist/cjs/utils/bytes";
-import { getAssociatedTokenAddressSync } from "@solana/spl-token";
+import {
+  getAssociatedTokenAddressSync,
+  TOKEN_2022_PROGRAM_ID,
+} from "@solana/spl-token";
 
 export const chainName = "Sepolia";
 const env = useRuntimeConfig().public;
@@ -104,5 +107,6 @@ export const PYUSD_ADDR = new PublicKey(env.pyUsdMint);
 export const PORTAL_PYUSD_TOKEN_ACCOUNT = getAssociatedTokenAddressSync(
   PYUSD_ADDR,
   PORTAL_CLIENT_PUBKEY,
-  true
+  true,
+  TOKEN_2022_PROGRAM_ID
 );

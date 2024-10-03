@@ -33,6 +33,7 @@ import {
   getAssociatedTokenAddress,
   getAssociatedTokenAddressSync,
   getOrCreateAssociatedTokenAccount,
+  TOKEN_2022_PROGRAM_ID,
   TOKEN_PROGRAM_ID,
 } from "@solana/spl-token";
 import { programID } from "@/utils/constants";
@@ -650,7 +651,8 @@ export const useRequestsStore = defineStore("requests", {
         const fromAta = await getAssociatedTokenAddress(
           PYUSD_ADDR,
           publicKey.value!,
-          true
+          true,
+          TOKEN_2022_PROGRAM_ID
         );
 
         const receipt = await contract.methods
