@@ -95,6 +95,7 @@
       :requestId="attemptPaymentForRequest?.requestId!"
       :amount="attemptPaymentForRequest?.sellersPriceQuote!"
       :account-id="userStore.accountId!"
+      :in-progress="processingPayment"
       @update:is-open="(val) => showPaymentModal = val"
       @on-process-payment="handleProcessPayment"
     />
@@ -183,6 +184,7 @@ const handlePaymentModal = (requestId: RequestResponse['requestId']) => {
   attemptPaymentForRequest.value = request
 }
 
+const processingPayment = ref(false)
 const handleProcessPayment = async (
   {
     requestId,
@@ -196,6 +198,7 @@ const handleProcessPayment = async (
     accountId: string
   }
 ) => {
+  processingPayment.value = true
 
   try {
     await requestsStore.payForRequest(requestId,token)
@@ -207,6 +210,7 @@ const handleProcessPayment = async (
     }
   }finally {
     showPaymentModal.value = false
+    processingPayment.value = false
   }
 
 }

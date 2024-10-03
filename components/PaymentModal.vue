@@ -8,6 +8,7 @@ type Props = {
   accountId: string
   amount: number
   isOpen: boolean
+  inProgress: boolean
 }
 const props = defineProps<Props>();
 type ProcessPaymentPayload = {
@@ -201,8 +202,21 @@ const handleProceed = () => {
         </button>
         <button
           @click="handleProceed"
-          class="tw-bg-black tw-text-white hover:tw-bg-black/80">
+          class="tw-bg-black tw-text-white hover:tw-bg-black/80
+          tw-relative tw-overflow-hidden">
           Proceed
+          <span
+            v-if="inProgress"
+            class="tw-absolute tw-inset-0 tw-flex tw-items-center tw-justify-center
+            tw-bg-white/60">
+            <v-progress-circular
+              indeterminate
+              color="white"
+              size="20"
+              width="2"
+            >
+            </v-progress-circular>
+          </span>
         </button>
       </section>
     </div>
