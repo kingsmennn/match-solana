@@ -93,11 +93,12 @@
     <PaymentModal
       :is-open="showPaymentModal"
       :requestId="attemptPaymentForRequest?.requestId!"
-      :amount="attemptPaymentForRequest?.sellersPriceQuote!"
+      :amount="lamportsToSol(attemptPaymentForRequest?.sellersPriceQuote!)"
       :account-id="userStore.accountId!"
       :in-progress="processingPayment"
       @update:is-open="(val) => showPaymentModal = val"
       @on-process-payment="handleProcessPayment"
+      :payment-coin="PAYMENT_COIN"
     />
   </div>
 </template>
