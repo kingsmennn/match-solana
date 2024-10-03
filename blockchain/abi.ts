@@ -335,7 +335,7 @@ export const marketAbi = {
       name: "CoinPayment",
       type: {
         kind: "enum",
-        variants: [{ name: "Solana" }, { name: "PyUsdt" }],
+        variants: [{ name: "Solana" }, { name: "Pyusdt" }],
       },
     },
   ],
