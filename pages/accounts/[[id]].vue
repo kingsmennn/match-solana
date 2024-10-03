@@ -209,11 +209,17 @@ const handleProcessPayment = async (
     }
     
   } catch (error:any) {
+ 
     if (error instanceof AnchorError) {
       const err: AnchorError = error;
       toast.error(err.error.errorMessage);
       return;
     }
+    if(error.transactionMessage) {
+       toast.error(error.transactionMessage);
+       return;
+    }
+    toast.error(error);
   }finally {
     showPaymentModal.value = false
     processingPayment.value = false

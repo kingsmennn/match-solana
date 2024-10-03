@@ -207,13 +207,18 @@ const handleFormSubmit = async () => {
         hasSubmittedOffer.value ? "updated your" : "made an"
       } offer!`
     );
-  } catch (error) {
+  } catch (error:any) {
     console.log(error);
     if (error instanceof AnchorError) {
       const err: AnchorError = error;
       toast.error(err.error.errorMessage);
       return;
     }
+    if(error.transactionMessage) {
+       toast.error(error.transactionMessage);
+       return;
+    }
+    toast.error(error);
   } finally {
     submiting.value = false;
   }
