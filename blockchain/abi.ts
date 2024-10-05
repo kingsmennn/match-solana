@@ -5,7 +5,7 @@ export const marketAbi = {
     {
       name: "TIME_TO_LOCK",
       type: "u64",
-      value: "900",
+      value: "60",
     },
     {
       name: "USER_TAG",
@@ -366,27 +366,6 @@ export const marketAbi = {
       args: [],
     },
     {
-      name: "checkPrice",
-      accounts: [
-        {
-          name: "authority",
-          isMut: true,
-          isSigner: true,
-        },
-        {
-          name: "systemProgram",
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: "priceFeed",
-          isMut: false,
-          isSigner: false,
-        },
-      ],
-      args: [],
-    },
-    {
       name: "payForRequestToken",
       accounts: [
         {
@@ -425,17 +404,17 @@ export const marketAbi = {
           isSigner: false,
         },
         {
-          name: "priceFeed",
-          isMut: false,
-          isSigner: false,
-        },
-        {
           name: "toAta",
           isMut: true,
           isSigner: false,
         },
         {
           name: "tokenProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "priceUpdate",
           isMut: false,
           isSigner: false,
         },
@@ -874,6 +853,10 @@ export const marketAbi = {
             type: "u64",
           },
           {
+            name: "sellerAuthority",
+            type: "publicKey",
+          },
+          {
             name: "createdAt",
             type: "u64",
           },
@@ -1286,6 +1269,6 @@ export const marketAbi = {
     },
   ],
   metadata: {
-    address: "HmwqhNTNT6LNjfpDPYFfFLQ3w2rT2U9GEBKuDUG38vR2",
+    address: "29kb8V53uTaQF7bdfNdcQDR2ux7cRhZDiQ6FHgcLxQmz",
   },
 };
