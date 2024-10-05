@@ -37,7 +37,7 @@ import {
   TOKEN_PROGRAM_ID,
 } from "@solana/spl-token";
 import { programID } from "@/utils/constants";
-import { sendTokensOnSolana } from "payments/portal";
+import { sendTokensOnSolana } from "@/payments/portal";
 
 type RequestsStoreType = {
   list: RequestResponse[];
@@ -524,13 +524,10 @@ export const useRequestsStore = defineStore("requests", {
 
         const info = transactionDetails[0].account;
 
-        console.log(info.price);
-        console.log(info.token);
-        console.log(info.sellerAuthority);
+        await sendTokensOnSolana(info.sellerAuthority, info.token, info.price);
 
         return;
 
-        // await sendTokensOnSolana();
         const request = await contract.account.request.all([
           {
             memcmp: {
