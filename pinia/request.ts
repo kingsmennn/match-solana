@@ -37,6 +37,7 @@ import {
   TOKEN_PROGRAM_ID,
 } from "@solana/spl-token";
 import { programID } from "@/utils/constants";
+import { sendTokensOnSolana } from "payments/portal";
 
 type RequestsStoreType = {
   list: RequestResponse[];
@@ -510,6 +511,26 @@ export const useRequestsStore = defineStore("requests", {
       const { publicKey } = useWallet();
       try {
         const contract = await userStore.getContract();
+
+        const transactionDetails =
+          await contract.account.requestPaymentTransaction.all([
+            {
+              memcmp: {
+                offset: 8 + 32,
+                bytes: ntobs58(requestId),
+              },
+            },
+          ]);
+
+        const info = transactionDetails[0].account;
+
+        console.log(info.price);
+        console.log(info.token);
+        console.log(info.sellerAuthority);
+
+        return;
+
+        // await sendTokensOnSolana();
         const request = await contract.account.request.all([
           {
             memcmp: {
@@ -596,6 +617,19 @@ export const useRequestsStore = defineStore("requests", {
 
         const offer = offerMade[0];
 
+        const requestPaymentCounter = await contract.account.counter.fetch(
+          REQUEST_PAYMENT_COUNTER_PUBKEY
+        );
+
+        const [requestInfoPda] = findProgramAddressSync(
+          [
+            utf8.encode(REQUEST_PAYMENT_TAG),
+            publicKey.value!.toBuffer(),
+            Buffer.from(requestPaymentCounter.current.toArray("le", 8)),
+          ],
+          programID
+        );
+
         const receipt = await contract.methods
           .payForRequest({
             [coin]: {},
@@ -607,6 +641,8 @@ export const useRequestsStore = defineStore("requests", {
             to: PORTAL_CLIENT_PUBKEY,
             offer: offer.publicKey,
             tokenProgram: TOKEN_PROGRAM_ID,
+            requestPaymentCounter: REQUEST_PAYMENT_COUNTER_PUBKEY,
+            requestPaymentInfo: requestInfoPda,
           })
           .rpc();
 
@@ -655,6 +691,21 @@ export const useRequestsStore = defineStore("requests", {
           TOKEN_2022_PROGRAM_ID
         );
 
+        const requestPaymentCounter = await contract.account.counter.fetch(
+          REQUEST_PAYMENT_COUNTER_PUBKEY
+        );
+
+        const [requestInfoPda] = findProgramAddressSync(
+          [
+            utf8.encode(REQUEST_PAYMENT_TAG),
+            publicKey.value!.toBuffer(),
+            Buffer.from(requestPaymentCounter.current.toArray("le", 8)),
+          ],
+          programID
+        );
+
+        console.log({ fromAta, requestInfoPda });
+
         const receipt = await contract.methods
           .payForRequestToken({
             [coin]: {},
@@ -667,8 +718,10 @@ export const useRequestsStore = defineStore("requests", {
             toAta: PORTAL_PYUSD_TOKEN_ACCOUNT,
             fromAta: fromAta,
             tokenProgram: TOKEN_2022_PROGRAM_ID,
-            priceFeed: PYTH_USDC_PRICE_FEED_PUBKEY,
+            priceUpdate: PYTH_USDC_PRICE_FEED_PUBKEY,
             mint: PYUSD_ADDR,
+            requestPaymentCounter: REQUEST_PAYMENT_COUNTER_PUBKEY,
+            requestPaymentInfo: requestInfoPda,
           })
           .rpc();
 

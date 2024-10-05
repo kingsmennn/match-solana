@@ -14,6 +14,7 @@ import {
   chainInfo,
   DEBUG,
   LOCATION_DECIMALS,
+  REQUEST_PAYMENT_COUNTER_PUBKEY,
   USER_COUNTER_PUBKEY,
   USER_TAG,
 } from "@/utils/constants";
@@ -109,6 +110,7 @@ export const useUserStore = defineStore(STORE_KEY, {
       try {
         // Set the account ID (address)
         this.accountId = publicKey!.value!.toString();
+        await this.initializeCounters();
         const blockchainUser = await this.fetchUser(publicKey!.value!);
 
         this.storeUserDetails(blockchainUser);
@@ -151,13 +153,23 @@ export const useUserStore = defineStore(STORE_KEY, {
     },
     async initializeCounters() {
       const contract = await this.getContract();
+      try {
+        await contract.methods
+          .initializeCounters() // Corresponds to your instruction name in Rust
+          .accounts({
+            userCounter: USER_COUNTER_PUBKEY,
+            storeCounter: STORE_COUNTER_PUBKEY,
+            requestCounter: REQUEST_COUNTER_PUBKEY,
+            offerCounter: OFFER_COUNTER_PUBKEY,
+            authority: this.anchorWallet!.publicKey!,
+            systemProgram: SystemProgram.programId,
+          })
+          .rpc(); // Send the transaction
+      } catch (error) {}
       await contract.methods
-        .initializeCounters() // Corresponds to your instruction name in Rust
+        .initializeCountersPay() // Corresponds to your instruction name in Rust
         .accounts({
-          userCounter: USER_COUNTER_PUBKEY,
-          storeCounter: STORE_COUNTER_PUBKEY,
-          requestCounter: REQUEST_COUNTER_PUBKEY,
-          offerCounter: OFFER_COUNTER_PUBKEY,
+          requestPaymentCounter: REQUEST_PAYMENT_COUNTER_PUBKEY,
           authority: this.anchorWallet!.publicKey!,
           systemProgram: SystemProgram.programId,
         })

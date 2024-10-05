@@ -8,7 +8,7 @@ export const portal = new Portal({
   },
 });
 
-const sendTokensOnSolana = async (
+export const sendTokensOnSolana = async (
   to: any,
   tokenMint: any,
   tokenAmount: any
