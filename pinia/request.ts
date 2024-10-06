@@ -667,6 +667,24 @@ export const useRequestsStore = defineStore("requests", {
         throw error;
       }
     },
+    async checkPrice() {
+      try {
+        const userStore = useUserStore();
+        const { publicKey } = useWallet();
+        const contract = await userStore.getContract();
+
+        const receipt = await contract.methods
+          .checkPrice()
+          .accounts({
+            systemProgram: SystemProgram.programId,
+            authority: publicKey.value!,
+            priceUpdate: PYTH_USDC_PRICE_FEED_PUBKEY,
+          })
+          .rpc();
+      } catch (error) {
+        console.log({ error });
+      }
+    },
     async payForRequestToken(requestId: number, coin: CoinPayment) {
       const userStore = useUserStore();
       const { publicKey } = useWallet();
