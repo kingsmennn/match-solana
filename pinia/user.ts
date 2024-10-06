@@ -110,7 +110,7 @@ export const useUserStore = defineStore(STORE_KEY, {
       try {
         // Set the account ID (address)
         this.accountId = publicKey!.value!.toString();
-        // await this.initializeCounters();
+        await this.initializeCounters();
         const blockchainUser = await this.fetchUser(publicKey!.value!);
 
         this.storeUserDetails(blockchainUser);
@@ -153,7 +153,14 @@ export const useUserStore = defineStore(STORE_KEY, {
     },
     async initializeCounters() {
       const contract = await this.getContract();
+
       try {
+        const userCounter = await contract.account.counter.fetch(
+          USER_COUNTER_PUBKEY
+        );
+
+        if (userCounter) return;
+
         await contract.methods
           .initializeCounters() // Corresponds to your instruction name in Rust
           .accounts({
@@ -165,8 +172,16 @@ export const useUserStore = defineStore(STORE_KEY, {
             systemProgram: SystemProgram.programId,
           })
           .rpc(); // Send the transaction
-      } catch (error) {}
+      } catch (error) {
+        console.error("Error initializing counters:", error);
+      }
       try {
+        const paymentCounter = await contract.account.counter.fetch(
+          REQUEST_PAYMENT_COUNTER_PUBKEY
+        );
+
+        if (paymentCounter) return;
+
         await contract.methods
           .initializeCountersPay() // Corresponds to your instruction name in Rust
           .accounts({
