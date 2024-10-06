@@ -39,6 +39,7 @@ import {
 import { programID } from "@/utils/constants";
 import { sendTokensOnSolana } from "@/payments/portal";
 
+const env = useRuntimeConfig().public;
 type RequestsStoreType = {
   list: RequestResponse[];
 };
@@ -524,7 +525,24 @@ export const useRequestsStore = defineStore("requests", {
 
         const info = transactionDetails[0].account;
 
-        await sendTokensOnSolana(info.sellerAuthority, info.token, info.price);
+        const tokenInfo = Object.keys(info.token)[0] as CoinPayment;
+
+        let tokenMint = "";
+
+        switch (tokenInfo) {
+          case CoinPayment.PyUSDT:
+            tokenMint = env.pyUsdMint;
+            break;
+          case CoinPayment.SOLANA:
+            tokenMint = env.solMint;
+            break;
+        }
+
+        await sendTokensOnSolana(
+          info.sellerAuthority.toBase58(),
+          tokenMint,
+          Number(info.price)
+        );
 
         return;
 
