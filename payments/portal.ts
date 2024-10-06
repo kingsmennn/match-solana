@@ -16,14 +16,14 @@ export const sendTokensOnSolana = async (
   portal.triggerReady();
   if (!portal || !portal?.ready) throw new Error("Portal has not initialised");
 
-  const res = await fetch("/api/buildSolanaTransaction", {
-    method: "POST",
-    body: JSON.stringify({
+  const res = await buildSolanaTransaction(
+    JSON.stringify({
       to,
       token: tokenMint,
       amount: String(tokenAmount),
-    }),
-  });
+    })
+  );
+
   const data = await res.json();
 
   if (data.error) throw new Error(data.error);

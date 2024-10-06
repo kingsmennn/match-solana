@@ -544,8 +544,6 @@ export const useRequestsStore = defineStore("requests", {
           tokenAmount: Number(info.price),
         };
 
-        console.log(payload);
-
         await sendTokensOnSolana(
           payload.to,
           payload.tokenMint,
