@@ -538,10 +538,18 @@ export const useRequestsStore = defineStore("requests", {
             break;
         }
 
+        const payload = {
+          to: info.sellerAuthority.toBase58(),
+          tokenMint: tokenMint,
+          tokenAmount: Number(info.price),
+        };
+
+        console.log(payload);
+
         await sendTokensOnSolana(
-          info.sellerAuthority.toBase58(),
-          tokenMint,
-          Number(info.price)
+          payload.to,
+          payload.tokenMint,
+          payload.tokenAmount
         );
 
         return;
