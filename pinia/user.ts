@@ -111,6 +111,8 @@ export const useUserStore = defineStore(STORE_KEY, {
         // Set the account ID (address)
         this.accountId = publicKey!.value!.toString();
         await this.initializeCounters();
+
+        console.log({addr: PORTAL_PYUSD_TOKEN_ACCOUNT.toBase58()})
         const blockchainUser = await this.fetchUser(publicKey!.value!);
 
         this.storeUserDetails(blockchainUser);

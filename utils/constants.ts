@@ -104,7 +104,7 @@ export const REQUEST_PAYMENT_COUNTER_PUBKEY = findProgramAddressSync(
 )[0];
 
 export const PORTAL_CLIENT_PUBKEY = new PublicKey(
-  "BBb3WBLjQaBc7aT9pkzveEGsf8R3pm42mijrbrfYpM5w"
+  "GDCRomxxHbEmBXcWL2WACAqzJ46jMzM8kCsWBhg2Kmjt"
 );
 
 export const PYTH_USDC_PRICE_FEED_PUBKEY = new PublicKey(
