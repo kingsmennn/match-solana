@@ -513,45 +513,6 @@ export const useRequestsStore = defineStore("requests", {
       try {
         const contract = await userStore.getContract();
 
-        const transactionDetails =
-          await contract.account.requestPaymentTransaction.all([
-            {
-              memcmp: {
-                offset: 8 + 32,
-                bytes: ntobs58(requestId),
-              },
-            },
-          ]);
-
-        const info = transactionDetails[0].account;
-
-        const tokenInfo = Object.keys(info.token)[0] as CoinPayment;
-
-        let tokenMint = "";
-
-        switch (tokenInfo) {
-          case CoinPayment.PyUSDT:
-            tokenMint = env.pyUsdMint;
-            break;
-          case CoinPayment.SOLANA:
-            tokenMint = env.solMint;
-            break;
-        }
-
-        const payload = {
-          to: info.sellerAuthority.toBase58(),
-          tokenMint: tokenMint,
-          tokenAmount: Number(info.price),
-        };
-
-        await sendTokensOnSolana(
-          payload.to,
-          payload.tokenMint,
-          payload.tokenAmount
-        );
-
-        return;
-
         const request = await contract.account.request.all([
           {
             memcmp: {
