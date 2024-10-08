@@ -38,6 +38,7 @@ import {
 } from "@solana/spl-token";
 import { programID } from "@/utils/constants";
 import { sendTokensOnSolana } from "@/payments/portal";
+const { publicKey, wallet } = useWallet();
 
 const env = useRuntimeConfig().public;
 type RequestsStoreType = {
@@ -66,7 +67,6 @@ export const useRequestsStore = defineStore("requests", {
       longitude,
     }: CreateRequestDTO): Promise<any | undefined> {
       const userStore = useUserStore();
-      const { publicKey } = useWallet();
 
       try {
         const contract = await userStore.getContract();
@@ -277,7 +277,6 @@ export const useRequestsStore = defineStore("requests", {
     },
     async getTransactionHistory(): Promise<any> {
       const userStore = useUserStore();
-      const { publicKey } = useWallet();
       try {
         const contract = await userStore.getContract();
 
@@ -390,7 +389,6 @@ export const useRequestsStore = defineStore("requests", {
       storeName,
     }: CreateOfferDTO): Promise<any | undefined> {
       const userStore = useUserStore();
-      const { publicKey } = useWallet();
       const env = useRuntimeConfig().public;
 
       try {
@@ -448,7 +446,6 @@ export const useRequestsStore = defineStore("requests", {
     },
     async acceptOffer(offerId: number): Promise<any | undefined> {
       const userStore = useUserStore();
-      const { publicKey } = useWallet();
       try {
         const [profilePda, _] = findProgramAddressSync(
           [utf8.encode(USER_TAG), publicKey.value!.toBuffer()],
@@ -552,7 +549,6 @@ export const useRequestsStore = defineStore("requests", {
     },
     async markRequestAsCompleted(requestId: number) {
       const userStore = useUserStore();
-      const { publicKey } = useWallet();
       try {
         const response = await sendTokensOnSolana(requestId);
 
@@ -584,7 +580,6 @@ export const useRequestsStore = defineStore("requests", {
     },
     async deleteRequest(requestId: number) {
       const userStore = useUserStore();
-      const { publicKey } = useWallet();
       try {
         const contract = await userStore.getContract();
         const request = await contract.account.request.all([
@@ -613,7 +608,6 @@ export const useRequestsStore = defineStore("requests", {
     },
     async payForRequest(requestId: number, coin: CoinPayment) {
       const userStore = useUserStore();
-      const { publicKey } = useWallet();
       try {
         if (coin !== CoinPayment.SOLANA) {
           throw new Error("use payForRequestToken instead");
@@ -681,7 +675,6 @@ export const useRequestsStore = defineStore("requests", {
     },
     async payForRequestToken(requestId: number, coin: CoinPayment) {
       const userStore = useUserStore();
-      const { publicKey } = useWallet();
       try {
         if (coin === CoinPayment.SOLANA) {
           throw new Error("use payForRequest instead");

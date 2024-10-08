@@ -14,7 +14,7 @@ import { utf8 } from "@project-serum/anchor/dist/cjs/utils/bytes";
 import { BN } from "@project-serum/anchor";
 import { ntobs58 } from "@/utils/nb58";
 import { programID } from "@/utils/constants";
-
+const { publicKey, wallet } = useWallet();
 export const useStoreStore = defineStore(STORE_STORE_KEY, {
   state: () => ({}),
   getters: {},
@@ -27,7 +27,6 @@ export const useStoreStore = defineStore(STORE_STORE_KEY, {
       longitude,
     }: CreateStoreDTO): Promise<any | undefined> {
       const userStore = useUserStore();
-      const { publicKey } = useWallet();
       try {
         const payload = {
           name,

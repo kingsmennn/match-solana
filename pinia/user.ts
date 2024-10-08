@@ -45,6 +45,8 @@ type UserStore = {
 };
 
 const env = useRuntimeConfig().public;
+const anchor = useAnchorWallet();
+const { publicKey, wallet } = useWallet();
 const preflightCommitment = "processed";
 export const connection = new Connection(env.solanaRpcUrl, preflightCommitment);
 
@@ -89,12 +91,13 @@ export const useUserStore = defineStore(STORE_KEY, {
   },
   actions: {
     async setUpSolanaConnectEvents() {
-      const { publicKey, wallet } = useWallet();
+     
       if (!wallet.value) return;
       const walletAdapter = wallet.value!.adapter;
 
       walletAdapter.on("connect", (newPublicKey) => {
         this.blockchainError.userNotFound = false;
+        console.log("eeee");
         this.accountId = newPublicKey.toBase58();
         this.connectToSolana();
       });
@@ -105,7 +108,6 @@ export const useUserStore = defineStore(STORE_KEY, {
     },
 
     async connectToSolana() {
-      const { publicKey, wallet } = useWallet();
 
       try {
         // Set the account ID (address)
@@ -507,7 +509,21 @@ export const useUserStore = defineStore(STORE_KEY, {
       "storeDetails.location",
     ],
     async afterRestore(context) {
-      context.store.anchorWallet = useAnchorWallet();
+      context.store.anchorWallet = anchor;
+
+      console.log({ anchor: anchor.value });
+
+      // // Wait for the wallet to be ready
+      // const wallet = context.store.anchorWallet.value;
+
+      // // Use a retry or wait until the wallet is defined
+      // const checkWalletReady = async () => {
+      //   while (!wallet) {
+      //     await new Promise((resolve) => setTimeout(resolve, 100)); // Wait 100ms
+      //   }
+      // };
+
+      // await checkWalletReady();
       if (context.store.accountId) {
         await context.store.setUpSolanaConnectEvents();
       }
