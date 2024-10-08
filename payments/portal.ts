@@ -7,13 +7,14 @@ export const portal = new Portal({
     [env.solanaChainId]: env.solanaRpcUrl,
   },
 });
+portal.triggerReady();
+portal.provider.on("portal_signatureReceived", async (data) => {
+  console.log(data);
+});
 
-// portal.provider.on("portal_signatureReceived", async (data) => {
-//   console.log(data);
-// });
+console.log("Portal", portal);
 
 export const sendTokensOnSolana = async (requestId: number) => {
-  portal.triggerReady();
   if (!portal || !portal?.ready) throw new Error("Portal has not initialised");
 
   const res = await fetch(`/api/${ntobs58(requestId)}`, {
