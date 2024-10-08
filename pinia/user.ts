@@ -73,12 +73,12 @@ export const useUserStore = defineStore(STORE_KEY, {
     phone: (state) => state.userDetails?.[2],
     location: (state) => state.userDetails?.[3],
     accountType: (state) => state.userDetails?.[6],
-    provider: (_) => {
-      const wallet = useAnchorWallet();
-      if (!wallet.value) return;
+    provider: (state) => {
+      const wallet = state.anchorWallet;
+      if (!wallet) return;
       return new AnchorProvider(
         connection,
-        wallet.value,
+        wallet,
         AnchorProvider.defaultOptions()
       );
     },
