@@ -2,7 +2,7 @@
 import HistoryItem from '@/components/HistoryItem.vue';
 import { useUserStore } from '@/pinia/user';
 import { useRequestsStore } from '@/pinia/request';
-import { CoinPayment } from '@/types';
+import { AccountType, CoinPayment, STORE_KEY_MIDDLEWARE, User } from '@/types';
 import { toast } from 'vue-sonner';
 
 definePageMeta({
@@ -21,6 +21,11 @@ onMounted(async () => {
     toast.error((error as Error).message || 'unable to fetch transaction history')
   }
 });
+
+const userCookie = useCookie<User>(STORE_KEY_MIDDLEWARE, { watch: true });
+const isSeller = computed(
+  () => userCookie.value?.accountType === AccountType.SELLER
+);
 </script>
 
 <template>
@@ -36,7 +41,11 @@ onMounted(async () => {
 
       <h1 class="tw-text-5xl tw-font-bold tw-mt-4">History</h1>
       <p class="tw-text-gray-500">
-        Here you can see the history of your requests.
+        {{
+          isSeller ?
+            'Here you can see the history of requests you fulfilled.' :
+            'Here you can see the history of your requests.'
+        }}
       </p>
 
       <div class="tw-mt-10 tw-grid tw-gap-3">
@@ -48,6 +57,7 @@ onMounted(async () => {
           :requestId="history.requestId"
           :sellerId="history.sellerId"
           :buyerId="history.buyerId"
+          :is-seller="isSeller"
         />
       </div>
     </div>

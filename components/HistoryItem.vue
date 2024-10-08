@@ -10,6 +10,7 @@ type Props = {
   requestId: number,
   sellerId: number,
   buyerId: number,
+  isSeller: boolean
 }
 const props = defineProps<Props>();
 const isExpanded = ref(false)
@@ -48,7 +49,11 @@ const tokenDetails = computed(()=>tokens.find(t=>t.symbol === props.token))
         <div
           class="tw-flex-1 tw-flex tw-items-center tw-px-3 tw-text-gray-600"
           :class="{ '!tw-text-black': isExpanded }">
-          You paid {{amount}} {{tokenDetails?.symbol}} for request #{{ requestId }}
+          {{
+            isSeller ?
+              `You got paid ${amount} ${tokenDetails?.symbol} for request #${ requestId }` :
+              `Buyer paid ${amount} ${tokenDetails?.symbol} for request #${ requestId }`
+          }}
         </div>
       </div>
       <button
