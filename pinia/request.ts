@@ -368,6 +368,12 @@ export const useRequestsStore = defineStore("requests", {
             updatedAt: Number(request.account.updatedAt.toString()),
             images: request.account.images,
           };
+        }).filter((request) => {
+          if(request.lifecycle === RequestLifecycleIndex.PENDING ||
+            request.lifecycle === RequestLifecycleIndex.ACCEPTED_BY_SELLER) {
+              return request
+            }
+            return false
         });
 
         this.list = res;

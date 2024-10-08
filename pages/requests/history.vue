@@ -6,7 +6,7 @@ import { CoinPayment } from '@/types';
 import { toast } from 'vue-sonner';
 
 definePageMeta({
-  middleware: ["auth", "buyer"],
+  middleware: ["auth"],
   requiresAuth: true,
 });
 
