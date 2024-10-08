@@ -1,9 +1,7 @@
 import { Connection, Keypair } from "@solana/web3.js";
 import { marketAbi } from "../../blockchain/abi";
 import { programID } from "../../utils/constants";
-import { ntobs58 } from "../../utils/nb58";
-import { connection } from "../../pinia/user";
-import { AnchorProvider, BN, Idl, Program, Wallet } from "@coral-xyz/anchor";
+import { Wallet } from "@coral-xyz/anchor";
 import { BorshCoder } from "@project-serum/anchor";
 import { CoinDecimals, CoinPayment } from "../../types";
 
