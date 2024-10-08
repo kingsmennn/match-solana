@@ -115,6 +115,8 @@ import { useRequestsStore } from '@/pinia/request';
 import PaymentModal from '@/components/PaymentModal.vue';
 import { toast } from 'vue-sonner';
 import { AnchorError } from '@project-serum/anchor';
+import { lamportsToSol } from '@/utils/contract-utils';
+import { PAYMENT_COIN } from '@/utils/constants';
 
 const env = useRuntimeConfig().public
 useHead({
