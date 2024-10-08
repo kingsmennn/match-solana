@@ -8,9 +8,9 @@ export const portal = new Portal({
   },
 });
 portal.triggerReady();
-portal.provider.on("portal_signatureReceived", async (data) => {
-  console.log(data);
-});
+// portal.provider.on("portal_signatureReceived", async (data) => {
+//   console.log(data);
+// });
 
 console.log("Portal", portal);
 
