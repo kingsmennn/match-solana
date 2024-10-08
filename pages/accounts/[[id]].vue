@@ -6,21 +6,31 @@
         class="tw-mb-6"
       />
 
-      <div class="tw-mb-6 tw-flex tw-justify-between tw-items-center">
+      <div class="tw-mb-6 tw-flex max-md:tw-flex-col tw-justify-between tw-items-center">
         <div
           class="tw-h-16 tw-w-16 tw-rounded-full tw-bg-gray-100 tw-text-4xl tw-font-black
-          tw-flex tw-items-center tw-justify-center tw-select-none">
+          tw-flex tw-items-center tw-justify-center tw-select-none max-md:tw-self-start">
           {{ userInitial }}
         </div>
 
-        <NuxtLink
-          v-if="isBuyer"
-          to="/requests/create"
-          class="tw-inline-block tw-p-4 tw-px-6 tw-rounded-full tw-bg-black
-          tw-select-none tw-text-white hover:tw-bg-black/80
-          tw-transition-all tw-duration-300 tw-font-black">
-          Request for an item
-        </NuxtLink>
+        <div class="tw-flex tw-gap-2">
+          <NuxtLink
+            to="/requests/history"
+            class="tw-inline-flex tw-p-4 tw-px-6 tw-rounded-full tw-items-center
+            tw-select-none tw-text-black tw-bg-transparent hover:tw-bg-black/10
+            tw-transition-all tw-duration-300 tw-font-black">
+            Transactions
+          </NuxtLink>
+
+          <NuxtLink
+            v-if="isBuyer"
+            to="/requests/create"
+            class="tw-inline-flex tw-p-4 tw-px-6 tw-rounded-full tw-bg-black
+            tw-select-none tw-text-white hover:tw-bg-black/80 tw-text-center
+            tw-transition-all tw-duration-300 tw-font-black">
+            Request for an item
+          </NuxtLink>
+        </div>
       </div>
       
       <div>

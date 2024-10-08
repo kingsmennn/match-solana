@@ -116,7 +116,7 @@
                 <template v-else> Pay </template>
               </button>
               <button
-                v-if="lifecycle === RequestLifecycleIndex.PAID"
+                v-if="lifecycle === RequestLifecycleIndex.PAID && accountType === AccountType.BUYER"
                 @click="handleMarkAsCompleted"
                 class="tw-inline-block tw-p-2 tw-px-4 mt-2 tw-rounded-full tw-bg-black tw-select-none tw-text-white hover:tw-bg-black/80 tw-transition-all tw-duration-300 tw-font-medium"
                 :disabled="markingAsCompleted || completed"
