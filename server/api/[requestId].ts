@@ -9,11 +9,10 @@ import { ntobs58 } from "../../utils/nb58";
 import { connectWithRetry } from "./payment/[requestId]";
 
 export default defineEventHandler(async (event) => {
+  connectWithRetry();
   const requestId = (event.context.params as any).requestId;
-
   const env = useRuntimeConfig().public;
   const preflightCommitment = "processed";
-
   const connection = new Connection(env.solanaRpcUrl, preflightCommitment);
   const abiDecoder = new BorshCoder(marketAbi as any);
   const filter = abiDecoder.accounts.memcmp("RequestPaymentTransaction");
@@ -40,9 +39,6 @@ export default defineEventHandler(async (event) => {
       break;
     } catch (e) {}
   }
-
-  connectWithRetry();
-
   const paymentMade = await paymentModel.findOne({
     requestId: Number(decodedAccount.requestId),
   });

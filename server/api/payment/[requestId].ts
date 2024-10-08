@@ -21,9 +21,9 @@ export function connectWithRetry() {
 
 export default defineEventHandler(async (event) => {
   try {
+    connectWithRetry();
     const body = await readBody(event);
     const { requestId, transactionHash } = body as any;
-    connectWithRetry();
     await paymentModel.updateOne(
       { requestId: requestId },
       { transactionHash, requestId },
