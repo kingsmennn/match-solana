@@ -16,7 +16,7 @@ definePageMeta({
 
 const userStore = useUserStore();
 const requestsStore = useRequestsStore();
-const histories = ref([]);
+const histories = ref<any>([]);
 </script>
 
 <template>
