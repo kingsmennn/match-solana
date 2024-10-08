@@ -52,7 +52,7 @@ const tokenDetails = computed(()=>tokens.find(t=>t.symbol === props.token))
           {{
             isSeller ?
               `You got paid ${amount} ${tokenDetails?.symbol} for request #${ requestId }` :
-              `Buyer paid ${amount} ${tokenDetails?.symbol} for request #${ requestId }`
+              `You paid ${amount} ${tokenDetails?.symbol} for request #${ requestId }`
           }}
         </div>
       </div>
