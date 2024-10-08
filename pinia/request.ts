@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import {
+  CoinDecimals,
   CoinPayment,
   CreateOfferDTO,
   CreateRequestDTO,
@@ -291,9 +292,13 @@ export const useRequestsStore = defineStore("requests", {
           ]);
 
         const res = transactions.map((transaction) => {
+          const tokenInfo = Object.keys(transaction.account.token)[0];
+
           return {
             createdAt: new Date(Number(transaction.account.createdAt * 1000)),
-            amount: Number(transaction.account.amount),
+            amount:
+              Number(transaction.account.amount) /
+              10 ** CoinDecimals[tokenInfo as CoinPayment],
             token: Object.keys(transaction.account.token)[0],
             requestId: Number(transaction.account.requestId),
             sellerId: Number(transaction.account.sellerId),

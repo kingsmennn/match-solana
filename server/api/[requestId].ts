@@ -5,6 +5,7 @@ import { ntobs58 } from "../../utils/nb58";
 import { connection } from "../../pinia/user";
 import { AnchorProvider, BN, Idl, Program, Wallet } from "@coral-xyz/anchor";
 import { BorshCoder } from "@project-serum/anchor";
+import { CoinDecimals, CoinPayment } from "../../types";
 
 export default defineEventHandler(async (event) => {
   const requestId = (event.context.params as any).requestId;
@@ -21,8 +22,8 @@ export default defineEventHandler(async (event) => {
       {
         dataSize: filter.dataSize,
         memcmp: {
-          offset: 8 + 32, // The offset where request_id starts (32 + 8 bytes for authority + 8 bytes for request_id)
-          bytes: requestId, // Encode to base64 for the memcmp
+          offset: 8 + 32,
+          bytes: requestId,
         },
       },
     ],
@@ -43,16 +44,13 @@ export default defineEventHandler(async (event) => {
   const tokenInfo = Object.keys(decodedAccount.token)[0];
 
   let tokenMint = "";
-  let decimals = 9;
 
   switch (tokenInfo) {
     case "pyusdt":
       tokenMint = env.pyUsdMint;
-      decimals = 6;
       break;
     case "solana":
       tokenMint = env.solMint;
-      decimals = 9;
       break;
   }
   const payload = {
@@ -72,7 +70,10 @@ export default defineEventHandler(async (event) => {
       body: {
         to: payload.to,
         token: payload.token,
-        amount: (+payload.amount / 10 ** decimals).toString(),
+        amount: (
+          +payload.amount /
+          10 ** CoinDecimals[tokenInfo as CoinPayment]
+        ).toString(),
       },
     }
   );

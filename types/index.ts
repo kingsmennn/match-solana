@@ -7,6 +7,11 @@ export enum CoinPayment {
   PyUSDT = "pyusdt",
 }
 
+export const CoinDecimals = {
+  [CoinPayment.SOLANA]: 9,
+  [CoinPayment.PyUSDT]: 6,
+};
+
 export type Location = [
   // state: string
   // lga: string
