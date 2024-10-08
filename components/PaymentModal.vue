@@ -2,6 +2,7 @@
 import { CoinPayment, RequestResponse } from "@/types";
 import { toast } from "vue-sonner";
 import { ellipsify } from "~/utils/ellipsify";
+import { tokens } from "~/utils/constants";
 
 type Props = {
   requestId: RequestResponse['requestId']
@@ -23,25 +24,6 @@ const emits = defineEmits<{
   (e: 'onProcessPayment', value: ProcessPaymentPayload): void
 }>()
 const truncatedAccountId = computed(() => ellipsify(props.accountId, 6))
-
-const tokens: {
-  name: string
-  symbol: string
-  network?: string
-  logo: string
-}[] = [
-  {
-    name: 'Solana',
-    symbol: CoinPayment.SOLANA,
-    logo: 'https://www.svgrepo.com/show/470684/solana.svg',
-  },
-  {
-    name: 'Paypal USD',
-    symbol: CoinPayment.PyUSDT,
-    network: 'solana',
-    logo: 'https://svgicons.com/api/ogimage/?id=213765&n=pyusd',
-  },
-]
 const selectedToken = ref()
 
 const paymentMethods:{
