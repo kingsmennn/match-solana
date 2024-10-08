@@ -19,6 +19,16 @@ const isExpanded = ref(false)
 const dayText = computed(()=>moment(props.createdAt).format('ddd'))
 const dayNumber = computed(()=>moment(props.createdAt).format('D'))
 const tokenDetails = computed(()=>tokens.find(t=>t.symbol === props.token))
+
+const moreDetails = computed(()=> {
+  return {
+    amount: props.amount,
+    token: props.token,
+    request: props.requestId,
+    'my id': props.isSeller ? props.sellerId : props.buyerId,
+    date: props.createdAt
+  }
+})
 </script>
 
 <template>
@@ -74,7 +84,7 @@ const tokenDetails = computed(()=>tokens.find(t=>t.symbol === props.token))
       tw-overflow-hidden tw-font-light">
       <div class="tw-pt-3 tw-grid md:tw-grid-cols-2 tw-gap-2">
         <div
-          v-for="(value, key) in props"
+          v-for="(value, key) in moreDetails"
           class="tw-grid md:tw-grid-cols-4 tw-bg-white tw-rounded-lg tw-p-2">
           <span class="tw-text-gray-400">{{ key }}</span>
           <span class="md:tw-col-span-3 tw-text-gray-600">{{ value }}</span>
