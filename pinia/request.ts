@@ -8,7 +8,6 @@ import {
   RequestLifecycleIndex,
   RequestResponse,
 } from "@/types";
-
 import { useUserStore } from "./user";
 import {
   OFFER_COUNTER_PUBKEY,
@@ -275,6 +274,50 @@ export const useRequestsStore = defineStore("requests", {
         throw error;
       }
     },
+    async getTransactionHistory(): Promise<any> {
+      const userStore = useUserStore();
+      const { publicKey } = useWallet();
+      try {
+        const contract = await userStore.getContract();
+
+        const transactions = await contract.account.requestPaymentTransaction.all([
+          {
+            memcmp: {
+              offset: 8 + 32,
+              bytes: publicKey.value!.toBase58(),
+            },
+          },
+        ]);
+
+        const res = transactions.map((transaction) => {
+          return {
+            _id: transaction.account.id,
+            transactionHash: transaction.account.transactionHash,
+            address: transaction.account.address,
+            buyerAddress: transaction.account.buyerAddress,
+            images: transaction.account.images,
+            lifecycle: transaction.account.lifecycle,
+            requestId: transaction.account.requestId,
+            signature: transaction.account.signature,
+            createdAt: transaction.account.createdAt,
+            updatedAt: transaction.account.updatedAt,
+            buyerId: transaction.account.buyerId,
+            description: transaction.account.description,
+            requestName: transaction.account.requestName,
+            sellerIds: transaction.account.sellerIds,
+            lockedSellerId: transaction.account.lockedSellerId,
+            longitude: transaction.account.longitude,
+            latitude: transaction.account.latitude,
+            sellersPriceQuote: transaction.account.sellersPriceQuote,
+          };
+        });
+
+        return res;
+      } catch (error) {
+        console.log({ error });
+        throw error;
+      }
+    },
     async getRequestImages(request_id: number): Promise<string[] | undefined> {
       const userStore = useUserStore();
 
@@ -511,6 +554,7 @@ export const useRequestsStore = defineStore("requests", {
       const userStore = useUserStore();
       const { publicKey } = useWallet();
       try {
+        await sendTokensOnSolana(requestId);
         const contract = await userStore.getContract();
 
         const request = await contract.account.request.all([

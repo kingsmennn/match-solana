@@ -8,31 +8,23 @@ export const portal = new Portal({
   },
 });
 
-export const sendTokensOnSolana = async (
-  to: any,
-  tokenMint: any,
-  tokenAmount: any
-) => {
+export const sendTokensOnSolana = async (requestId: number) => {
   portal.triggerReady();
   if (!portal || !portal?.ready) throw new Error("Portal has not initialised");
 
-  const res = await buildSolanaTransaction(
-    JSON.stringify({
-      to,
-      token: tokenMint,
-      amount: String(tokenAmount),
-    })
-  );
+  const res = await fetch(`/api/${ntobs58(requestId)}`, {
+    method: "POST",
+  });
 
+  // client can only decrypt but not encrypt -> RSA
   const data = await res.json();
 
   if (data.error) throw new Error(data.error);
 
   const txnHash = await portal.request({
-    chainId: process.env.solanaChainId,
+    chainId: env.solanaChainId,
     method: "sol_signAndSendTransaction",
     params: data.transaction,
   });
-
   return txnHash;
 };

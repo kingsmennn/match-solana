@@ -119,3 +119,4 @@ export const PORTAL_PYUSD_TOKEN_ACCOUNT = getAssociatedTokenAddressSync(
   true,
   TOKEN_2022_PROGRAM_ID
 );
+

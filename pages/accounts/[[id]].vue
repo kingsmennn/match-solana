@@ -207,7 +207,7 @@ const handleProcessPayment = async (
     }else {
       await requestsStore.payForRequestToken(requestId,token)
     }
-    
+    toast.success('Payment successful')
   } catch (error:any) {
  
     if (error instanceof AnchorError) {

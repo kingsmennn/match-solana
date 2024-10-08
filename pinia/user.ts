@@ -46,7 +46,7 @@ type UserStore = {
 
 const env = useRuntimeConfig().public;
 const preflightCommitment = "processed";
-const connection = new Connection(env.solanaRpcUrl, preflightCommitment);
+export const connection = new Connection(env.solanaRpcUrl, preflightCommitment);
 
 export const useUserStore = defineStore(STORE_KEY, {
   state: (): UserStore => ({
