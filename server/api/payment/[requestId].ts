@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
-import { paymentModel } from "../models/paymentinfo.model";
-
+import { paymentModel } from "../../models/paymentinfo.model";
 
 export function connectWithRetry() {
   const MONGO_URI = useRuntimeConfig().mongo_uri;
