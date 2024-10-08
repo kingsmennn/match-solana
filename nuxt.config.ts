@@ -1,4 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+import { NodeGlobalsPolyfillPlugin } from "@esbuild-plugins/node-globals-polyfill";
+
 export default defineNuxtConfig({
   devtools: { enabled: true },
   modules: [
@@ -27,6 +29,12 @@ export default defineNuxtConfig({
     },
     define: {
       "process.env.BROWSER": true,
+    },
+    resolve: {
+      alias: {
+        // Aliasing Node.js `crypto` module to `crypto-browserify`
+        crypto: "crypto-browserify",
+      },
     },
   },
   ssr: false,
