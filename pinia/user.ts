@@ -91,13 +91,11 @@ export const useUserStore = defineStore(STORE_KEY, {
   },
   actions: {
     async setUpSolanaConnectEvents() {
-     
       if (!wallet.value) return;
       const walletAdapter = wallet.value!.adapter;
 
       walletAdapter.on("connect", (newPublicKey) => {
         this.blockchainError.userNotFound = false;
-        console.log("eeee");
         this.accountId = newPublicKey.toBase58();
         this.connectToSolana();
       });
@@ -108,7 +106,6 @@ export const useUserStore = defineStore(STORE_KEY, {
     },
 
     async connectToSolana() {
-
       try {
         // Set the account ID (address)
         this.accountId = publicKey!.value!.toString();
@@ -511,19 +508,6 @@ export const useUserStore = defineStore(STORE_KEY, {
     async afterRestore(context) {
       context.store.anchorWallet = anchor;
 
-      console.log({ anchor: anchor.value });
-
-      // // Wait for the wallet to be ready
-      // const wallet = context.store.anchorWallet.value;
-
-      // // Use a retry or wait until the wallet is defined
-      // const checkWalletReady = async () => {
-      //   while (!wallet) {
-      //     await new Promise((resolve) => setTimeout(resolve, 100)); // Wait 100ms
-      //   }
-      // };
-
-      // await checkWalletReady();
       if (context.store.accountId) {
         await context.store.setUpSolanaConnectEvents();
       }

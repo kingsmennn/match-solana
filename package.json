@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "@coral-xyz/anchor": "^0.30.1",
+    "@esbuild-plugins/node-globals-polyfill": "^0.2.3",
     "@invictus.codes/nuxt-vuetify": "^0.3.0",
     "@lighthouse-web3/sdk": "^0.3.7",
     "@pinia/nuxt": "^0.5.1",
@@ -37,6 +38,7 @@
     "random-word-slugs": "^0.1.7",
     "solana-wallets-vue": "^0.6.1",
     "universal-cookie": "^7",
+    "vite-plugin-node-polyfills": "^0.22.0",
     "vue-sonner": "^1.1.4",
     "vuefire": "^3.1.13"
   }
