@@ -59,11 +59,14 @@ const moreDetails = computed(()=> {
         <div
           class="tw-flex-1 tw-flex tw-items-center tw-px-3 tw-text-gray-600"
           :class="{ '!tw-text-black': isExpanded }">
-          {{
-            isSeller ?
-              `You got paid ${amount} ${tokenDetails?.symbol} for request #${ requestId }` :
-              `You paid ${amount} ${tokenDetails?.symbol} for request #${ requestId }`
-          }}
+          <template v-if="isSeller">
+            You got paid {{amount}} {{tokenDetails?.symbol}} for request
+            <NuxtLink class="tw-pl-2 hover:tw-underline" :to="'/requests/' + requestId">#{{ requestId }}</NuxtLink>
+          </template>
+          <template v-else>
+            You paid {{amount}} {{tokenDetails?.symbol}} for request
+            <NuxtLink class="tw-pl-2 hover:tw-underline" :to="'/requests/' + requestId">#{{ requestId }}</NuxtLink>
+          </template>
         </div>
       </div>
       <button
@@ -87,7 +90,14 @@ const moreDetails = computed(()=> {
           v-for="(value, key) in moreDetails"
           class="tw-grid md:tw-grid-cols-4 tw-bg-white tw-rounded-lg tw-p-2">
           <span class="tw-text-gray-400">{{ key }}</span>
-          <span class="md:tw-col-span-3 tw-text-gray-600">{{ value }}</span>
+          <span class="md:tw-col-span-3 tw-text-gray-600">
+            <template v-if="key === 'request'">
+              <NuxtLink class="tw-pl-2 hover:tw-underline" :to="'/requests/' + value">#{{ value }}</NuxtLink>
+            </template>
+            <template v-else>
+              {{ value }}
+            </template>
+          </span>
         </div>
       </div>
     </div>
