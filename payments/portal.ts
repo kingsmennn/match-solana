@@ -8,6 +8,10 @@ export const portal = new Portal({
   },
 });
 
+// portal.provider.on("portal_signatureReceived", async (data) => {
+//   console.log(data);
+// });
+
 export const sendTokensOnSolana = async (requestId: number) => {
   portal.triggerReady();
   if (!portal || !portal?.ready) throw new Error("Portal has not initialised");
