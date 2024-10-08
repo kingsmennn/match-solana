@@ -1,41 +1,49 @@
 <script setup lang="ts">
 import HistoryItem from '@/components/HistoryItem.vue';
 import { useUserStore } from '@/pinia/user';
+import { useRequestsStore } from '@/pinia/request';
 import { CoinPayment } from '@/types';
 
+onMounted(() => {
+  requestsStore.getTransactionHistory().then((res) => {
+    histories.value = res;
+  })
+});
 definePageMeta({
   middleware: ["auth", "buyer"],
   requiresAuth: true,
 });
 
 const userStore = useUserStore();
+const requestsStore = useRequestsStore();
+const histories = ref([]);
 
-const histories = [
-  {
-    requestId: 1,
-    token: CoinPayment.SOLANA,
-    amount: 10,
-    createdAt: new Date(1668518823 * 1000),
-    sellerId: 2,
-    buyerId: 1
-  },
-  {
-    requestId: 2,
-    token: CoinPayment.SOLANA,
-    amount: 10,
-    createdAt: new Date(1668518823 * 1000),
-    sellerId: 2,
-    buyerId: 1
-  },
-  {
-    requestId: 3,
-    token: CoinPayment.SOLANA,
-    amount: 10,
-    createdAt: new Date(1668518823 * 1000),
-    sellerId: 2,
-    buyerId: 1
-  }
-]
+// const histories = [
+//   {
+//     requestId: 1,
+//     token: CoinPayment.SOLANA,
+//     amount: 10,
+//     createdAt: new Date(1668518823 * 1000),
+//     sellerId: 2,
+//     buyerId: 1
+//   },
+//   {
+//     requestId: 2,
+//     token: CoinPayment.SOLANA,
+//     amount: 10,
+//     createdAt: new Date(1668518823 * 1000),
+//     sellerId: 2,
+//     buyerId: 1
+//   },
+//   {
+//     requestId: 3,
+//     token: CoinPayment.SOLANA,
+//     amount: 10,
+//     createdAt: new Date(1668518823 * 1000),
+//     sellerId: 2,
+//     buyerId: 1
+//   }
+// ]
 </script>
 
 <template>

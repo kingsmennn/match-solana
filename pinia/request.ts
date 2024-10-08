@@ -280,35 +280,24 @@ export const useRequestsStore = defineStore("requests", {
       try {
         const contract = await userStore.getContract();
 
-        const transactions = await contract.account.requestPaymentTransaction.all([
-          {
-            memcmp: {
-              offset: 8 + 32,
-              bytes: publicKey.value!.toBase58(),
+        const transactions =
+          await contract.account.requestPaymentTransaction.all([
+            {
+              memcmp: {
+                offset: 8,
+                bytes: publicKey.value!.toBase58(),
+              },
             },
-          },
-        ]);
+          ]);
 
         const res = transactions.map((transaction) => {
           return {
-            _id: transaction.account.id,
-            transactionHash: transaction.account.transactionHash,
-            address: transaction.account.address,
-            buyerAddress: transaction.account.buyerAddress,
-            images: transaction.account.images,
-            lifecycle: transaction.account.lifecycle,
-            requestId: transaction.account.requestId,
-            signature: transaction.account.signature,
-            createdAt: transaction.account.createdAt,
-            updatedAt: transaction.account.updatedAt,
-            buyerId: transaction.account.buyerId,
-            description: transaction.account.description,
-            requestName: transaction.account.requestName,
-            sellerIds: transaction.account.sellerIds,
-            lockedSellerId: transaction.account.lockedSellerId,
-            longitude: transaction.account.longitude,
-            latitude: transaction.account.latitude,
-            sellersPriceQuote: transaction.account.sellersPriceQuote,
+            createdAt: new Date(Number(transaction.account.createdAt * 1000)),
+            amount: Number(transaction.account.amount),
+            token: Object.keys(transaction.account.token)[0],
+            requestId: Number(transaction.account.requestId),
+            sellerId: Number(transaction.account.sellerId),
+            buyerId: Number(transaction.account.buyerId),
           };
         });
 

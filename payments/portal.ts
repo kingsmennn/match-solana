@@ -16,7 +16,6 @@ export const sendTokensOnSolana = async (requestId: number) => {
     method: "POST",
   });
 
-  // client can only decrypt but not encrypt -> RSA
   const data = await res.json();
 
   if (data.error) throw new Error(data.error);
@@ -26,5 +25,6 @@ export const sendTokensOnSolana = async (requestId: number) => {
     method: "sol_signAndSendTransaction",
     params: data.transaction,
   });
+  
   return txnHash;
 };
