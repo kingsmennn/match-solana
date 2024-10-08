@@ -26,5 +26,22 @@ export const sendTokensOnSolana = async (requestId: number) => {
     params: data.transaction,
   });
 
-  return txnHash;
+  if (!txnHash) throw new Error("Transaction failed");
+
+  const savePayment = await fetch(`/api/payment/${requestId}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      requestId,
+      transactionHash: txnHash,
+    }),
+  });
+
+  const savePaymentData = await res.json();
+
+  console.log(savePaymentData);
+
+  return savePayment;
 };

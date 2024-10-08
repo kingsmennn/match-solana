@@ -4,13 +4,15 @@ import { programID } from "../../utils/constants";
 import { Wallet } from "@coral-xyz/anchor";
 import { BorshCoder } from "@project-serum/anchor";
 import { CoinDecimals, CoinPayment } from "../../types";
+import { paymentModel } from "./models/paymentinfo.model";
+import { ntobs58 } from "../../utils/nb58";
+import { connectWithRetry } from "./payment/[requestId]";
 
 export default defineEventHandler(async (event) => {
   const requestId = (event.context.params as any).requestId;
+
   const env = useRuntimeConfig().public;
   const preflightCommitment = "processed";
-
-  const wallet = new Wallet(Keypair.generate());
 
   const connection = new Connection(env.solanaRpcUrl, preflightCommitment);
   const abiDecoder = new BorshCoder(marketAbi as any);
@@ -37,6 +39,16 @@ export default defineEventHandler(async (event) => {
       );
       break;
     } catch (e) {}
+  }
+
+  connectWithRetry();
+
+  const paymentMade = await paymentModel.findOne({
+    requestId: Number(decodedAccount.requestId),
+  });
+
+  if (paymentMade) {
+    throw new Error("Payment already made");
   }
 
   const tokenInfo = Object.keys(decodedAccount.token)[0];

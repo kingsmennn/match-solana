@@ -31,6 +31,7 @@ export default defineNuxtConfig({
   },
   ssr: false,
   runtimeConfig: {
+    mongo_uri: process.env.MONGO_URI,
     public: {
       appName: "Match",
       appContactEmail:
