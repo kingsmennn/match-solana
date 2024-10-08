@@ -1,5 +1,4 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
-import { NodeGlobalsPolyfillPlugin } from "@esbuild-plugins/node-globals-polyfill";
 
 export default defineNuxtConfig({
   devtools: { enabled: true },
@@ -18,12 +17,7 @@ export default defineNuxtConfig({
     esbuild: {
       target: "esnext",
     },
-    plugins: [
-      NodeGlobalsPolyfillPlugin({
-        buffer: true,
-        process: true,
-      }),
-    ],
+    plugins: [],
     build: {
       target: "esnext",
     },
@@ -35,12 +29,6 @@ export default defineNuxtConfig({
     },
     define: {
       "process.env.BROWSER": true,
-      global: "globalThis", // Polyfill `global` with `globalThis` for browser compatibility
-    },
-    resolve: {
-      alias: {
-        crypto: "crypto-browserify",
-      },
     },
   },
   ssr: false,
