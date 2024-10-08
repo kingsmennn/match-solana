@@ -94,9 +94,7 @@ const moreDetails = computed(()=> {
             <template v-if="key === 'request'">
               <NuxtLink class="tw-pl-2 hover:tw-underline" :to="'/requests/' + value">#{{ value }}</NuxtLink>
             </template>
-            <template v-else>
-              {{ value }}
-            </template>
+            <template v-else>{{ value }}</template>
           </span>
         </div>
       </div>
