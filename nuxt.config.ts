@@ -40,12 +40,12 @@ export default defineNuxtConfig({
       "process.env.BROWSER": true,
       // global: "globalThis", // Polyfill `global` with `globalThis` for browser compatibility
     },
-    resolve: {
-      alias: {
-        // Aliasing Node.js `crypto` module to `crypto-browserify`
-        crypto: "crypto-browserify",
-      },
-    },
+    // resolve: {
+    //   alias: {
+    //     // Aliasing Node.js `crypto` module to `crypto-browserify`
+    //     crypto: "crypto-browserify",
+    //   },
+    // },
   },
   ssr: false,
   runtimeConfig: {
