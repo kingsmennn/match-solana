@@ -1,4 +1,5 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+// import { nodePolyfills } from "vite-plugin-node-polyfills";
 
 export default defineNuxtConfig({
   devtools: { enabled: true },
@@ -17,6 +18,15 @@ export default defineNuxtConfig({
     esbuild: {
       target: "esnext",
     },
+    plugins: [
+      // nodePolyfills({
+      //   globals: {
+      //     global: true,
+      //     Buffer: true,
+      //     process: true,
+      //   },
+      // }),
+    ],
     build: {
       target: "esnext",
     },
@@ -28,6 +38,7 @@ export default defineNuxtConfig({
     },
     define: {
       "process.env.BROWSER": true,
+      // global: "globalThis", // Polyfill `global` with `globalThis` for browser compatibility
     },
     resolve: {
       alias: {
