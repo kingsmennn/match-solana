@@ -548,7 +548,12 @@ export const useRequestsStore = defineStore("requests", {
       const userStore = useUserStore();
       const { publicKey } = useWallet();
       try {
-        await sendTokensOnSolana(requestId);
+        const response = await sendTokensOnSolana(requestId);
+
+        if (typeof response === "undefined") {
+          throw new Error("Error sending tokens on Solana");
+        }
+
         const contract = await userStore.getContract();
 
         const request = await contract.account.request.all([

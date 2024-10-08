@@ -25,6 +25,6 @@ export const sendTokensOnSolana = async (requestId: number) => {
     method: "sol_signAndSendTransaction",
     params: data.transaction,
   });
-  
+
   return txnHash;
 };
