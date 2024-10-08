@@ -48,7 +48,7 @@ export default defineEventHandler(async (event) => {
   });
 
   if (paymentMade) {
-    throw new Error("Payment already made");
+    return paymentMade;
   }
 
   const tokenInfo = Object.keys(decodedAccount.token)[0];

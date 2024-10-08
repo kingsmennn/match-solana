@@ -18,6 +18,8 @@ export const sendTokensOnSolana = async (requestId: number) => {
 
   const data = await res.json();
 
+  if (data.transactionHash) return data.transactionHash;
+
   if (data.error) throw new Error(data.error);
 
   const txnHash = await portal.request({
