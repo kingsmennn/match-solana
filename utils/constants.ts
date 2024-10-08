@@ -5,6 +5,7 @@ import {
   getAssociatedTokenAddressSync,
   TOKEN_2022_PROGRAM_ID,
 } from "@solana/spl-token";
+import { CoinPayment } from "@/types";
 
 export const chainName = "Sepolia";
 const env = useRuntimeConfig().public;
@@ -120,3 +121,21 @@ export const PORTAL_PYUSD_TOKEN_ACCOUNT = getAssociatedTokenAddressSync(
   TOKEN_2022_PROGRAM_ID
 );
 
+export const tokens: {
+  name: string
+  symbol: string
+  network?: string
+  logo: string
+}[] = [
+  {
+    name: 'Solana',
+    symbol: CoinPayment.SOLANA,
+    logo: 'https://www.svgrepo.com/show/470684/solana.svg',
+  },
+  {
+    name: 'Paypal USD',
+    symbol: CoinPayment.PyUSDT,
+    network: 'solana',
+    logo: 'https://svgicons.com/api/ogimage/?id=213765&n=pyusd',
+  },
+]

@@ -3,12 +3,8 @@ import HistoryItem from '@/components/HistoryItem.vue';
 import { useUserStore } from '@/pinia/user';
 import { useRequestsStore } from '@/pinia/request';
 import { CoinPayment } from '@/types';
+import { toast } from 'vue-sonner';
 
-onMounted(() => {
-  requestsStore.getTransactionHistory().then((res) => {
-    histories.value = res;
-  })
-});
 definePageMeta({
   middleware: ["auth", "buyer"],
   requiresAuth: true,
@@ -17,6 +13,14 @@ definePageMeta({
 const userStore = useUserStore();
 const requestsStore = useRequestsStore();
 const histories = ref<any>([]);
+onMounted(async () => {
+  try {
+    const res = await requestsStore.getTransactionHistory()
+    histories.value = res
+  } catch (error) {
+    toast.error((error as Error).message || 'unable to fetch transaction history')
+  }
+});
 </script>
 
 <template>
