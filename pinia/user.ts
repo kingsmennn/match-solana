@@ -132,7 +132,13 @@ export const useUserStore = defineStore(STORE_KEY, {
     },
     async getContract() {
       console.log({ anchor: anchor.value });
-      console.log({ walletInfo: useWallet() });
+      const { signTransaction, signAllTransactions, publicKey } = useWallet();
+
+      console.log({
+        publicKey: publicKey.value,
+        signTransaction: signTransaction.value,
+        signAllTransactions: signAllTransactions.value,
+      });
       if (!this.program) {
         throw new Error("Program not initialized");
       }
