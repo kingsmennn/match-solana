@@ -32,7 +32,7 @@ export default defineNuxtConfig({
     define: {
       "process.env.BROWSER": true,
       "process.browser": true,
-      global: "globalThis", // Polyfill `global` with `globalThis` for browser compatibility
+      // global: "globalThis", // Polyfill `global` with `globalThis` for browser compatibility
     },
     resolve: {
       alias: {
