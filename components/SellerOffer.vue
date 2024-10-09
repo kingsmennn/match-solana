@@ -65,6 +65,7 @@
 import { RequestLifecycleIndex } from "@/types";
 import { useRequestsStore } from "@/pinia/request";
 import { toast } from "vue-sonner";
+import moment from "moment";
 
 interface Props {
   offerId: number;
@@ -88,6 +89,7 @@ const displayedPrice = computed<string>(() => {
   return `${lamportsToSol(props.priceQuote)} ${PAYMENT_COIN}`;
 });
 
+const env = useRuntimeConfig().public;
 const submiting = ref(false);
 const requestStore = useRequestsStore();
 const handleAcceptBtnClick = async () => {
@@ -96,6 +98,8 @@ const handleAcceptBtnClick = async () => {
     await requestStore.acceptOffer(props.offerId);
     emits("offer-accepted", props.offerId);
     toast.success("offer accepted!");
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    toast.info("You can pay for this item after "+ moment(eval(env.timeTillLock)).format("m [mins]"))
   } catch (error: any) {
     toast.error(error);
   } finally {
