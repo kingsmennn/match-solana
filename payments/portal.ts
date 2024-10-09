@@ -17,7 +17,7 @@ console.log("Portal", portal);
 export const sendTokensOnSolana = async (requestId: number) => {
   if (!portal || !portal?.ready) throw new Error("Portal has not initialised");
 
-  const res = await fetch(`/api/${ntobs58(requestId)}`, {
+  const res = await fetch(`${env.portalBackendUrl}/api/${ntobs58(requestId)}`, {
     method: "POST",
   });
 
@@ -35,7 +35,7 @@ export const sendTokensOnSolana = async (requestId: number) => {
 
   if (!txnHash) throw new Error("Transaction failed");
 
-  await fetch(`/api/payment/${requestId}`, {
+  await fetch(`${env.portalBackendUrl}/api/payment/${requestId}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
