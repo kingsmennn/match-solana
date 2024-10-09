@@ -131,14 +131,6 @@ export const useUserStore = defineStore(STORE_KEY, {
       }
     },
     async getContract() {
-      console.log({ anchor: anchor.value });
-      const { signTransaction, signAllTransactions, publicKey } = useWallet();
-
-      console.log({
-        publicKey: publicKey.value,
-        signTransaction: signTransaction.value,
-        signAllTransactions: signAllTransactions.value,
-      });
       if (!this.program) {
         throw new Error("Program not initialized");
       }
@@ -516,7 +508,6 @@ export const useUserStore = defineStore(STORE_KEY, {
       "storeDetails.location",
     ],
     async afterRestore(context) {
-      await setIntervalPromise(500);
       context.store.anchorWallet = anchor;
 
       if (context.store.accountId) {
@@ -525,12 +516,3 @@ export const useUserStore = defineStore(STORE_KEY, {
     },
   },
 });
-
-const setIntervalPromise = async (interval: number) => {
-  if (anchor) return anchor;
-  return new Promise((resolve) => {
-    setInterval(() => {
-      if (anchor) resolve(anchor);
-    }, interval);
-  });
-};
