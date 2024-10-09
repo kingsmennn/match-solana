@@ -114,6 +114,8 @@
 </template>
 
 <script setup lang="ts">
+import { AnchorWallet, useAnchorWallet, useWallet } from "solana-wallets-vue";
+const anchor = useAnchorWallet();
 import FinalizeRegistration from '@/components/FinalizeRegistration.vue'
 import Tabs from '@/components/Tabs.vue';
 import RequestItem from '@/components/RequestItem.vue';
