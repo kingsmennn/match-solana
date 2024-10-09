@@ -14,7 +14,8 @@
     "@pinia-plugin-persistedstate/nuxt": "^1.2.1",
     "@types/node": "^18.17.1",
     "@vueuse/nuxt": "^11.0.0",
-    "nuxt": "^3.6.5"
+    "nuxt": "^3.6.5",
+    "vite-plugin-node-polyfills": "^0.22.0"
   },
   "dependencies": {
     "@coral-xyz/anchor": "^0.30.1",

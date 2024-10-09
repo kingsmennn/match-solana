@@ -1,6 +1,7 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
-import { NodeGlobalsPolyfillPlugin } from "@esbuild-plugins/node-globals-polyfill";
+// import { NodeGlobalsPolyfillPlugin } from "@esbuild-plugins/node-globals-polyfill";
 
+import { nodePolyfills } from "vite-plugin-node-polyfills";
 export default defineNuxtConfig({
   devtools: { enabled: true },
   modules: [
@@ -19,9 +20,12 @@ export default defineNuxtConfig({
       target: "esnext",
     },
     plugins: [
-      NodeGlobalsPolyfillPlugin({
-        buffer: true,
-        process: true,
+      nodePolyfills({
+        globals: {
+          global: true,
+          Buffer: true,
+          process: true,
+        },
       }),
     ],
     build: {
