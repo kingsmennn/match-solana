@@ -19,15 +19,7 @@ export default defineNuxtConfig({
     esbuild: {
       target: "esnext",
     },
-    plugins: [
-      nodePolyfills({
-        globals: {
-          global: true,
-          Buffer: true,
-          process: true,
-        },
-      }),
-    ],
+    plugins: [nodePolyfills()],
     build: {
       target: "esnext",
     },
