@@ -1,12 +1,10 @@
-import { Connection, Keypair } from "@solana/web3.js";
+import { Connection } from "@solana/web3.js";
 import { marketAbi } from "../../blockchain/abi";
 import { programID } from "../../utils/constants";
-import { Wallet } from "@coral-xyz/anchor";
 import { BorshCoder } from "@project-serum/anchor";
 import { CoinDecimals, CoinPayment } from "../../types";
 import { paymentModel } from "../models/paymentinfo.model";
-import { ntobs58 } from "../../utils/nb58";
-import { connectWithRetry } from "./payment/[requestId]";
+import { connectWithRetry } from "./database";
 
 export default defineEventHandler(async (event) => {
   connectWithRetry();
