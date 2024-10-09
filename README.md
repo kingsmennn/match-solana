@@ -53,7 +53,89 @@ Our solution is evaluated based on the following criteria:
 
 Check out our demo video to see Match in action! The video showcases the technical strengths, usability, and performance of our solution. Watch the walkthrough on [YouTube](https://www.youtube.com/watch?v=fVnm9ttV68o) to learn more about how Match can revolutionize the marketplace experience on Solana.
 
-Certainly! Here's an outline for "Match" based on the categories you provided:
+
+### Portal Integration with Match
+
+We integrate **Portal** for handling Solana transactions in Match.
+
+#### Setup Portal in Your Application
+
+1. **Install the Portal SDK**:
+   Make sure you have the Portal SDK installed in your project:
+   
+   ```bash
+   yarn add @portal-hq/web
+   ```
+
+2. **Initialize Portal**:
+   In your project, you can initialize the Portal instance by creating a file for the configuration.
+
+   ```js
+   import Portal from "@portal-hq/web";
+   const env = useRuntimeConfig().public;
+
+   export const portal = new Portal({
+     apiKey: env.portalClientApiKey,  // Portal client API key from your environment variables
+     autoApprove: true,                // Enable auto-approval of transactions
+     rpcConfig: {
+       [env.solanaChainId]: env.solanaRpcUrl,  // Set RPC URL for the Solana chain
+     },
+   });
+
+   portal.triggerReady();  // Initialize the Portal instance
+   ```
+
+3. **Sending Tokens on Solana Using Portal**:
+
+   You can create a function to send tokens on Solana through the Portal interface.
+
+   ```ts
+   export const sendTokensOnSolana = async (requestId: number) => {
+     if (!portal || !portal?.ready) {
+       throw new Error("Portal has not been initialized");
+     }
+
+     // Fetch the transaction data from your backend
+     const res = await fetch(`${env.portalBackendUrl}/api/${ntobs58(requestId)}`, {
+       method: "POST",
+     });
+
+     const data = await res.json();
+
+     // Check if a transaction hash was returned
+     if (data.transactionHash) return data.transactionHash;
+
+     if (data.error) throw new Error(data.error);
+
+     // Request signature and send transaction using Portal
+     const txnHash = await portal.request({
+       chainId: env.solanaChainId,                   // Solana chain ID
+       method: "sol_signAndSendTransaction",         // Method to sign and send transaction
+       params: data.transaction,                     // Pass the transaction data
+     });
+
+     if (!txnHash) throw new Error("Transaction failed");
+
+     // Notify your backend of the completed transaction
+     await fetch(`${env.portalBackendUrl}/api/payment/${requestId}`, {
+       method: "POST",
+       headers: {
+         "Content-Type": "application/json",
+       },
+       body: JSON.stringify({
+         requestId,              // Send the requestId and transaction hash to the backend
+         transactionHash: txnHash,
+       }),
+     });
+
+     return txnHash;   // Return the transaction hash as confirmation
+   };
+   ```
+
+### Key Components of Portal Integration
+
+1. **Portal Initialization**: The `portal` instance is initialized with the API key, RPC configurations, and options for handling Solana transactions.
+2. **Transaction Handling**: The `sendTokensOnSolana` function triggers the Portal SDK to handle transaction signing and submission. It fetches transaction details from the backend, processes the transaction, and submits the transaction hash back to the server.
 
 
 ### Future Roadmap
@@ -91,12 +173,19 @@ Certainly! Here's an outline for "Match" based on the categories you provided:
    Create a `.env` file in the root directory and add the following variables:
 
    ```bash
-   LIGHTHOUSE_API_KEY = 27XXX73.51437XXXbfac947
+   LIGHTHOUSE_API_KEY = 274f65XXXXXXX47
    MATCH_API_URL = https://finder-backend-evm.onrender.com
-   CONTRACT_ID = 89mKL8vWpyvdSimdYoZgXzMF9pb69VopCcAh1DZP41cL
+   CONTRACT_ID = gSh52u5Nt39rb8CSHQhUhF1cSdFsL9JebSoPZmazFrZ
    CHAIN_ID = 97
-   GOOGLE_MAPS_API_KEY = AIzaSyDXXXXXIPepz_29M
-   SOLANA_RPC_URL = https://little-intensive-patina.solana-devnet.quiknode.pro/bc836XXXXXXXa7b578
+   GOOGLE_MAPS_API_KEY = AIzaSXXXXXXXXXIPepz_29
+   SOLANA_RPC_URL = https://little-intensive-patina.solana-devnet.quiknode.pro/bcXXXXXXXXa7b578
+   PORTAL_CLIENT_API_KEY=04065XXXXXXXb0605bf
+   SOLANA_CHAIN_ID = solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1
+   SOL_MINT = SOL
+   PY_USD_MINT = CXk2AMBfi3TwaEL2468s6zP8xq9NxTXjp9gjMgzeUynM
+   TIME_TILL_LOCK = 1 * 60 * 1000
+   MONGO_URI=mongodb+srv://<username>:<password>@el6be.mongodb.net/payment_info
+   PORTAL_BACKEND_URL=https://portal-backend-r9rk.onrender.com
    ```
 
 4. **Start the Development Server:**
