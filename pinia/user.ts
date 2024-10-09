@@ -33,6 +33,7 @@ import {
 import { AnchorProvider, BN, Idl, Program } from "@project-serum/anchor";
 import { marketAbi } from "@/blockchain/abi";
 import { programID } from "@/utils/constants";
+import { get } from "http";
 
 type UserStore = {
   accountId: string | null;
@@ -49,9 +50,11 @@ type UserStore = {
 const env = useRuntimeConfig().public;
 
 const { publicKey, wallet } = useWallet();
+
 const preflightCommitment = "processed";
 export const connection = new Connection(env.solanaRpcUrl, preflightCommitment);
 
+watch(publicKey, async (key) => {});
 export const useUserStore = defineStore(STORE_KEY, {
   state: (): UserStore => ({
     accountId: null,
@@ -131,6 +134,13 @@ export const useUserStore = defineStore(STORE_KEY, {
       }
     },
     async getContract() {
+      const waitForAnchorInit = async () => {
+        if (!this.anchorWallet) {
+          await new Promise((resolve) => setTimeout(resolve, 500));
+          return waitForAnchorInit();
+        }
+      };
+      await waitForAnchorInit();
       if (!this.program) {
         throw new Error("Program not initialized");
       }
