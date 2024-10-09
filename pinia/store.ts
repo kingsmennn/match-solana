@@ -110,7 +110,7 @@ export const useStoreStore = defineStore(STORE_STORE_KEY, {
               Number(store.account.location.longitude.toString()),
               Number(store.account.location.latitude.toString()),
             ],
-          }
+          };
         });
 
         userStore.storeDetails = response;

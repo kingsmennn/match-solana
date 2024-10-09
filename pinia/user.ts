@@ -1,3 +1,5 @@
+import { AnchorWallet, useAnchorWallet, useWallet } from "solana-wallets-vue";
+const anchor = useAnchorWallet();
 import { defineStore } from "pinia";
 import {
   AccountType,
@@ -21,7 +23,7 @@ import {
 import { useStoreStore } from "./store";
 import { findProgramAddressSync } from "@project-serum/anchor/dist/cjs/utils/pubkey";
 import { utf8 } from "@project-serum/anchor/dist/cjs/utils/bytes";
-import { AnchorWallet, useAnchorWallet, useWallet } from "solana-wallets-vue";
+
 import {
   clusterApiUrl,
   Connection,
@@ -45,7 +47,7 @@ type UserStore = {
 };
 
 const env = useRuntimeConfig().public;
-const anchor = useAnchorWallet();
+
 const { publicKey, wallet } = useWallet();
 const preflightCommitment = "processed";
 export const connection = new Connection(env.solanaRpcUrl, preflightCommitment);
